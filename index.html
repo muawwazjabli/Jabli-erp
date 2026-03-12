@@ -1,0 +1,2160 @@
+<!DOCTYPE html>
+<html lang="ur" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jabli ERP - Your Smart Business Partner</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Lateef:wght@400&family=Scheherazade+New:wght@400;700&family=Roboto:wght@400;700&display=swap"
+        rel="stylesheet">
+    <!-- Ionicons -->
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+
+    <!-- Html2Canvas for generating bill images -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+
+    <!-- Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+    <!-- Google Drive API Scripts -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <script src="https://apis.google.com/js/api.js" async defer></script>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, push, remove } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: 'AIzaSyCWdTHhsyhe5tsI0HcstbvmqGnVRRue1ls',
+            authDomain: 'jabli-erp.firebaseapp.com',
+            databaseURL: 'https://jabli-erp-default-rtdb.firebaseio.com',
+            projectId: 'jabli-erp',
+            storageBucket: 'jabli-erp.firebasestorage.app',
+            messagingSenderId: '440541752200',
+            appId: '1:440541752200:web:d6215708ae3b77f372283d'
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+        const auth = getAuth(app);
+        const provider = new GoogleAuthProvider();
+
+        window.db = db;
+        window.auth = auth;
+        window.provider = provider;
+        window.fbRef = ref;
+        window.fbSet = set;
+        window.fbOnValue = onValue;
+        window.fbPush = push;
+        window.fbRemove = remove;
+        window.fbSignOut = signOut;
+        window.fbOnAuthStateChanged = onAuthStateChanged;
+        window.fbSignInWithPopup = signInWithPopup;
+    </script>
+
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+
+<body>
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-box" id="googleLoginBox">
+            <div class="logo" style="margin: 0 auto 20px auto; width: 60px; height: 60px; font-size: 32px;">
+                <ion-icon name="laptop-outline" id="loginLogoImg"></ion-icon>
+            </div>
+            <h2 id="loginShopNameText" style="text-align: center; margin-bottom: 8px;">Jabli ERP</h2>
+            <p style="text-align: center; color: var(--text-muted); margin-bottom: 24px;">Your Smart Business Partner
+            </p>
+
+            <div id="googleSignInContainer">
+                <button id="googleLoginBtn" class="btn btn-primary w-100"
+                    style="display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #444; border: 1px solid #ddd; margin-bottom: 20px;">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
+                        height="20">
+                    Google کے ساتھ لاگ ان کریں
+                </button>
+            </div>
+
+            <div id="pinPadContainer" style="display: none;">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <p id="loggedInEmail" style="font-size: 14px; color: var(--text-muted); margin-bottom: 8px;"></p>
+                    <h3 style="font-size: 1.1rem;">اپنا 4 ہندسوں کا پن درج کریں</h3>
+                </div>
+                <div class="pin-display" id="pinDisplay">
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                    <div class="pin-dot"></div>
+                </div>
+                <div class="pin-pad">
+                    <button class="pin-btn" onclick="appendPin(1)">1</button>
+                    <button class="pin-btn" onclick="appendPin(2)">2</button>
+                    <button class="pin-btn" onclick="appendPin(3)">3</button>
+                    <button class="pin-btn" onclick="appendPin(4)">4</button>
+                    <button class="pin-btn" onclick="appendPin(5)">5</button>
+                    <button class="pin-btn" onclick="appendPin(6)">6</button>
+                    <button class="pin-btn" onclick="appendPin(7)">7</button>
+                    <button class="pin-btn" onclick="appendPin(8)">8</button>
+                    <button class="pin-btn" onclick="appendPin(9)">9</button>
+                    <button class="pin-btn" onclick="clearPin()">C</button>
+                    <button class="pin-btn" onclick="appendPin(0)">0</button>
+                    <button class="pin-btn" onclick="backspacePin()"><ion-icon
+                            name="backspace-outline"></ion-icon></button>
+                </div>
+                <button id="verifyPinBtn" class="btn btn-primary w-100" style="margin-top: 20px;" disabled>تصدیق
+                    کریں</button>
+                <button onclick="logoutFromGoogle()" class="btn btn-secondary w-100"
+                    style="margin-top: 10px; border: none; font-size: 12px;">کسی دوسرے اکاؤنٹ سے لاگ ان کریں</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="app-container" style="display: none;">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <ion-icon name="laptop-outline" id="sidebarShopLogoImg"></ion-icon>
+                </div>
+                <h2 id="sidebarShopNameText">Jabli ERP</h2>
+                <p style="font-size: 10px; color: var(--text-muted); margin-top: -8px;">Your Smart Business Partner</p>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" id="navDashboard">
+                    <ion-icon name="grid-outline"></ion-icon>
+                    <span>ڈیش بورڈ</span>
+                </a>
+                <a href="#" class="nav-item" id="navOrders">
+                    <ion-icon name="cart-outline"></ion-icon>
+                    <span>آرڈرز (Orders)</span>
+                </a>
+                <a href="#" class="nav-item" id="navFinance">
+                    <ion-icon name="wallet-outline"></ion-icon>
+                    <span>مالیات (Finance)</span>
+                </a>
+                <a href="#" class="nav-item" id="navCustomers">
+                    <ion-icon name="people-outline"></ion-icon>
+                    <span>کسٹمرز</span>
+                </a>
+                <a href="#" class="nav-item" id="navProducts">
+                    <ion-icon name="cube-outline"></ion-icon>
+                    <span>اسٹاک / پروڈکٹس</span>
+                </a>
+                <a href="#" class="nav-item" id="navSettings">
+                    <ion-icon name="settings-outline"></ion-icon>
+                    <span>سیٹنگز</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer" style="position: relative;">
+                <div class="user-profile" id="userProfileBtn">
+                    <div class="avatar" id="currentUserAvatar">م</div>
+                    <div class="user-info">
+                        <span class="name" id="currentUserName">محمد معوذ جبلی</span>
+                        <span class="role" id="currentUserRole">Admin</span>
+                    </div>
+                    <ion-icon name="chevron-up-outline" style="margin-right: auto;"></ion-icon>
+                </div>
+                <div class="user-dropdown" id="userDropdown" style="display: none;">
+                    <button class="dropdown-item" onclick="openChangePasswordModal()"
+                        style="font-weight: bold; border-bottom: 2px solid var(--border); margin-bottom: 4px;">
+                        <ion-icon name="key-outline" style="vertical-align: middle; margin-left: 8px;"></ion-icon> اپنا
+                        پاسورڈ تبدیل کریں
+                    </button>
+                    <div id="dynamicUserSwitcherList" style="display: none;">
+                        <!-- Hidden Switcher -->
+                    </div>
+                    <button class="dropdown-item text-danger" onclick="logoutUser()"
+                        style="font-weight: bold; border-top: 2px solid var(--border); margin-top: 4px;">
+                        <ion-icon name="log-out-outline" style="vertical-align: middle; margin-left: 8px;"></ion-icon>
+                        لاگ آؤٹ (Logout)
+                    </button>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Top Navbar -->
+            <header class="top-nav">
+                <div style="display: flex; align-items: center; gap: 15px;">
+                    <ion-icon name="menu-outline" id="mobileMenuToggle" onclick="toggleSidebar()"></ion-icon>
+                    <div class="search-bar">
+                        <ion-icon name="search-outline"></ion-icon>
+                        <input type="text" placeholder="آرڈر یا کسٹمر تلاش کریں...">
+                    </div>
+                </div>
+
+                <div class="nav-actions">
+                    <button class="btn btn-secondary" onclick="openIncomeModal()"
+                        style="background-color: var(--success-light); color: var(--success); border-color: var(--success);">
+                        <ion-icon name="download-outline"></ion-icon>
+                        آمدن درج کریں
+                    </button>
+                    <button class="btn btn-secondary" onclick="openExpenseModal()">
+                        <ion-icon name="wallet-outline"></ion-icon>
+                        خرچہ کریں
+                    </button>
+                    <button class="btn btn-secondary" onclick="openHandoverModal()" id="handoverNavBtn">
+                        <ion-icon name="swap-horizontal-outline"></ion-icon>
+                        رقم جمع کروائیں
+                    </button>
+                    <button class="btn btn-icon">
+                        <ion-icon name="notifications-outline"></ion-icon>
+                        <span class="badge">3</span>
+                    </button>
+                    <button class="btn btn-primary" id="newOrderBtn">
+                        <ion-icon name="add-circle-outline"></ion-icon>
+                        نیا آرڈر بنائیں
+                    </button>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div id="dashboardPage" class="page-content">
+                <div class="page-header">
+                    <h1>خوش آمدید، Jabli ERP!</h1>
+                    <p>آج کی تازہ ترین صورتحال - Your Smart Business Partner</p>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card" id="dashboardTotalIncomeCard">
+                        <div class="stat-icon income">
+                            <ion-icon name="cash-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3>کل آمدنی</h3>
+                            <h2 class="amount">Rs. 1,25,000</h2>
+                            <span class="trend up"><ion-icon name="arrow-up-outline"></ion-icon> +12% اس ماہ</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card clickable-card" onclick="openFilteredOrdersModal('pending')">
+                        <div class="stat-icon pending">
+                            <ion-icon name="receipt-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3>بقایا جات (Pending)</h3>
+                            <h2 class="amount">Rs. 45,500</h2>
+                            <span class="trend warning"><ion-icon name="alert-circle-outline"></ion-icon> <span
+                                    id="pendingCustomersCount">5</span> کسٹمرز بقایا</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card clickable-card" onclick="openFilteredOrdersModal('active')">
+                        <div class="stat-icon orders-active">
+                            <ion-icon name="color-palette-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3>زیر تکمیل آرڈرز</h3>
+                            <h2 class="amount" id="activeOrdersCount">12</h2>
+                            <span class="trend neutral">پینافلیکس اور وزٹنگ کارڈز</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-icon orders-done">
+                            <ion-icon name="checkmark-done-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3>مکمل شدہ آرڈرز</h3>
+                            <h2 class="amount" id="completedOrdersCount">85</h2>
+                            <span class="trend success"><ion-icon name="trending-up-outline"></ion-icon> اس ہفتے</span>
+                        </div>
+                    </div>
+                </div>
+
+
+                <!-- Main Layout Row -->
+                <div class="layout-row">
+                    <!-- Recent Orders Table -->
+                    <div class="card table-card flex-2">
+                        <div class="card-header">
+                            <h2>حالیہ آرڈرز</h2>
+                            <button class="btn btn-secondary btn-sm" onclick="switchPage('ordersPage')">سب
+                                دیکھیں</button>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>آئی ڈی</th>
+                                        <th>کسٹمر / کام تفصیل</th>
+                                        <th>قسم</th>
+                                        <th>اسٹیٹس</th>
+                                        <th>پیمنٹ</th>
+                                        <th>منافع (Profit)</th>
+                                        <th>ایکشن</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="recentOrdersBody">
+                                    <!-- Data will be populated via JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Quick Actions & Summaries -->
+                    <div class="card flex-1">
+                        <div class="card-header">
+                            <h2>آج کا خلاصہ</h2>
+                        </div>
+                        <div class="summary-list">
+                            <div class="summary-item">
+                                <div class="icon-circle bg-blue-light text-blue">
+                                    <ion-icon name="briefcase-outline"></ion-icon>
+                                </div>
+                                <div class="summary-info">
+                                    <h4>اسٹیشنری سیلز</h4>
+                                    <p>Rs. 15,200</p>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="icon-circle bg-purple-light text-purple">
+                                    <ion-icon name="color-fill-outline"></ion-icon>
+                                </div>
+                                <div class="summary-info">
+                                    <h4>پرنٹنگ (پینافلیکس وغیرہ)</h4>
+                                    <p>Rs. 32,500</p>
+                                </div>
+                            </div>
+                            <div class="summary-item">
+                                <div class="icon-circle bg-green-light text-green">
+                                    <ion-icon name="globe-outline"></ion-icon>
+                                </div>
+                                <div class="summary-info">
+                                    <h4>آنلائن سروسز</h4>
+                                    <p>Rs. 45,000</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="divider"></div>
+
+                        <button class="btn btn-outline-primary w-100 mt-3" onclick="downloadDailyReport()">
+                            <ion-icon name="document-text-outline"></ion-icon>
+                            روزانہ رپورٹ ڈاؤنلوڈ کریں
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Orders Management Page -->
+            <div id="ordersPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div>
+                            <h1>آرڈرز کی تفصیل (Orders Management)</h1>
+                            <p>تمام آرڈرز یہاں سے فلٹر اور تلاش کریں</p>
+                        </div>
+                        <button class="btn btn-primary" onclick="document.getElementById('newOrderBtn').click()">
+                            <ion-icon name="add-circle-outline"></ion-icon>
+                            نیا آرڈر بنائیں
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body" style="padding: 20px;">
+                        <div class="filter-bar"
+                            style="display: flex; flex-wrap: wrap; gap: 15px; align-items: center; justify-content: space-between;">
+                            <!-- Tabs / Status Filter -->
+                            <div class="tabs" id="orderStatusTabs" style="display: flex; gap: 8px;">
+                                <button class="btn btn-sm btn-outline-primary active"
+                                    onclick="filterOrdersByStatus('all', this)">سب (All) <span class="tab-count"
+                                        id="count-all">0</span></button>
+                                <button class="btn btn-sm btn-outline-primary"
+                                    onclick="filterOrdersByStatus('zair-e-takmeel', this)">زیرِ تکمیل <span
+                                        class="tab-count" id="count-pending">0</span></button>
+                            </div>
+
+                            <!-- Search and Category Filter -->
+                            <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end;">
+                                <button class="btn btn-sm btn-secondary" onclick="openDownloadModal()"
+                                    title="ڈیٹیل ڈاؤنلوڈ کریں">
+                                    <ion-icon name="download-outline"></ion-icon>
+                                    ڈاؤنلوڈ
+                                </button>
+                                <button class="btn btn-sm btn-secondary" onclick="openRecycleBinModal()"
+                                    title="ڈیلیٹ شدہ آرڈرز (Recycle Bin)">
+                                    <ion-icon name="trash-outline"></ion-icon>
+                                    ریفرش بن
+                                </button>
+                                <select id="orderCategoryFilter" class="form-control" style="width: 150px;"
+                                    onchange="renderOrdersList()">
+                                    <option value="all">تمام کیٹیگری</option>
+                                    <option value="stationery">اسٹیشنری</option>
+                                    <option value="printing">پرنٹنگ</option>
+                                    <option value="online">آنلائن سروسز</option>
+                                </select>
+                                <div class="search-bar" style="margin: 0; width: 250px;">
+                                    <ion-icon name="search-outline"></ion-icon>
+                                    <input type="text" id="orderSearchInput" placeholder="کسٹمر یا تفصیل تلاش کریں..."
+                                        onkeyup="renderOrdersList()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4" id="bulkActionsBar"
+                    style="display: none; background-color: #f8fafc; border: 1px dashed var(--primary);">
+                    <div class="card-body"
+                        style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="selectedCountText" style="font-weight: bold; color: var(--primary);">0 آرڈر منتخب
+                                کیے گئے</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="clearOrderSelection()">سلیکشن ختم
+                                کریں</button>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-sm btn-primary" onclick="deleteSelectedOrders()"
+                                id="deleteSelectedBtn" style="background: var(--danger);">
+                                <ion-icon name="trash-outline"></ion-icon>
+                                منتخب شدہ ڈیلیٹ کریں
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center;">
+                                        <input type="checkbox" id="selectAllOrders"
+                                            onclick="toggleSelectAllOrders(this.checked)">
+                                    </th>
+                                    <th>تاریخ / آئی ڈی</th>
+                                    <th>کسٹمر کا نام / تفصیل</th>
+                                    <th>کیٹیگری</th>
+                                    <th>اسٹیٹس</th>
+                                    <th>رقم کی تفصیل</th>
+                                    <th>منافع (Profit)</th>
+                                    <th style="text-align: center;">ایکشن</th>
+                                </tr>
+                            </thead>
+                            <tbody id="ordersListBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Products Management Page -->
+            <div id="productsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div>
+                            <h1>اسٹاک اور پروڈکٹس (Stock & Products)</h1>
+                            <p>اپنی انوینٹری اور پروڈکٹس یہاں سے منظم کریں</p>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-secondary" onclick="exportProductsToExcel()"
+                                style="background: #ecfdf5; color: #059669;">
+                                <ion-icon name="download-outline"></ion-icon> ایکسل ڈاؤنلوڈ
+                            </button>
+                            <button class="btn btn-secondary"
+                                onclick="document.getElementById('importStockExcel').click()"
+                                style="background: #fff7ed; color: #d97706;">
+                                <ion-icon name="upload-outline"></ion-icon> ایکسل اپلوڈ
+                            </button>
+                            <input type="file" id="importStockExcel" hidden accept=".xlsx, .xls"
+                                onchange="importProductsFromExcel(this)">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Summary Dashboard -->
+                <div id="productSummaryGrid" class="responsive-flex-row" style="gap: 16px; margin-bottom: 24px;">
+                    <!-- Populated via JS -->
+                </div>
+
+                <!-- Bulk Actions Bar for Products -->
+                <div id="productBulkActionsBar" class="bulk-actions-bar" style="display: none; margin-bottom: 16px;">
+                    <div
+                        style="display: flex; justify-content: space-between; align-items: center; background: #fee2e2; padding: 12px 20px; border-radius: 12px; border: 1px solid #fecaca;">
+                        <span id="productSelectedCountText" style="font-weight: 600; color: #991b1b;">0 پروڈکٹس منتخب
+                            کیے گئے</span>
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="clearProductSelection()" class="btn btn-secondary btn-sm"
+                                style="background: white;">کینسل</button>
+                            <button onclick="deleteSelectedProducts()" class="btn btn-primary btn-sm"
+                                style="background: #dc2626;">ڈیلیٹ منتخب کردہ</button>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>نئی پروڈکٹ شامل کریں</h2>
+                    </div>
+                    <div class="card-body" style="padding: 20px;">
+                        <form id="newProductForm">
+                            <div class="responsive-flex-row" style="gap: 16px; margin-bottom: 16px;">
+                                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                                    <label>پروڈکٹ کا نام</label>
+                                    <input type="text" id="newProductName" required placeholder="مثلاً: A4 Paper Rim">
+                                </div>
+                                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                    <label>کیٹیگری</label>
+                                    <select id="newProductCategory" required>
+                                        <!-- Populated via JS -->
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="responsive-flex-row" style="gap: 16px; align-items: flex-end;">
+                                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                    <label>قیمت خرید (Purchase)</label>
+                                    <input type="number" id="newProductPurchasePrice" required placeholder="Rs."
+                                        min="0">
+                                </div>
+                                <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                    <label>قیمت فروخت (Sale)</label>
+                                    <input type="number" id="newProductSalePrice" required placeholder="Rs." min="0">
+                                </div>
+                                <div class="form-group" style="width: 120px; margin-bottom: 0;">
+                                    <label>اسٹاک (Quantity)</label>
+                                    <input type="number" id="newProductQty" required placeholder="تعداد" min="0">
+                                </div>
+                                <button type="submit" class="btn btn-primary"
+                                    style="height: 44px; margin-bottom: 0; white-space: nowrap;">محفوظ کریں</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="card table-card">
+                    <div class="card-header"
+                        style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
+                        <h2>موجودہ پروڈکٹس</h2>
+                        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+                            <div class="search-bar" style="width: 200px;">
+                                <ion-icon name="search-outline"></ion-icon>
+                                <input type="text" id="productSearchInput" onkeyup="renderProducts()"
+                                    placeholder="پروڈکٹ تلاش کریں..."
+                                    style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px;">
+                            </div>
+                            <!-- Preset Filter -->
+                            <div class="search-bar" style="width: 150px; padding: 0 8px;">
+                                <select id="productQtyPreset" onchange="handlePresetChange()"
+                                    style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px; cursor: pointer;">
+                                    <option value="all">تمام مقدار</option>
+                                    <option value="out">ختم (0)</option>
+                                    <option value="near">اختتام کے قریب (≤10)</option>
+                                    <option value="low">نشاندہی (≤25)</option>
+                                    <option value="range">رینج (Range)</option>
+                                </select>
+                            </div>
+                            <!-- Range Inputs (Hidden by default) -->
+                            <div id="productQtyRangeFields" style="display: none; gap: 5px; align-items: center;">
+                                <div class="search-bar" style="width: 80px; padding: 0 8px;">
+                                    <input type="number" id="productQtyMin" onkeyup="renderProducts()"
+                                        onchange="renderProducts()" placeholder="سے..."
+                                        style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px;">
+                                </div>
+                                <span style="font-size: 12px; color: var(--text-muted);">تک</span>
+                                <div class="search-bar" style="width: 80px; padding: 0 8px;">
+                                    <input type="number" id="productQtyMax" onkeyup="renderProducts()"
+                                        onchange="renderProducts()" placeholder="تک..."
+                                        style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px;">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center;">
+                                        <input type="checkbox" id="selectAllProducts"
+                                            onclick="toggleSelectAllProducts(this.checked)">
+                                    </th>
+                                    <th style="text-align: right;">پروڈکٹ کا نام</th>
+                                    <th style="text-align: right;">کیٹیگری</th>
+                                    <th style="text-align: right;">قیمت خرید</th>
+                                    <th style="text-align: right;">قیمت فروخت</th>
+                                    <th style="text-align: right;">منافع (Margin)</th>
+                                    <th style="text-align: right;">کل مقدار</th>
+                                    <th style="text-align: right;">فروخت شدہ</th>
+                                    <th style="text-align: right;">موجودہ اسٹاک</th>
+                                    <th style="text-align: center;">ایکشن</th>
+                                </tr>
+                            </thead>
+                            <tbody id="productsTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Management Page -->
+            <div id="customersPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1>کسٹمرز کی فہرست (Customer Management)</h1>
+                    <p>تمام کسٹمرز کا ریکارڈ اور ادائیگیوں کی تفصیل</p>
+                </div>
+
+                <!-- Customer Summary Dashboard -->
+                <div id="customerSummaryGrid" class="responsive-flex-row" style="gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--info-light); color: var(--info); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="people-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">کل کسٹمرز</h3>
+                            <h2 style="font-size: 18px;" id="totalCustomersCount">0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--danger-light); color: var(--danger); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="alert-circle-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">بقایا بیلنس</h3>
+                            <h2 style="font-size: 18px;" id="totalOutstandingBalance">Rs. 0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--warning-light); color: var(--warning); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="time-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">زیرِ تکمیل کام</h3>
+                            <h2 style="font-size: 18px;" id="pendingWorkCount">0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mb-4">
+                    <div class="card-body" style="padding: 20px;">
+                        <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                            <div class="search-bar" style="margin: 0; flex: 1; min-width: 250px;">
+                                <ion-icon name="search-outline"></ion-icon>
+                                <input type="text" id="customerSearchInput" placeholder="کسٹمر کا نام تلاش کریں..."
+                                    onkeyup="renderCustomers()">
+                            </div>
+                            <select id="customerPaymentFilter" class="form-control" style="width: 180px;"
+                                onchange="renderCustomers()">
+                                <option value="all">تمام ادائیگیاں</option>
+                                <option value="pending">صرف بقایا والے</option>
+                                <option value="paid">مکمل شدہ</option>
+                            </select>
+                            <select id="customerWorkFilter" class="form-control" style="width: 180px;"
+                                onchange="renderCustomers()">
+                                <option value="all">تمام کام (All Work)</option>
+                                <option value="pending">صرف زیرِ تکمیل</option>
+                                <option value="completed">صرف مکمل شدہ</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="text-align: right;">کسٹمر کا نام</th>
+                                    <th style="text-align: center;">کل آرڈرز</th>
+                                    <th style="text-align: center;">کام کی نوعیت</th>
+                                    <th style="text-align: center;">ادائیگی کی صورتحال</th>
+                                    <th style="text-align: right;">بقایا بیلنس</th>
+                                    <th style="text-align: center;">ایکشن</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersTableBody">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Finance Page Content -->
+            <div id="financePage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+                        <div>
+                            <h1>مالیات اور اخراجات (Finance & Expenses)</h1>
+                            <p>دکان کی آمدنی، اخراجات اور کیش فلو کی تفصیلات</p>
+                        </div>
+                        <div class="nav-actions" style="margin: 0;">
+                            <button class="btn btn-secondary" onclick="openFinanceDownloadModal()"
+                                style="background-color: var(--card-bg); color: var(--text-main); border-color: var(--border-color);">
+                                <ion-icon name="download-outline"></ion-icon>
+                                ایکسل ڈاؤنلوڈ کریں
+                            </button>
+                            <button class="btn btn-secondary" onclick="openIncomeModal()"
+                                style="background-color: var(--success-light); color: var(--success); border-color: var(--success);">
+                                <ion-icon name="download-outline"></ion-icon>
+                                آمدن درج کریں
+                            </button>
+                            <button class="btn btn-secondary" onclick="openExpenseModal()"
+                                style="background-color: var(--danger-light); color: var(--danger); border-color: var(--danger);">
+                                <ion-icon name="wallet-outline"></ion-icon>
+                                خرچہ کریں
+                            </button>
+                            <button class="btn btn-secondary" onclick="openHandoverModal()">
+                                <ion-icon name="swap-horizontal-outline"></ion-icon>
+                                رقم جمع کروائیں
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Finance Summary Dashboard -->
+                <div id="financeSummaryGrid" class="responsive-flex-row" style="gap: 16px; margin-bottom: 24px;">
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--success-light); color: var(--success); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="cart-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">کل سیلز (موصول + بقایا)</h3>
+                            <h2 style="font-size: 18px; color: var(--success);" id="financeTotalSales">Rs. 0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--warning-light); color: var(--warning); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="cube-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">پروڈکٹ کی قیمتِ خرید (COGS)</h3>
+                            <h2 style="font-size: 18px; color: var(--warning);" id="financeTotalCogs">Rs. 0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--danger-light); color: var(--danger); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="trending-down-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">دیگر اخراجات</h3>
+                            <h2 style="font-size: 18px; color: var(--danger);" id="financeTotalExpense">Rs. 0</h2>
+                        </div>
+                    </div>
+                    <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
+                        <div class="stat-icon"
+                            style="background: var(--primary-light); color: var(--primary); width: 32px; height: 32px; font-size: 16px;">
+                            <ion-icon name="wallet-outline"></ion-icon>
+                        </div>
+                        <div class="stat-details">
+                            <h3 style="font-size: 11px; color: var(--text-muted);">خالص منافع (Net Profit)</h3>
+                            <h2 style="font-size: 18px; color: var(--primary);" id="financeNetProfit">Rs. 0</h2>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cash in Hand (Specific to Finance Page) -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h2>موجودہ کیش (بٹوہ جات)</h2>
+                    </div>
+                    <div class="stats-grid" id="financeCashInHandGrid"
+                        style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 0 20px 20px 20px;">
+                        <!-- Dynamic Cards populated via JS -->
+                    </div>
+                </div>
+
+                <!-- Filters for Transactions -->
+                <div class="card mb-4">
+                    <div class="card-body" style="padding: 20px;">
+                        <div
+                            style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
+                            <div class="settings-tabs" id="financeTypeTabs" style="display: flex; gap: 8px;">
+                                <button class="btn btn-sm btn-outline-primary active"
+                                    onclick="filterTransactionsByCategory('all', this)">سب فلٹرز</button>
+                                <button class="btn btn-sm btn-outline-success"
+                                    onclick="filterTransactionsByCategory('income', this)">صرف آمدنی</button>
+                                <button class="btn btn-sm btn-outline-danger"
+                                    onclick="filterTransactionsByCategory('expense', this)">صرف اخراجات</button>
+                                <button class="btn btn-sm btn-outline-secondary"
+                                    onclick="filterTransactionsByCategory('handover', this)">ہینڈ اوور</button>
+                            </div>
+
+                            <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end;">
+                                <select id="financeUserFilter" class="form-control" style="width: 180px;"
+                                    onchange="renderTransactionsTable()">
+                                    <option value="all">تمام یوزرز (All Users)</option>
+                                    <!-- Options populated remotely -->
+                                </select>
+                                <div class="search-bar" style="margin: 0; min-width: 250px;">
+                                    <ion-icon name="search-outline"></ion-icon>
+                                    <input type="text" id="financeSearchInput" placeholder="تفصیل تلاش کریں..."
+                                        onkeyup="renderTransactionsTable()">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bulk Actions Bar for Finance -->
+                <div class="card mb-4" id="financeBulkActionsBar"
+                    style="display: none; background-color: #f8fafc; border: 1px dashed var(--primary);">
+                    <div class="card-body"
+                        style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <span id="financeSelectedCountText" style="font-weight: bold; color: var(--primary);">0
+                                ٹرانزیکشن منتخب
+                                کی گئیں</span>
+                            <button class="btn btn-sm btn-outline-primary" onclick="clearFinanceSelection()">سلیکشن ختم
+                                کریں</button>
+                        </div>
+                        <div style="display: flex; gap: 10px;">
+                            <button class="btn btn-sm btn-primary" onclick="deleteSelectedTransactions()"
+                                id="deleteSelectedFinanceBtn" style="background: var(--danger);">
+                                <ion-icon name="trash-outline"></ion-icon>
+                                منتخب شدہ ڈیلیٹ کریں
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Transactions Table -->
+                <div class="card table-card">
+                    <div class="card-header">
+                        <h2>ٹرانزیکشن تفصیلات</h2>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="data-table">
+                            <thead>
+                                <tr>
+                                    <th style="width: 40px; text-align: center;">
+                                        <input type="checkbox" id="selectAllFinance"
+                                            onclick="toggleSelectAllFinance(this.checked)">
+                                    </th>
+                                    <th>تاریخ / وقت</th>
+                                    <th>ٹیگ (ID)</th>
+                                    <th>قسم (Type)</th>
+                                    <th>یوزر / منجانب</th>
+                                    <th>تفصیل (Description)</th>
+                                    <th style="text-align: right;">رقم (Amount)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactionsTableBody">
+                                <!-- Populated via JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Settings Page Content -->
+            <div id="settingsPage" class="page-content" style="display: none;">
+                <div class="page-header">
+                    <h1>سیٹنگز اور انتظام (Settings)</h1>
+                    <p>یوزرز اور دکان کی ترتیب یہاں سے تبدیل کریں</p>
+                </div>
+
+                <!-- Settings Sub-Navigation Tabs -->
+                <div class="settings-tabs-container"
+                    style="margin-bottom: 24px; border-bottom: 1px solid var(--border); overflow-x: auto;">
+                    <div class="settings-tabs" style="display: flex; gap: 8px; padding-bottom: 8px;">
+                        <button class="btn btn-secondary active" onclick="switchSettingsTab('sett-shop', this)"
+                            id="btn-tab-shop">
+                            <ion-icon name="information-circle-outline"></ion-icon> تعارف (Shop)
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchSettingsTab('sett-users', this)">
+                            <ion-icon name="people-outline"></ion-icon> یوزرز (Users)
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchSettingsTab('sett-status', this)">
+                            <ion-icon name="list-outline"></ion-icon> آرڈر اسٹیٹس
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchSettingsTab('sett-categories', this)">
+                            <ion-icon name="grid-outline"></ion-icon> کیٹیگریز
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchSettingsTab('sett-invoice', this)">
+                            <ion-icon name="receipt-outline"></ion-icon> رسید ڈیزائن
+                        </button>
+                        <button class="btn btn-secondary" onclick="switchSettingsTab('sett-backup', this)">
+                            <ion-icon name="cloud-download-outline"></ion-icon> بیک اپ اور بحالی
+                        </button>
+                    </div>
+                </div>
+
+                <div id="settingsTabsContent">
+                    <!-- User Management Tab -->
+                    <div id="sett-backup" class="settings-tab-content" style="display: none;">
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h2>بیک اپ اور ڈیٹا کی بحالی (Backup & Restore)</h2>
+                            </div>
+                            <div class="card-body" style="padding: 20px;">
+                                <div class="responsive-flex-row" style="gap: 20px;">
+                                    <div
+                                        style="flex: 1; padding: 20px; border: 1px dashed var(--border); border-radius: var(--radius-md); text-align: center;">
+                                        <ion-icon name="cloud-download-outline"
+                                            style="font-size: 48px; color: var(--primary); margin-bottom: 12px;"></ion-icon>
+                                        <h3>دستی بیک اپ (Manual Backup)</h3>
+                                        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">تمام
+                                            ڈیٹا (آرڈرز، ٹرانزیکشنز، پروڈکٹس) کو ایک فائل میں محفوظ کریں تاکہ ضرورت پڑنے
+                                            پر استعمال کیا جا سکے۔</p>
+                                        <button class="btn btn-primary w-100" onclick="downloadManualBackup()">
+                                            <ion-icon name="download-outline"></ion-icon> بیک اپ ڈاؤنلوڈ کریں
+                                        </button>
+                                    </div>
+                                    <div
+                                        style="flex: 1; padding: 20px; border: 1px dashed var(--border); border-radius: var(--radius-md); text-align: center;">
+                                        <ion-icon name="cloud-upload-outline"
+                                            style="font-size: 48px; color: var(--warning); margin-bottom: 12px;"></ion-icon>
+                                        <h3>ڈیٹا بحال کریں (Restore Data)</h3>
+                                        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">پہلے
+                                            سے موجود بیک اپ فائل اپلوڈ کر کے اپنا تمام ڈیٹا واپس لائیں۔ <br><strong
+                                                style="color: var(--danger);">انتباہ: موجودہ ڈیٹا مٹ جائے گا۔</strong>
+                                        </p>
+                                        <button class="btn btn-outline-primary w-100"
+                                            onclick="document.getElementById('importBackupFile').click()">
+                                            <ion-icon name="upload-outline"></ion-icon> بیک اپ اپلوڈ کریں
+                                        </button>
+                                        <input type="file" id="importBackupFile" hidden accept=".json"
+                                            onchange="restoreBackupFromFile(this)">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card mb-4">
+                            <div class="card-header">
+                                <h2>گوگل ڈرائیو کلاؤڈ سینک (Google Drive Cloud Sync)</h2>
+                                <div id="gdriveStatus" class="status-badge"
+                                    style="background: #f1f5f9; color: #64748b; padding: 4px 12px; border-radius: 20px; font-size: 12px;">
+                                    نہیں جڑا ہوا</div>
+                            </div>
+                            <div class="card-body" style="padding: 20px;">
+                                <div id="gdriveSetupSection" style="text-align: center; padding: 20px;">
+                                    <div style="margin-bottom: 20px;">
+                                        <ion-icon name="cloud-upload-outline"
+                                            style="font-size: 64px; color: var(--primary); opacity: 0.5;"></ion-icon>
+                                        <h3 style="margin-top: 10px;">کلاؤڈ سینک سیٹ اپ</h3>
+                                        <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">گوگل
+                                            ڈرائیو استعمال کرنے کے لیے آپ کو اپنی **Google Client ID** دینی ہوگی۔</p>
+
+                                        <div class="form-group"
+                                            style="text-align: right; max-width: 400px; margin: 0 auto 20px auto;">
+                                            <label style="display: block; margin-bottom: 8px; font-weight: 600;">Google
+                                                Client ID درج کریں:</label>
+                                            <input type="text" id="gdriveClientId"
+                                                placeholder="مثال: 123456789-abc.apps.googleusercontent.com"
+                                                style="width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px;">
+                                            <div
+                                                style="display: flex; justify-content: space-between; align-items: center; margin-top: 5px;">
+                                                <small style="color: var(--text-muted);">گوگل کلاؤڈ سے آئی ڈی حاصل
+                                                    کریں۔</small>
+                                                <a href="#" onclick="openGDriveHelpModal()"
+                                                    style="font-size: 11px; color: var(--primary); text-decoration: underline;">آئی
+                                                    ڈی کیسے حاصل کریں؟</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-primary" id="btnLinkGDrive" onclick="handleGDriveAuth()"
+                                        style="padding: 12px 24px; font-size: 16px;">
+                                        <ion-icon name="logo-google"
+                                            style="margin-left: 8px; font-size: 20px;"></ion-icon> گوگل اکاؤنٹ لنک کریں
+                                    </button>
+                                </div>
+
+                                <div id="gdriveSyncSection" style="display: none;">
+                                    <div
+                                        style="background: #f0fdf4; border: 1px solid #bbf7d0; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                                        <div
+                                            style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                            <div
+                                                style="width: 40px; height: 40px; border-radius: 50%; background: #fff; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid #e2e8f0;">
+                                                <img id="gdriveUserImg" src=""
+                                                    style="width: 100%; height: 100%; object-fit: cover; display: none;">
+                                                <ion-icon id="gdriveUserPlaceholder" name="person-outline"
+                                                    style="font-size: 20px; color: #64748b;"></ion-icon>
+                                            </div>
+                                            <div>
+                                                <div id="gdriveUserName" style="font-weight: 600; color: #166534;">لنک
+                                                    شدہ اکاؤنٹ</div>
+                                                <div id="gdriveUserEmail"
+                                                    style="font-size: 12px; color: #166534; opacity: 0.8;">آپ کا اکاؤنٹ
+                                                    جڑا ہوا ہے</div>
+                                            </div>
+                                            <button class="btn btn-sm btn-outline-danger" onclick="disconnectGDrive()"
+                                                style="margin-right: auto; padding: 4px 8px; font-size: 11px;">ڈسکنیکٹ
+                                                کریں</button>
+                                        </div>
+                                    </div>
+
+                                    <div class="responsive-flex-row" style="gap: 20px;">
+                                        <div
+                                            style="flex: 1; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center;">
+                                            <ion-icon name="sync-outline"
+                                                style="font-size: 40px; color: var(--primary); margin-bottom: 10px;"></ion-icon>
+                                            <h3>مینول کلاؤڈ سینک</h3>
+                                            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">
+                                                تازہ ترین ڈیٹا ابھی گوگل ڈرائیو پر اپلوڈ کریں۔</p>
+                                            <button class="btn btn-primary w-100" id="btnSyncNow"
+                                                onclick="manualGDriveSync()">
+                                                <ion-icon name="cloud-upload-outline"></ion-icon> ابھی سینک کریں
+                                            </button>
+                                            <div id="lastSyncTime"
+                                                style="font-size: 11px; color: var(--text-muted); margin-top: 10px;">
+                                                آخری سینک: کبھی نہیں</div>
+                                        </div>
+                                        <div
+                                            style="flex: 1; padding: 20px; border: 1px solid var(--border); border-radius: var(--radius-md); text-align: center;">
+                                            <ion-icon name="timer-outline"
+                                                style="font-size: 40px; color: var(--success); margin-bottom: 10px;"></ion-icon>
+                                            <h3>آٹو کلاؤڈ بیک اپ</h3>
+                                            <p style="color: var(--text-muted); font-size: 12px; margin-bottom: 15px;">
+                                                ہر 5 منٹ بعد آٹو بیک اپ کا آپشن منتخب کریں۔</p>
+                                            <div
+                                                style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                                                <label class="switch">
+                                                    <input type="checkbox" id="autoSyncToggle"
+                                                        onchange="toggleAutoSync(this.checked)">
+                                                    <span class="slider round"></span>
+                                                </label>
+                                                <span>آٹو سینک آن کریں</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>خودکار بیک اپ کی تاریخ (Auto Backup History)</h2>
+                                <span style="font-size: 12px; color: var(--text-muted);">گزشتہ 30 دنوں کا ریکارڈ محفوظ
+                                    ہے</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="data-table">
+                                    <thead>
+                                        <tr>
+                                            <th style="text-align: right;">تاریخ اور وقت</th>
+                                            <th style="text-align: right;">فائل کا سائز</th>
+                                            <th style="text-align: center;">ایکشن</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="backupHistoryBody">
+                                        <!-- Populated via JS -->
+                                        <tr>
+                                            <td colspan="3"
+                                                style="text-align: center; padding: 40px; color: var(--text-muted);">بیک
+                                                اپ کی کوئی ہسٹری موجود نہیں ہے۔</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Management Tab -->
+                    <div id="sett-users" class="settings-tab-content" style="display: none;">
+                        <div class="card">
+                            <div class="card-header">
+                                <h2>یوزرز کی ترتیب (User Management)</h2>
+                            </div>
+                            <div class="card-body" style="padding: 20px;">
+                                <form id="newUserForm"
+                                    style="margin-bottom: 24px; padding-bottom: 24px; border-bottom: 1px solid var(--border);">
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>نام</label>
+                                            <input type="text" id="newUserName" required placeholder="یوزر کا نام">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>رول (Role)</label>
+                                            <select id="newUserRole" required>
+                                                <option value="superadmin">ایڈمنسٹریٹر (Super Admin)</option>
+                                                <option value="admin">مالک (Owner)</option>
+                                                <option value="staff">ملازم (Staff)</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group">
+                                            <label>گوگل ای میل (Gmail)</label>
+                                            <input type="email" id="newUserEmail" required
+                                                placeholder="example@gmail.com">
+                                        </div>
+                                        <div class="form-group">
+                                            <label>4 ہندسوں کا پن (PIN)</label>
+                                            <input type="text" id="newUserPass" required placeholder="1234"
+                                                maxlength="4" pattern="\d{4}">
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="btn btn-primary">نیا یوزر شامل کریں</button>
+                                </form>
+
+                                <h3 style="margin-bottom: 16px;">موجودہ یوزرز</h3>
+                                <div id="existingUsersList">
+                                    <!-- Populated by JS -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shop Settings Tab (Default) -->
+                <div id="sett-shop" class="settings-tab-content">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>دکان کی سیٹنگز (Shop Settings)</h2>
+                        </div>
+                        <div class="card-body" style="padding: 20px;">
+                            <form id="shopSettingsForm">
+                                <div class="form-group">
+                                    <label>دکان کا نام</label>
+                                    <input type="text" id="settingShopName" required placeholder="Al-Abbasi Computer">
+                                </div>
+                                <div class="form-group">
+                                    <label>دکان کا پتہ (Address)</label>
+                                    <textarea id="settingShopAddress"
+                                        placeholder="دکان کا مکمل پتہ درج کریں"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>موبائل نمبر (Mobile)</label>
+                                    <input type="text" id="settingShopPhone" placeholder="03XXXXXXXXX">
+                                </div>
+                                <div class="form-group">
+                                    <label>سوشل میڈیا لنکس (Social Media)</label>
+                                    <textarea id="settingShopSocial" placeholder="Facebook, Instagram, etc."></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>دکان کا لوگو</label>
+                                    <input type="file" id="settingShopLogo" accept="image/*" style="padding: 10px 0;">
+                                </div>
+                                <div id="logoPreviewContainer"
+                                    style="margin-bottom: 15px; display: none; text-align: center;">
+                                    <img id="logoPreview" src="" alt="Logo Preview"
+                                        style="max-width: 100px; max-height: 100px; border-radius: 8px; border: 1px solid var(--border);">
+                                </div>
+                                <div class="form-group" style="margin-top: 20px;">
+                                    <label>کیو آر کوڈ بیس یو آر ایل (QR Code Base URL)</label>
+                                    <input type="text" id="settingQrBaseUrl" placeholder="https://example.com/check/">
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">محفوظ کریں</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Status Tab -->
+                <div id="sett-status" class="settings-tab-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>آرڈر اسٹیٹس مینجمنٹ</h2>
+                        </div>
+                        <div class="card-body" style="padding: 20px;">
+                            <form id="newStatusForm"
+                                style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--border);">
+                                <div class="form-group">
+                                    <label>اسٹیٹس کا نام (Urdu)</label>
+                                    <input type="text" id="statusLabel" required placeholder="مثلاً: بائنڈنگ">
+                                </div>
+                                <div class="form-group">
+                                    <label>شناختی نام (ID - English)</label>
+                                    <input type="text" id="statusId" required placeholder="مثلاً: binding">
+                                </div>
+                                <div class="form-group">
+                                    <label>رنگ (Color Style)</label>
+                                    <select id="statusColor" required>
+                                        <option value="status-progress">Default (Gray)</option>
+                                        <option value="status-designing">Purple (Designing)</option>
+                                        <option value="status-printing">Blue (Printing)</option>
+                                        <option value="status-pasting">Yellow (Pasting)</option>
+                                        <option value="status-completed">Green (Completed)</option>
+                                        <option value="status-pending">Red (Pending)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="display: flex; align-items: center; gap: 8px;">
+                                    <input type="checkbox" id="statusIsFinal" style="width: auto;">
+                                    <label for="statusIsFinal" style="margin: 0;">کیا یہ فائل (Final/Complete) اسٹیٹس
+                                        ہے؟</label>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">نیا اسٹیٹس شامل
+                                    کریں</button>
+                            </form>
+
+                            <h3 style="margin-bottom: 16px;">موجودہ اسٹیٹس کی فہرست</h3>
+                            <div id="statusManagementList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Invoice Design Tab -->
+                <div id="sett-invoice" class="settings-tab-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>رسید ڈیزائن (Invoice Design)</h2>
+                        </div>
+                        <div class="card-body" style="padding: 20px;">
+                            <form id="invoiceDesignForm">
+                                <div class="form-group">
+                                    <label>ہیڈر بیک گراؤنڈ ٹائپ (Header BG Type)</label>
+                                    <select id="invoiceHeaderBgType" onchange="toggleHeaderBgOptions(this.value)">
+                                        <option value="solid">Solid Color</option>
+                                        <option value="gradient">Gradient (Fountain Color)</option>
+                                        <option value="image">Custom Image</option>
+                                    </select>
+                                </div>
+                                <div id="headerSolidOptions" class="form-row">
+                                    <div class="form-group">
+                                        <label>ہیڈر کا رنگ</label>
+                                        <input type="color" id="invoiceHeaderColor" value="#1e40af"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>ہیڈر ٹیکسٹ رنگ</label>
+                                        <input type="color" id="invoiceHeaderTextColor" value="#ffffff"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                </div>
+                                <div id="headerGradientOptions" class="form-row" style="display: none;">
+                                    <div class="form-group">
+                                        <label>رنگ 1 (Color 1)</label>
+                                        <input type="color" id="invoiceHeaderGrad1" value="#1e40af"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>رنگ 2 (Color 2)</label>
+                                        <input type="color" id="invoiceHeaderGrad2" value="#1d4ed8"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>سمت (Direction)</label>
+                                        <select id="invoiceHeaderGradDir">
+                                            <option value="to right">To Right</option>
+                                            <option value="to bottom">To Bottom</option>
+                                            <option value="45deg">45 Degrees</option>
+                                            <option value="circle">Radial (Circle)</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div id="headerImageOptions" class="form-group" style="display: none;">
+                                    <label>ہیڈر بیک گراؤنڈ تصویر</label>
+                                    <input type="file" id="invoiceHeaderBgImage" accept="image/*"
+                                        style="padding: 10px 0;">
+                                    <div id="headerBgPreviewContainer"
+                                        style="margin-top: 10px; display: none; text-align: center;">
+                                        <img id="headerBgPreview" src="" alt="Header BG"
+                                            style="max-height: 80px; border-radius: 4px; border: 1px solid var(--border);">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>ہیڈر کسٹم تحریر (Header Custom Text)</label>
+                                    <textarea id="invoiceHeaderText"
+                                        placeholder="ہیڈر میں دکان کے پتے کے نیچے آنے والی تحریر..."
+                                        rows="2"></textarea>
+                                </div>
+                                <div class="form-group">
+                                    <label>فونٹ (Font Family)</label>
+                                    <select id="invoiceFont">
+                                        <option value="'Outfit', sans-serif">Outfit (Modern English)</option>
+                                        <option value="'Noto Nastaliq Urdu', serif">Noto Nastaliq (Classical Urdu)
+                                        </option>
+                                        <option value="'Roboto', sans-serif">Roboto</option>
+                                        <option value="serif">Serif (Traditional)</option>
+                                        <option value="sans-serif">Sans-Serif (Standard)</option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>دکان کے نام کا فونٹ (Name Font)</label>
+                                    <select id="invoiceNameFont">
+                                        <option value="'Noto Nastaliq Urdu', serif">Noto Nastaliq (Classical Urdu)
+                                        </option>
+                                        <option value="'Amiri', serif">Amiri (Arabic Style)</option>
+                                        <option value="'Lateef', cursive">Lateef (Soft Urdu)</option>
+                                        <option value="'Scheherazade New', serif">Scheherazade (Elegant)</option>
+                                        <option value="'Outfit', sans-serif">Outfit (English)</option>
+                                        <option value="'Roboto', sans-serif">Roboto</option>
+                                    </select>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>لوگو کی پوزیشن (Logo Position)</label>
+                                        <select id="invoiceLogoPosition">
+                                            <option value="left">بائیں جانب (Left)</option>
+                                            <option value="right">دائیں جانب (Right)</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>رابطہ پٹی کا رنگ (Strip BG)</label>
+                                        <input type="color" id="invoiceStripBg" value="#f8f9fa"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>رابطہ پٹی ٹیکسٹ رنگ (Strip Text)</label>
+                                        <input type="color" id="invoiceStripTextColor" value="#333333"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label>مین ٹیکسٹ سائز (px)</label>
+                                        <input type="number" id="invoiceFontSize" value="18" min="12" max="32">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>فوٹر بیک گراؤنڈ رنگ</label>
+                                        <input type="color" id="invoiceFooterBg" value="#1e40af"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                    <div class="form-group">
+                                        <label>فوٹر ٹیکسٹ رنگ</label>
+                                        <input type="color" id="invoiceFooterTextColor" value="#ffffff"
+                                            style="height: 45px; padding: 2px;">
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>فوٹر کسٹم تحریر (Footer Custom Text)</label>
+                                    <textarea id="invoiceFooterText"
+                                        placeholder="فوٹر میں سوشل میڈیا لنکس سے اوپر آنے والی تحریر..."
+                                        rows="2"></textarea>
+                                </div>
+                                <button type="submit" class="btn btn-outline-primary w-100">ڈیزائن محفوظ کریں</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Order Categories Tab -->
+                <div id="sett-categories" class="settings-tab-content" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h2>آرڈر کیٹیگری منیجمنٹ (Order Categories)</h2>
+                        </div>
+                        <div class="card-body" style="padding: 20px;">
+                            <form id="newCategoryForm"
+                                style="margin-bottom: 25px; background: #f8fafc; padding: 15px; border-radius: 8px;">
+                                <div class="form-group">
+                                    <label>کیٹیگری کا نام (Label)</label>
+                                    <input type="text" id="categoryLabel" placeholder="مثلاً: اسٹیشنری، پرنٹنگ"
+                                        required>
+                                </div>
+                                <div class="form-group">
+                                    <label>کیٹیگری آئی ڈی (Unique ID - English)</label>
+                                    <input type="text" id="categoryId" placeholder="مثلاً: stationery, printing"
+                                        required>
+                                    <small style="color: var(--text-muted);">صرف چھوٹے انگلش حروف اور ہائفن (-) استعمال
+                                        کریں۔</small>
+                                </div>
+                                <button type="submit" class="btn btn-primary" style="width: 100%;">نئی کیٹیگری شامل
+                                    کریں</button>
+                            </form>
+
+                            <h3 style="margin-bottom: 16px;">موجودہ کیٹیگریز کی فہرست</h3>
+                            <div id="categoryManagementList">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Hidden Bill Template for Image Generation (A4 Proportions) -->
+    <div id="billTemplateWrap"
+        style="position: absolute; left: -9999px; top: 0; padding: 20px; background: white; z-index: -1;">
+        <div id="billContent"
+            style="width: 794px; min-height: 1123px; background: white; padding: 40px; box-sizing: border-box; font-family: 'Noto Nastaliq Urdu', sans-serif; border: 1px solid #eee; position: relative;">
+            <!-- Redesigned Header Layout -->
+            <div id="billHeaderContainer"
+                style="display: flex; background: #1e40af; color: white; padding: 40px; border-radius: 8px 8px 0 0; margin: -40px -40px 0 -40px; align-items: center; justify-content: space-between;">
+                <div id="billNameSection" style="flex: 1; text-align: center;">
+                    <h1 id="billShopName" style="font-size: 48px; margin: 0; color: white; line-height: 1.2;">العباسی
+                        کمپیوٹر</h1>
+                    <p id="billHeaderCustomText" style="margin: 10px 0 0; font-size: 18px; opacity: 0.9;"></p>
+                </div>
+                <div id="billLogoSection" style="flex: 0 0 auto; padding: 0 20px;">
+                    <img id="billShopLogo" src="" alt="Logo"
+                        style="max-width: 120px; max-height: 120px; display: none; margin: 0 auto; border-radius: 12px; border: 3px solid white; background: white;">
+                    <div id="billDefaultLogo" style="display: none;">
+                        <ion-icon name="print" style="font-size: 80px; color: white;"></ion-icon>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Contact Information Strip -->
+            <div id="billInfoStrip"
+                style="background: #f8f9fa; color: #333; padding: 12px 40px; margin: 0 -40px 30px -40px; display: flex; justify-content: center; align-items: center; gap: 30px; border-bottom: 2px solid #eee; overflow: hidden; white-space: nowrap;">
+                <p id="billShopAddressDisplay" style="margin: 0; font-size: 16px; font-weight: 500;"></p>
+                <div style="width: 1px; height: 15px; background: rgba(0,0,0,0.1);"></div>
+                <p id="billShopPhoneDisplay"
+                    style="margin: 0; font-family: 'Outfit', sans-serif; font-size: 18px; font-weight: bold;"></p>
+            </div>
+
+            <div style="padding-top: 10px;"></div>
+
+            <div
+                style="display: flex; justify-content: space-between; margin-bottom: 40px; font-size: 18px; line-height: 1.6;">
+                <div style="flex: 1;">
+                    <p style="margin: 5px 0;"><strong>کسٹمر کا نام:</strong> <span id="billCustomerName"></span></p>
+                    <p style="margin: 5px 0;"><strong>تفصیل:</strong> <span id="billOrderDetails"></span></p>
+                    <p style="margin: 5px 0;"><strong>قسم:</strong> <span id="billCategory"></span></p>
+                </div>
+                <div style="text-align: left; font-family: 'Outfit', sans-serif; flex: 1;" dir="ltr">
+                    <p style="margin: 5px 0;"><strong>رسید نمبر:</strong> <span id="billOrderId"></span></p>
+                    <p style="margin: 5px 0;"><strong>تاریخ:</strong> <span id="billDate"></span></p>
+                    <p style="margin: 5px 0;"><strong>حالت:</strong> <span id="billStatus"
+                            style="padding: 2px 8px; border-radius: 4px; background: #eee;"></span></p>
+                </div>
+            </div>
+
+            <table
+                style="width: 100%; border-collapse: collapse; margin-bottom: 40px; font-family: 'Outfit', sans-serif; font-size: 16px;"
+                dir="rtl">
+                <thead>
+                    <tr style="background-color: #f8f9fa;">
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: right;">نمبر شمار</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: right;">تفصیل</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: right;">فی قیمت</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: right;">تعداد</th>
+                        <th style="padding: 15px; border: 1px solid #ddd; text-align: right;">رقم</th>
+                    </tr>
+                </thead>
+                <tbody id="billItemsBody">
+                </tbody>
+            </table>
+
+            <div style="display: flex; justify-content: flex-end; margin-bottom: 60px;">
+                <table
+                    style="width: 350px; border-collapse: collapse; font-family: 'Outfit', sans-serif; font-size: 18px;"
+                    dir="rtl">
+                    <tr>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">کل رقم:</td>
+                        <td style="padding: 10px; text-align: left; font-weight: bold; border-bottom: 1px solid #eee;"
+                            id="billSummaryTotal">Rs. 0</td>
+                    </tr>
+                    <tr id="billSummaryDiscountRow" style="display: none;">
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee; color: #eab308;">
+                            ڈسکاؤنٹ:</td>
+                        <td style="padding: 10px; text-align: left; font-weight: bold; border-bottom: 1px solid #eee; color: #eab308;"
+                            id="billSummaryDiscount">- Rs. 0</td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 10px; text-align: right; border-bottom: 1px solid #eee;">ایڈوانس رقم:</td>
+                        <td style="padding: 10px; text-align: left; color: #16a34a; border-bottom: 1px solid #eee;"
+                            id="billSummaryAdvance">Rs. 0</td>
+                    </tr>
+                    <tr style="background-color: #f8f9fa;">
+                        <td style="padding: 15px 10px; text-align: right; font-weight: bold;">بقایا رقم:</td>
+                        <td style="padding: 15px 10px; text-align: left; font-weight: bold; font-size: 22px; color: #dc2626;"
+                            id="billSummaryBalance">Rs. 0</td>
+                    </tr>
+                </table>
+                <div
+                    style="flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; padding-left: 40px;">
+                    <div id="billQrCode"
+                        style="background: white; padding: 10px; border: 1px solid #eee; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
+                    </div>
+                    <p style="margin-top: 10px; font-size: 12px; color: #666; font-family: 'Outfit', sans-serif;">بل کی
+                        تصدیق کے لیے اسکین کریں</p>
+                </div>
+            </div>
+
+            <!-- Redesigned Simplified Footer -->
+            <div id="billFooterStrip"
+                style="margin-top: auto; text-align: center; background: #1e40af; color: white; padding: 25px 40px; position: absolute; bottom: 0; left: 0; right: 0;">
+                <div id="billFooterCustomText"
+                    style="margin-bottom: 12px; font-style: italic; opacity: 0.9; font-size: 16px;"></div>
+                <div id="billSocialLinks"
+                    style="font-family: 'Outfit', sans-serif; font-weight: bold; font-size: 18px; display: flex; justify-content: center; align-items: center; gap: 20px;">
+                </div>
+            </div>
+
+            <div id="billWatermark"
+                style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotate(-45deg); font-size: 150px; color: rgba(0,0,0,0.03); z-index: 0; pointer-events: none; white-space: nowrap; font-weight: bold; font-family: 'Outfit', sans-serif;">
+            </div>
+        </div>
+    </div>
+
+    <!-- Hidden Report Template for Data Export (Optimized for A4 Portrait) -->
+    <div id="reportTemplateWrap"
+        style="position: absolute; left: -9999px; top: 0; padding: 0; background: white; z-index: -1;">
+        <div id="reportContent"
+            style="width: 700px; min-height: 942px; background: white; padding: 30px; box-sizing: border-box; font-family: 'Noto Nastaliq Urdu', sans-serif; position: relative;">
+            <div
+                style="text-align: center; margin-bottom: 25px; border-bottom: 2px solid #1e40af; padding-bottom: 15px;">
+                <h1 id="reportShopName" style="font-size: 28px; color: #1e40af; margin: 0;">العباسی کمپیوٹر</h1>
+                <h2 style="font-size: 18px; margin: 8px 0 0; color: #444;">آرڈرز رپورٹ</h2>
+                <p id="reportRangeLabel" style="margin: 5px 0 0; color: #666; font-size: 13px;"></p>
+            </div>
+
+            <table style="width: 100%; border-collapse: collapse; font-size: 13px; direction: rtl; line-height: 1.8;"
+                dir="rtl">
+                <thead>
+                    <tr style="background-color: #1e40af; color: white;">
+                        <th
+                            style="padding: 8px; border: 1px solid #ddd; text-align: center; width: 45px; font-size: 10px;">
+                            آئی ڈی<br />(ID)</th>
+                        <th
+                            style="padding: 8px; border: 1px solid #ddd; text-align: center; width: 70px; font-size: 10px;">
+                            تاریخ/مہینہ<br />(Date)</th>
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: right;">کسٹمر / کام کی تفصیل</th>
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: right; width: 85px;">اسٹیٹس</th>
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: right; width: 65px;">رقم</th>
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: right; width: 60px;">وصول</th>
+                        <th style="padding: 8px; border: 1px solid #ddd; text-align: right; width: 65px;">بقایا</th>
+                    </tr>
+                </thead>
+                <tbody id="reportTableBody" style="word-break: normal; white-space: normal;">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Hidden Statement Template for Customer PDF -->
+    <div id="statementTemplateWrap"
+        style="position: absolute; left: 0; top: 0; width: 800px; z-index: -1000; visibility: hidden; pointer-events: none; background: white;">
+        <div id="statementContent"
+            style="width: 800px; background: white; padding: 20px; margin: 0; box-sizing: border-box; font-family: 'Noto Nastaliq Urdu', sans-serif; position: relative; border: none; direction: rtl; font-size: 15px; color: #000;">
+
+            <!-- Ultra-Minimal Header (Customer Info Only) -->
+            <div id="stMainContent">
+                <!-- Customer & Date Info - Very Compact -->
+                <div
+                    style="display: flex; justify-content: space-between; margin-bottom: 20px; font-size: 15px; border-bottom: 2px solid #000; padding-bottom: 10px;">
+                    <div style="flex: 1;">
+                        <p style="margin: 2px 0;"><strong>کسٹمر کا نام:</strong> <span id="stCustomerName"></span></p>
+                        <p style="margin: 2px 0;"><strong>رپورٹ کی تاریخ:</strong> <span id="stGenDate"></span>
+                        </p>
+                    </div>
+                    <div style="text-align: left; flex: 1;" dir="ltr">
+                        <div style="padding: 5px 10px; border: 1.5px solid #000; display: inline-block;">
+                            <p style="margin: 0; font-size: 18px; font-weight: bold; color: #000;">Balance:
+                                <span id="stTotalBalance">0</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tables Container -->
+                <div style="width: 100%;">
+                    <!-- Orders Table -->
+                    <h3 style="margin: 0 0 10px 0; color: #000; font-size: 16px; font-weight: bold;">آرڈرز کی
+                        تفصیل (Orders)</h3>
+                    <table
+                        style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 15px; border: 1.5px solid #000;"
+                        dir="rtl">
+                        <thead>
+                            <tr style="background: #f2f2f2; page-break-inside: avoid;">
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">تاریخ / آئی
+                                    ڈی</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">تفصیل</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: center;">رقم</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: center;">وصول</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: center;">بقایا</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stOrdersBody"></tbody>
+                    </table>
+
+                    <!-- Payments History -->
+                    <h3 style="margin: 20px 0 10px 0; color: #000; font-size: 16px; font-weight: bold;">
+                        ادائیگیوں کی تفصیل (Payments)</h3>
+                    <table
+                        style="width: 100%; border-collapse: collapse; margin-bottom: 25px; font-size: 15px; border: 1.5px solid #000;"
+                        dir="rtl">
+                        <thead>
+                            <tr style="background: #f2f2f2; page-break-inside: avoid;">
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">تاریخ</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">آرڈر آئی ڈی
+                                </th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: right;">تفصیل</th>
+                                <th style="padding: 6px; border: 1px solid #000; text-align: center;">رقم</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stPaymentsBody"></tbody>
+                    </table>
+                </div>
+
+                <!-- Summary Box -->
+                <div
+                    style="margin: 20px 0 30px auto; width: 220px; border: 2px solid #000; padding: 10px; background: #fff;">
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>کل بل:</span>
+                        <span id="stSummaryTotal">0</span>
+                    </div>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 4px;">
+                        <span>کل وصول:</span>
+                        <span id="stSummaryPaid">0</span>
+                    </div>
+                    <div
+                        style="display: flex; justify-content: space-between; border-top: 1.5px solid #000; padding-top: 5px; font-weight: bold; font-size: 17px;">
+                        <span>بقایا:</span>
+                        <span id="stSummaryBalance">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for New Order (Hidden by default) -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>نیا آرڈر درج کریں</h2>
+                <button class="close-btn" id="closeOrderModal"><ion-icon name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="newOrderForm" data-products="[]" data-subtotal="0">
+                    <div class="form-group">
+                        <label>کسٹمر کا نام (اختیاری)</label>
+                        <input type="text" placeholder="کسٹمر کا نام لکھیں">
+                    </div>
+                    <div class="form-group">
+                        <label>کام کی نوعیت (Category)</label>
+                        <select required>
+                            <option value="stationery">اسٹیشنری (Stationery)</option>
+                            <option value="printing">پرنٹنگ (Panaflex, Cards)</option>
+                            <option value="online">آنلائن سروسز (Web/Social)</option>
+                        </select>
+                    </div>
+                    <div class="border-box"
+                        style="display: flex; flex-direction: column; padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 16px; background-color: var(--bg-main);">
+
+                        <!-- Section 1: Stock Products -->
+                        <div style="margin-bottom: 16px;">
+                            <label style="font-weight: bold; margin-bottom: 8px; display: block;">اسٹاک سے منتخب
+                                کریں
+                                (Select Product)</label>
+                            <div class="responsive-flex-row">
+                                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                                    <select id="orderProductSelect"
+                                        style="background-color: var(--bg-card); width: 100%;">
+                                        <option value="">کوئی پروڈکٹ منتخب کریں...</option>
+                                    </select>
+                                </div>
+                                <div class="form-group" style="width: 100px; margin-bottom: 0;">
+                                    <input type="number" id="orderProductQty" value="1" min="1" placeholder="تعداد"
+                                        title="تعداد (Qty)" style="background-color: var(--bg-card); width: 100%;">
+                                </div>
+                                <button type="button" class="btn btn-secondary" onclick="addProductToOrder()"
+                                    style="height: 44px; margin-bottom: 0; background-color: #e2e8f0; padding: 0 16px;">
+                                    <ion-icon name="add-outline"></ion-icon>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Horizontal Divider -->
+                        <div style="height: 1px; background-color: var(--border); margin: 8px 0 20px 0;"></div>
+
+                        <!-- Row 2: Add Custom Item -->
+                        <div>
+                            <label style="font-weight: bold; margin-bottom: 8px; display: block;">یا نیا کسٹم
+                                آئٹم
+                                شامل
+                                کریں (جو اسٹاک میں نہیں):</label>
+                            <div class="responsive-flex-row">
+                                <div class="form-group" style="flex: 2; margin-bottom: 0;">
+                                    <input type="text" id="customProductName" placeholder="پروڈکٹ کا نام..."
+                                        style="background-color: var(--bg-card); width: 100%;">
+                                </div>
+                                <div class="form-group" style="width: 120px; margin-bottom: 0;">
+                                    <input type="number" id="customProductPrice" placeholder="قیمت (Rs.)" min="0"
+                                        title="قیمت" style="background-color: var(--bg-card); width: 100%;">
+                                </div>
+                                <div class="form-group" style="width: 80px; margin-bottom: 0;">
+                                    <input type="number" id="customProductQty" value="1" min="1" placeholder="تعداد"
+                                        title="تعداد" style="background-color: var(--bg-card); width: 100%;">
+                                </div>
+                                <button type="button" class="btn btn-secondary" onclick="addCustomProductToOrder()"
+                                    style="height: 44px; margin-bottom: 0; background-color: #e2e8f0; padding: 0 16px;">
+                                    <ion-icon name="add-outline"></ion-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>تفصیل</label>
+                        <textarea rows="3" placeholder="کام کی مکمل تفصیل..."></textarea>
+                    </div>
+                    <div class="form-row border-box"
+                        style="padding: 12px; border: 1px solid var(--border); border-radius: var(--radius-sm); margin-bottom: 16px; background-color: var(--bg-main);">
+                        <div style="display: flex; gap: 12px; align-items: flex-end; width: 100%;">
+                            <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                <label>ڈسکاؤنٹ (Discount Rs.)</label>
+                                <input type="number" id="orderDiscountAmount" placeholder="Rs." min="0" value="0"
+                                    oninput="calculateTotalAfterDiscount()" style="background-color: var(--bg-card);">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>کل رقم (Total Amount)</label>
+                            <input type="number" required placeholder="Rs." id="orderTotalAmountInput"
+                                oninput="updateManualSubtotal()">
+                        </div>
+                        <div class="form-group">
+                            <label>وصول شدہ رقم (Received)</label>
+                            <input type="number" placeholder="Rs." id="orderReceivedAmountInput">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>آرڈر کا اسٹیٹس (Status)</label>
+                        <select id="orderStatus" required>
+                            <!-- Dynamic statuses here -->
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">محفوظ کریں</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Download Data -->
+    <div class="modal" id="downloadModal">
+        <div class="modal-content" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2>ڈیٹا ڈاؤنلوڈ کریں (Export Data)</h2>
+                <button class="close-btn" onclick="closeDownloadModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="downloadDataForm">
+                    <div class="form-group">
+                        <label>وقت کا انتخاب (Range)</label>
+                        <select id="downloadRange" class="form-control" onchange="toggleCustomDateInputs(this.value)">
+                            <option value="today">آج کا ڈیٹا</option>
+                            <option value="week">اس ہفتے کا ڈیٹا</option>
+                            <option value="month">اس ماہ کا ڈیٹا</option>
+                            <option value="all">تمام ڈیٹا (All Data)</option>
+                            <option value="custom">کسٹم رینج (Custom Range)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label>اسٹیٹس کا انتخاب (Status)</label>
+                        <select id="downloadStatus" class="form-control">
+                            <option value="all">تمام اسٹیٹس (All Statuses)</option>
+                            <option value="pending">زیرِ تکمیل (Pending)</option>
+                            <option value="designing">ڈیزائننگ (Designing)</option>
+                            <option value="printing">پرنٹنگ (Printing)</option>
+                            <option value="pasting">پیسٹنگ (Pasting)</option>
+                            <option value="completed">مکمل (Completed)</option>
+                        </select>
+                    </div>
+
+                    <div id="customDateRange" class="form-row" style="display: none;">
+                        <div class="form-group">
+                            <label>تاریخ سے (From)</label>
+                            <input type="date" id="downloadFromDate" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label>تاریخ تک (To)</label>
+                            <input type="date" id="downloadToDate" class="form-control">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>فائل فارمیٹ (Format)</label>
+                        <div style="display: flex; gap: 20px; margin-top: 10px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="downloadFormat" value="pdf" checked>
+                                PDF Document
+                            </label>
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="radio" name="downloadFormat" value="excel">
+                                Excel Spreadsheet
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group"
+                        style="margin-top: 20px; border-top: 1px solid var(--border); padding-top: 15px;">
+                        <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 14px;">
+                            <input type="checkbox" id="downloadCurrentView">
+                            صرف وہی ڈیٹا ڈاؤنلوڈ کریں جو ابھی اسکرین پر نظر آ رہا ہے
+                        </label>
+                    </div>
+
+                    <button type="button" class="btn btn-primary w-100" onclick="handleDataDownload()">
+                        <ion-icon name="download-outline"></ion-icon>
+                        ڈاؤنلوڈ کریں
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Modal for Change Password -->
+    <div class="modal" id="changePasswordModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>پاسورڈ تبدیل کریں</h2>
+                <button class="close-btn" onclick="closeChangePasswordModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="changePasswordForm">
+                    <div class="form-group">
+                        <label>موجودہ پاسورڈ</label>
+                        <input type="password" id="currentPass" required placeholder="موجودہ پاسورڈ درج کریں">
+                    </div>
+                    <div class="form-group">
+                        <label>نیا پاسورڈ</label>
+                        <input type="password" id="newPass" required placeholder="نیا پاسورڈ درج کریں">
+                    </div>
+                    <div class="form-group">
+                        <label>نیا پاسورڈ (دوبارہ لکھیں)</label>
+                        <input type="password" id="confirmPass" required placeholder="نیا پاسورڈ دوبارہ درج کریں">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100">محفوظ کریں</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redundant Modals Removed: manageUsersModal and shopSettingsModal -->
+
+    <!-- Modal for Products Management -->
+
+    <!-- Modal for Showing Filtered Orders -->
+    <div class="modal" id="filteredOrdersModal">
+        <div class="modal-content" style="max-width: 800px;">
+            <div class="modal-header">
+                <h2 id="filteredOrdersTitle">فہرست</h2>
+                <button class="close-btn" onclick="closeFilteredOrdersModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>آئی ڈی</th>
+                                <th>کسٹمر / کام تفصیل</th>
+                                <th>اسٹیٹس</th>
+                                <th>پیمنٹ</th>
+                            </tr>
+                        </thead>
+                        <tbody id="filteredOrdersBody">
+                            <!-- Populated via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Redundant Modal Removed: shopSettingsModal -->
+
+    <!-- Modal for Income -->
+    <div class="modal" id="incomeModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>آمدن درج کریں (Add Income)</h2>
+                <button class="close-btn" onclick="closeIncomeModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="newIncomeForm">
+                    <div class="form-group">
+                        <label>آرڈر سرچ کریں (Search Order)</label>
+                        <input type="text" id="incomeSearchInput" required placeholder="آرڈر آئی ڈی یا کسٹمر کا نام..."
+                            oninput="searchOrderForIncome(this.value)">
+                        <div id="incomeSearchResults"
+                            style="margin-top: 8px; max-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); display: none;">
+                            <!-- Search results populated here -->
+                        </div>
+                    </div>
+
+                    <div id="incomeSelectedOrderDetails"
+                        style="display: none; padding: 12px; background-color: var(--bg-main); border-radius: var(--radius-sm); margin-bottom: 16px;">
+                        <p style="margin: 0 0 4px 0;"><strong>کسٹمر:</strong> <span id="incomeCustomerName"></span></p>
+                        <p style="margin: 0 0 4px 0;"><strong>کل بل:</strong> Rs. <span id="incomeTotalBill"></span></p>
+                        <p style="margin: 0; color: var(--danger); font-weight: bold;"><strong>بقایا:</strong> Rs. <span
+                                id="incomeRemainingBalance"></span></p>
+                        <input type="hidden" id="incomeSelectedOrderId">
+                    </div>
+
+                    <div class="form-group">
+                        <label>وصول شدہ رقم (Amount Received)</label>
+                        <input type="number" id="incomeAmount" required placeholder="Rs." min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>تفصیل / نوٹ (اختیاری)</label>
+                        <input type="text" id="incomeNote" placeholder="کوئی تفصیل...">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"
+                        style="background: linear-gradient(135deg, var(--success), #16a34a);">رقم جمع کریں</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Expense -->
+    <div class="modal" id="expenseModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>خرچہ درج کریں (Add Expense)</h2>
+                <button class="close-btn" onclick="closeExpenseModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="newExpenseForm">
+                    <div class="form-group"
+                        style="display: flex; gap: 12px; margin-bottom: 15px; align-items: center; flex-wrap: wrap;">
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px;">
+                            <input type="radio" name="expenseType" value="general" checked
+                                onchange="toggleExpenseType()">
+                            جنرل خرچہ (دکان کا)
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px;">
+                            <input type="radio" name="expenseType" value="category" onchange="toggleExpenseType()">
+                            خاص کیٹگری کا خرچہ
+                        </label>
+                        <label style="display: flex; align-items: center; gap: 6px; cursor: pointer; font-size: 14px;">
+                            <input type="radio" name="expenseType" value="specific" onchange="toggleExpenseType()">
+                            خاص آرڈر کا خرچہ
+                        </label>
+                    </div>
+
+                    <div id="expenseCategoryGroup" class="form-group"
+                        style="display: none; padding: 10px; background: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                        <label>کس کیٹیگری کا خرچہ ہے؟ (Select Category)</label>
+                        <select id="expenseCategorySelect">
+                            <option value="stationery">اسٹیشنری (Stationery)</option>
+                            <option value="printing">پرنٹنگ (Printing)</option>
+                            <option value="online">آنلائن مارکیٹنگ (Online Marketing)</option>
+                        </select>
+                    </div>
+
+                    <div id="expenseOrderSearchGroup" class="form-group"
+                        style="display: none; padding: 10px; background: var(--bg-main); border-radius: var(--radius-sm); border: 1px solid var(--border);">
+                        <label>کس آرڈر کا خرچہ ہے؟ (Search Order)</label>
+                        <input type="text" id="expenseSearchInput" placeholder="آرڈر آئی ڈی یا کسٹمر کا نام..."
+                            oninput="searchOrderForExpense(this.value)">
+                        <div id="expenseSearchResults"
+                            style="margin-top: 8px; max-height: 150px; overflow-y: auto; border: 1px solid var(--border); border-radius: var(--radius-sm); display: none;">
+                        </div>
+                        <div id="expenseSelectedOrderDetails"
+                            style="display: none; padding-top: 10px; margin-top: 10px; border-top: 1px solid var(--border);">
+                            <p style="margin: 0 0 4px 0; font-size: 13px;"><strong>منتخب آرڈر:</strong> <span
+                                    id="expenseCustomerName"></span></p>
+                            <p style="margin: 0; font-size: 13px;"><strong>آئی ڈی:</strong> <span
+                                    id="expenseOrderIdText"></span></p>
+                            <input type="hidden" id="expenseSelectedOrderId">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>خرچے کی مد / تفصیل (Expense Title)</label>
+                        <input type="text" id="expenseTitle" required
+                            placeholder="مثلاً: دکان کا کرایہ، پرنٹنگ چارجز، سامان...">
+                    </div>
+                    <div class="form-group">
+                        <label>رقم (Amount)</label>
+                        <input type="number" id="expenseAmount" required placeholder="Rs." min="1">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"
+                        style="background: linear-gradient(135deg, var(--danger), #ef4444);">خرچہ درج کریں</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Handover Cash -->
+    <div class="modal" id="handoverModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>رقم جمع کروائیں (Handover Cash)</h2>
+                <button class="close-btn" onclick="closeHandoverModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <form id="newHandoverForm">
+                    <div class="form-group">
+                        <label>کس کے پاس جمع کروانی ہے؟ (Handover To)</label>
+                        <select id="handoverToUser" required>
+                            <!-- Dynamic Available Users populated from JS -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>رقم (Amount)</label>
+                        <input type="number" id="handoverAmount" required placeholder="Rs." min="1">
+                    </div>
+                    <div class="form-group">
+                        <label>تفصیل / نوٹ (اختیاری)</label>
+                        <input type="text" id="handoverNote" placeholder="کوئی تفصیل...">
+                    </div>
+                    <button type="submit" class="btn btn-primary w-100"
+                        style="background: linear-gradient(135deg, var(--primary), #3b82f6);">منتقل کریں
+                        (Transfer)</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recycle Bin Modal -->
+    <div class="modal" id="recycleBinModal">
+        <div class="modal-content" style="max-width: 900px;">
+            <div class="modal-header">
+                <h2>ڈیلیٹ شدہ آرڈرز (Recycle Bin)</h2>
+                <button class="close-btn" onclick="closeRecycleBinModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <p style="margin-bottom: 15px; color: var(--text-muted); font-size: 14px;">ڈیلیٹ کیے گئے آرڈرز
+                    یہاں
+                    30
+                    دن تک رہتے ہیں، اس کے بعد خود بخود مستقل ڈیلیٹ ہو جاتے ہیں۔</p>
+                <div class="table-responsive">
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>آئی ڈی / تاریخ</th>
+                                <th>کسٹمر / تفصیل</th>
+                                <th>ڈیلیٹ شدہ وقت</th>
+                                <th style="text-align: center;">ایکشن</th>
+                            </tr>
+                        </thead>
+                        <tbody id="recycleBinBody">
+                            <!-- Populated by JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Finance Excel Download -->
+    <div class="modal" id="financeDownloadModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2>ڈاؤنلوڈ مالیات (Finance Report)</h2>
+                <button class="close-btn" onclick="closeFinanceDownloadModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label>تاریخ (Date Range)</label>
+                    <select id="financeDownloadRange" onchange="toggleFinanceCustomDate(this.value)">
+                        <option value="all">ہمیشہ (All Time)</option>
+                        <option value="today">آج (Today)</option>
+                        <option value="week">اس ہفتے (This Week)</option>
+                        <option value="month">اس مہینے (This Month)</option>
+                        <option value="custom">مخصوص تاریخ (Custom)</option>
+                    </select>
+                </div>
+
+                <div id="financeCustomDateRange" style="display: none; display: flex; gap: 10px;">
+                    <div class="form-group" style="flex: 1;">
+                        <label>کب سے (From Date)</label>
+                        <input type="date" id="financeCustomStartDate">
+                    </div>
+                    <div class="form-group" style="flex: 1;">
+                        <label>کب تک (To Date)</label>
+                        <input type="date" id="financeCustomEndDate">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>یوزر منتخب کریں (Select User)</label>
+                    <select id="financeDownloadUser">
+                        <option value="all">تمام یوزرز (All Users)</option>
+                        <!-- Options generated dynamically -->
+                    </select>
+                </div>
+
+                <button class="btn btn-primary w-100" onclick="executeFinanceDownload()"
+                    style="margin-top: 15px;">ایکسپورٹ کریں (Export)</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Drive Help Modal -->
+    <div class="modal" id="gdriveHelpModal">
+        <div class="modal-content" style="max-width: 650px;">
+            <div class="modal-header">
+                <h2>گوگل کلائنٹ آئی ڈی حاصل کرنے کا طریقہ</h2>
+                <button class="close-btn" onclick="closeGDriveHelpModal()"><ion-icon
+                        name="close-outline"></ion-icon></button>
+            </div>
+            <div class="modal-body" style="line-height: 1.8; text-align: right; direction: rtl;">
+                <div
+                    style="background: #eff6ff; padding: 15px; border-radius: 12px; margin-bottom: 20px; border: 1px solid #dbeafe;">
+                    <p style="font-weight: 600; color: #1e40af; margin-bottom: 5px;">ضروری نوٹ:</p>
+                    <p style="font-size: 14px; color: #1e40af;">گوگل ڈرائیو کلاؤڈ سینک استعمال کرنے کے لیے آپ کو اپنی
+                        Client ID بنانی ہوگی۔ یہ صرف ایک بار کا سیٹ اپ ہے۔</p>
+                </div>
+
+                <ol style="padding-right: 20px;">
+                    <li style="margin-bottom: 12px;"><strong>گوگل کلاؤڈ کنسول کھولیں:</strong> <a
+                            href="https://console.cloud.google.com/" target="_blank"
+                            style="color: var(--primary);">console.cloud.google.com</a> پر جائیں۔</li>
+                    <li style="margin-bottom: 12px;"><strong>نیا پروجیکٹ بنائیں:</strong> اوپر بائیں کونے میں
+                        <strong>Select a project</strong> اور پھر <strong>New Project</strong> پر کلک کریں۔ نام رکھیں
+                        (مثلاً: POS-Backup)۔
+                    </li>
+                    <li style="margin-bottom: 12px;"><strong>Google Drive API آن کریں:</strong> سرچ بار میں
+                        <strong>"Google Drive API"</strong> لکھ کر سرچ کریں اور اسے <strong>Enable</strong> کریں۔
+                    </li>
+                    <li style="margin-bottom: 12px;"><strong>OAuth Consent Screen سیٹ کریں:</strong> بائیں مینو سے OAuth
+                        consent screen پر جائیں، <strong>External</strong> منتخب کریں، اور بنیادی معلومات (ایپ کا نام
+                        اور ای میل) درج کر کے سیو کریں۔
+                        <br><small style="color: var(--danger);">* اہم: <strong>Test Users</strong> والے سیکشن میں اپنی
+                            ای میل (جس پر بیک اپ لینا ہے) لازمی شامل کریں۔</small>
+                    </li>
+                    <li style="margin-bottom: 12px;"><strong>کلائنٹ آئی ڈی بنائیں:</strong> بائیں مینو سے
+                        <strong>Credentials</strong> پر کلک کریں۔ اوپر <strong>+ Create Credentials</strong> پر کلک کریں
+                        اور <strong>OAuth client ID</strong> منتخب کریں۔ <strong>Web Application</strong> منتخب کریں۔
+                    </li>
+                    <li style="margin-bottom: 12px;"><strong>Javascript Origins:</strong> Authorized JavaScript origins
+                        میں وہ یو آر ایل شامل کریں جس پر آپ کا سافٹ وئیر چل رہا ہے (مثلاً:
+                        <code>http://localhost:5500</code>)۔
+                        <br><small style="color: var(--danger);">* نوٹ: اگر آپ فائل براہ راست کھول رہے ہیں (file:///) تو
+                            گوگل اسے بلاک کر دے گا۔ اسے کسی لوکل سرور (Live Server) پر چلائیں۔</small>
+                    </li>
+                    <li style="margin-bottom: 12px;"><strong>آئی ڈی کاپی کریں:</strong> آخر میں ملنے والی <strong>Client
+                            ID</strong> کاپی کریں اور سافٹ وئیر کی سیٹنگز میں پیسٹ کر دیں۔</li>
+                </ol>
+
+                <div
+                    style="background: #fff1f2; padding: 15px; border-radius: 12px; margin-top: 20px; border: 1px solid #fecdd3;">
+                    <p style="font-weight: 600; color: #9f1239; margin-bottom: 5px;">Error 400 (Access Blocked) کا حل:
+                    </p>
+                    <ul style="font-size: 13px; color: #9f1239; padding-right: 20px;">
+                        <li>یقینی بنائیں کہ آپ کا سائن ان ای میل <strong>Test Users</strong> کی لسٹ میں موجود ہے۔</li>
+                        <li>گوگل کونسول میں <strong>Authorized JavaScript origins</strong> میں وہی لنک ڈالیں جو آپ کے
+                            براؤزر میں نظر آرہا ہے۔</li>
+                        <li>ایپ کو براؤزر میں <code>localhost</code> کے ذریعے اوپن کریں، ڈائریکٹ فائل اوپن نہ کریں۔</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="modal-footer"
+                style="padding: 15px 24px; border-top: 1px solid var(--border); text-align: left;">
+                <button class="btn btn-secondary" onclick="closeGDriveHelpModal()">بند کریں (Close)</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=2"></script>
+</body>
+
+</html>
