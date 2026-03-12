@@ -607,6 +607,7 @@ function verifyUserPin() {
             id: user.uid,
             name: user.displayName || 'Admin',
             email: user.email,
+            photoURL: user.photoURL,
             role: 'admin',
             avatar: (user.displayName || 'A').charAt(0)
         };
@@ -616,6 +617,7 @@ function verifyUserPin() {
             id: user.uid,
             name: user.displayName || 'Staff',
             email: user.email,
+            photoURL: user.photoURL,
             role: 'staff',
             avatar: (user.displayName || 'S').charAt(0)
         };
@@ -632,7 +634,13 @@ function verifyUserPin() {
     // Set UI for current user
     document.getElementById('currentUserName').innerText = currentUser.name;
     document.getElementById('currentUserRole').innerText = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
-    document.getElementById('currentUserAvatar').innerText = currentUser.avatar;
+
+    const avatarEl = document.getElementById('currentUserAvatar');
+    if (currentUser.photoURL) {
+        avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+    } else {
+        avatarEl.innerText = currentUser.avatar;
+    }
 
     // Start Realtime Sync
     startRealtimeSync();
