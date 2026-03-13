@@ -831,8 +831,8 @@ function enterApp() {
         };
 
         currentRole = 'admin';
-        document.getElementById('loginScreen').style.display = 'none';
-        document.querySelector('.app-container').style.display = 'flex';
+        document.getElementById('login-view').style.display = 'none';
+        document.getElementById('dashboard-view').style.display = 'flex';
 
         // Set UI
         document.getElementById('currentUserName').innerText = currentUser.name;
@@ -849,6 +849,10 @@ function enterApp() {
         updateDashboardStats();
         renderRecentOrders();
         switchPage('dashboardPage');
+
+        // Hide splash screen after view is toggled
+        const splash = document.getElementById('splash-screen');
+        if (splash) splash.classList.add('fade-out');
     });
 }
 
@@ -877,13 +881,17 @@ function setupLogin() {
                 enterApp();
             } else if (user.email && !user.emailVerified && !isOTPView) {
                 // If logged in via email but not verified, stay on signup/info view
-                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('login-view').style.display = 'flex';
                 document.getElementById('signupView').style.display = 'none';
                 if (document.getElementById('emailVerifyView')) {
                     document.getElementById('emailVerifyView').style.display = 'flex';
                 }
                 document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
                 showToast('Please verify your email address before logging in.', 'info');
+
+                // Hide splash screen even if not fully verified (view is determined)
+                const splash = document.getElementById('splash-screen');
+                if (splash) splash.classList.add('fade-out');
             }
 
         } else {
@@ -900,13 +908,17 @@ function setupLogin() {
                 window.location.replace('index.html');
             }
 
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('login-view').style.display = 'flex';
+            document.getElementById('dashboard-view').style.display = 'none';
 
             // Reset views back to login
             document.getElementById('loginView').style.display = 'flex';
             document.getElementById('signupView').style.display = 'none';
             document.getElementById('otpView').style.display = 'none';
+
+            // Hide splash screen after login view is toggled
+            const splash = document.getElementById('splash-screen');
+            if (splash) splash.classList.add('fade-out');
 
             // Clear dashboard-related UI variables and values
             const amountElements = document.querySelectorAll('.amount');
@@ -4111,27 +4123,31 @@ window.initDynamicUI = function () {
         const now = Date.now();
         if (lastActivity && (now - parseInt(lastActivity) > 20 * 60 * 1000)) {
             localStorage.removeItem('currentUser');
-            document.getElementById('loginScreen').style.display = 'flex';
-            document.querySelector('.app-container').style.display = 'none';
+            document.getElementById('login-view').style.display = 'flex';
+            document.getElementById('dashboard-view').style.display = 'none';
         } else {
             currentUser = JSON.parse(savedUserId);
             // Check if user still exists in USERS
             if (USERS[currentUser]) {
-                document.getElementById('loginScreen').style.display = 'none';
-                document.querySelector('.app-container').style.display = 'flex';
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('dashboard-view').style.display = 'flex';
                 finishLogin();
             } else {
                 localStorage.removeItem('currentUser');
-                document.getElementById('loginScreen').style.display = 'flex';
-                document.querySelector('.app-container').style.display = 'none';
+                document.getElementById('login-view').style.display = 'flex';
+                document.getElementById('dashboard-view').style.display = 'none';
             }
         }
     } else {
-        document.getElementById('loginScreen').style.display = 'flex';
-        document.querySelector('.app-container').style.display = 'none';
+        document.getElementById('login-view').style.display = 'flex';
+        document.getElementById('dashboard-view').style.display = 'none';
     }
 
-    const loginForm = document.getElementById('loginForm');
+    // Hide splash screen after view determination
+    const splash = document.getElementById('splash-screen');
+    if (splash) splash.classList.add('fade-out');
+
+    const loginForm = document.getElementById('login-form');
     if (loginForm) {
         // Prevent duplicate listeners
         const newForm = loginForm.cloneNode(true);
@@ -4154,8 +4170,8 @@ window.initDynamicUI = function () {
                 currentRole = user.role;
                 localStorage.setItem('currentUser', JSON.stringify(userId));
                 localStorage.setItem('lastActivityTime', Date.now());
-                document.getElementById('loginScreen').style.display = 'none';
-                document.querySelector('.app-container').style.display = 'flex';
+                document.getElementById('login-view').style.display = 'none';
+                document.getElementById('dashboard-view').style.display = 'flex';
                 newForm.reset();
                 finishLogin();
             } else {

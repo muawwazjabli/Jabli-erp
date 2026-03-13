@@ -89,8 +89,18 @@
 </head>
 
 <body>
+    <!-- Splash Screen -->
+    <div id="splash-screen">
+        <div class="front-logo-icon" style="width: 80px; height: 80px; font-size: 40px; margin-bottom: 20px;">
+            <ion-icon name="laptop-outline"></ion-icon>
+        </div>
+        <h2 style="font-family: 'Outfit', sans-serif; letter-spacing: 5px; color: white; text-align: center;">JABLI ERP
+        </h2>
+        <p style="color: rgba(255,255,255,0.5); margin-top: 10px; font-size: 14px;">Loading your workspace...</p>
+    </div>
+
     <!-- Login Screen (Glassmorphism Design) -->
-    <div id="loginScreen" class="login-screen">
+    <div id="login-view" class="login-screen">
         <!-- Animated gradient blobs -->
         <div class="blob blob-1"></div>
         <div class="blob blob-2"></div>
@@ -120,7 +130,7 @@
 
                 <!-- Login View -->
                 <div id="loginView" class="glass-form">
-                    <form id="loginForm" onsubmit="handleLogin(event)">
+                    <form id="login-form" onsubmit="handleLogin(event)">
                         <div class="glass-input-group">
                             <ion-icon name="mail-outline"></ion-icon>
                             <input type="email" class="glass-input" placeholder="Email Address" id="loginEmail"
@@ -253,7 +263,7 @@
         <div class="sparkle-icon">✦</div>
     </div>
 
-    <div class="app-container" style="display: none;">
+    <div id="dashboard-view" class="app-container">
         <!-- Sidebar -->
         <aside class="sidebar">
             <div class="sidebar-header">
