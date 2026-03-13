@@ -1,21 +1,4 @@
-// Firebase Configuration (To be filled by user)
-const firebaseConfig = {
-    apiKey: "YOUR_API_KEY",
-    authDomain: "YOUR_AUTH_DOMAIN",
-    databaseURL: "YOUR_DATABASE_URL",
-    projectId: "YOUR_PROJECT_ID",
-    storageBucket: "YOUR_STORAGE_BUCKET",
-    messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-    appId: "YOUR_APP_ID"
-};
-
 // Initialize Firebase
-if (typeof firebase !== 'undefined') {
-    firebase.initializeApp(firebaseConfig);
-    var auth = firebase.auth();
-    var database = firebase.database();
-}
-
 const SHOP_ID = "default_shop"; // Can be dynamic later
 
 // Data Models (Loaded from Firebase)
@@ -263,9 +246,8 @@ if (orders.length === 0) {
 
 // Save to Firebase
 function saveOrders() {
-    if (database) database.ref(SHOP_ID + '/orders').set(orders);
+    window.saveOrders();
     localStorage.setItem('alAbbasiOrders', JSON.stringify(orders));
-    if (typeof updateTabCounts === 'function') updateTabCounts();
 }
 
 // Generate New Order ID
@@ -569,6 +551,8 @@ function setupLogin() {
 
     if (googleLoginBtn) {
         googleLoginBtn.addEventListener('click', () => {
+            const auth = window.auth;
+            const provider = window.provider;
             fbSignInWithPopup(auth, provider).catch(error => {
                 showToast("Google لاگ ان میں مسئلہ: " + error.message, "error");
             });
@@ -686,7 +670,7 @@ function migrateLocalToCloud() {
         orderCategories: orderCategories
     };
 
-    database.ref(SHOP_ID).update(dataToMigrate).then(() => {
+    fbUpdate(fbRef(db, SHOP_ID), dataToMigrate).then(() => {
         showToast("ڈیٹا کلاؤڈ پر منتقل کر دیا گیا ہے۔", "success");
     }).catch(err => {
         console.error("Migration error:", err);
