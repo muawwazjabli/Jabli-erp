@@ -66,6 +66,7 @@
     </script>
 
     <link rel="stylesheet" href="style.css?v=3">
+    <script src="translations.js"></script>
 </head>
 
 <body>
@@ -134,27 +135,27 @@
             </div>
 
             <nav class="sidebar-nav">
-                <a href="#" class="nav-item active" id="navDashboard">
+                <a href="#" class="nav-item active" id="navDashboard" data-i18n="dashboard">
                     <ion-icon name="grid-outline"></ion-icon>
                     <span>ڈیش بورڈ</span>
                 </a>
-                <a href="#" class="nav-item" id="navOrders">
+                <a href="#" class="nav-item" id="navOrders" data-i18n="orders">
                     <ion-icon name="cart-outline"></ion-icon>
                     <span>آرڈرز (Orders)</span>
                 </a>
-                <a href="#" class="nav-item" id="navFinance">
+                <a href="#" class="nav-item" id="navFinance" data-i18n="finance">
                     <ion-icon name="wallet-outline"></ion-icon>
                     <span>مالیات (Finance)</span>
                 </a>
-                <a href="#" class="nav-item" id="navCustomers">
+                <a href="#" class="nav-item" id="navCustomers" data-i18n="customers">
                     <ion-icon name="people-outline"></ion-icon>
                     <span>کسٹمرز</span>
                 </a>
-                <a href="#" class="nav-item" id="navProducts">
+                <a href="#" class="nav-item" id="navProducts" data-i18n="products">
                     <ion-icon name="cube-outline"></ion-icon>
                     <span>اسٹاک / پروڈکٹس</span>
                 </a>
-                <a href="#" class="nav-item" id="navSettings">
+                <a href="#" class="nav-item" id="navSettings" data-i18n="settings">
                     <ion-icon name="settings-outline"></ion-icon>
                     <span>سیٹنگز</span>
                 </a>
@@ -195,21 +196,27 @@
                     <ion-icon name="menu-outline" id="mobileMenuToggle" onclick="toggleSidebar()"></ion-icon>
                     <div class="search-bar">
                         <ion-icon name="search-outline"></ion-icon>
-                        <input type="text" placeholder="آرڈر یا کسٹمر تلاش کریں...">
+                        <input type="text" data-i18n="search_placeholder" placeholder="آرڈر یا کسٹمر تلاش کریں...">
                     </div>
                 </div>
 
                 <div class="nav-actions">
+                    <button class="btn btn-secondary" onclick="toggleLanguage()" id="languageToggleBtn">
+                        <ion-icon name="language-outline"></ion-icon>
+                        <span>English</span>
+                    </button>
                     <button class="btn btn-secondary" onclick="openIncomeModal()"
-                        style="background-color: var(--success-light); color: var(--success); border-color: var(--success);">
+                        style="background-color: var(--success-light); color: var(--success); border-color: var(--success);"
+                        data-i18n="income_btn">
                         <ion-icon name="download-outline"></ion-icon>
                         آمدن درج کریں
                     </button>
-                    <button class="btn btn-secondary" onclick="openExpenseModal()">
+                    <button class="btn btn-secondary" onclick="openExpenseModal()" data-i18n="expense_btn">
                         <ion-icon name="wallet-outline"></ion-icon>
                         خرچہ کریں
                     </button>
-                    <button class="btn btn-secondary" onclick="openHandoverModal()" id="handoverNavBtn">
+                    <button class="btn btn-secondary" onclick="openHandoverModal()" id="handoverNavBtn"
+                        data-i18n="handover_btn">
                         <ion-icon name="swap-horizontal-outline"></ion-icon>
                         رقم جمع کروائیں
                     </button>
@@ -217,7 +224,7 @@
                         <ion-icon name="notifications-outline"></ion-icon>
                         <span class="badge">3</span>
                     </button>
-                    <button class="btn btn-primary" id="newOrderBtn">
+                    <button class="btn btn-primary" id="newOrderBtn" data-i18n="new_order">
                         <ion-icon name="add-circle-outline"></ion-icon>
                         نیا آرڈر بنائیں
                     </button>
@@ -227,8 +234,8 @@
             <!-- Dashboard Content -->
             <div id="dashboardPage" class="page-content">
                 <div class="page-header">
-                    <h1>خوش آمدید، Jabli ERP!</h1>
-                    <p>آج کی تازہ ترین صورتحال - Your Smart Business Partner</p>
+                    <h1 data-i18n="welcome">خوش آمدید، Jabli ERP!</h1>
+                    <p data-i18n="today_summary">آج کی تازہ ترین صورتحال - Your Smart Business Partner</p>
                 </div>
 
                 <!-- Stats Grid -->
@@ -238,7 +245,7 @@
                             <ion-icon name="cash-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3>کل آمدنی</h3>
+                            <h3 data-i18n="total_income">کل آمدنی</h3>
                             <h2 class="amount">Rs. 1,25,000</h2>
                             <span class="trend up"><ion-icon name="arrow-up-outline"></ion-icon> +12% اس ماہ</span>
                         </div>
@@ -249,7 +256,7 @@
                             <ion-icon name="receipt-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3>بقایا جات (Pending)</h3>
+                            <h3 data-i18n="pending_balance">بقایا جات (Pending)</h3>
                             <h2 class="amount">Rs. 45,500</h2>
                             <span class="trend warning"><ion-icon name="alert-circle-outline"></ion-icon> <span
                                     id="pendingCustomersCount">5</span> کسٹمرز بقایا</span>
@@ -261,7 +268,7 @@
                             <ion-icon name="color-palette-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3>زیر تکمیل آرڈرز</h3>
+                            <h3 data-i18n="active_orders">زیر تکمیل آرڈرز</h3>
                             <h2 class="amount" id="activeOrdersCount">12</h2>
                             <span class="trend neutral">پینافلیکس اور وزٹنگ کارڈز</span>
                         </div>
@@ -272,7 +279,7 @@
                             <ion-icon name="checkmark-done-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3>مکمل شدہ آرڈرز</h3>
+                            <h3 data-i18n="completed_orders">مکمل شدہ آرڈرز</h3>
                             <h2 class="amount" id="completedOrdersCount">85</h2>
                             <span class="trend success"><ion-icon name="trending-up-outline"></ion-icon> اس ہفتے</span>
                         </div>
@@ -285,8 +292,9 @@
                     <!-- Recent Orders Table -->
                     <div class="card table-card flex-2">
                         <div class="card-header">
-                            <h2>حالیہ آرڈرز</h2>
-                            <button class="btn btn-secondary btn-sm" onclick="switchPage('ordersPage')">سب
+                            <h2 data-i18n="recent_orders">حالیہ آرڈرز</h2>
+                            <button class="btn btn-secondary btn-sm" onclick="switchPage('ordersPage')"
+                                data-i18n="view_all">سب
                                 دیکھیں</button>
                         </div>
                         <div class="table-responsive">
@@ -312,7 +320,7 @@
                     <!-- Quick Actions & Summaries -->
                     <div class="card flex-1">
                         <div class="card-header">
-                            <h2>آج کا خلاصہ</h2>
+                            <h2 data-i18n="today_overview">آج کا خلاصہ</h2>
                         </div>
                         <div class="summary-list">
                             <div class="summary-item">
@@ -346,7 +354,8 @@
 
                         <div class="divider"></div>
 
-                        <button class="btn btn-outline-primary w-100 mt-3" onclick="downloadDailyReport()">
+                        <button class="btn btn-outline-primary w-100 mt-3" onclick="downloadDailyReport()"
+                            data-i18n="download_report">
                             <ion-icon name="document-text-outline"></ion-icon>
                             روزانہ رپورٹ ڈاؤنلوڈ کریں
                         </button>

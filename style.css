@@ -106,6 +106,33 @@ body {
     z-index: 1000;
 }
 
+/* LTR Layout Support */
+body.lang-en .sidebar {
+    right: auto;
+    left: 0;
+    border-left: none;
+    border-right: 1px solid var(--border);
+}
+
+body.lang-en .main-content {
+    margin-right: 0;
+    margin-left: var(--sidebar-width);
+}
+
+body.lang-en .user-dropdown {
+    right: auto;
+    left: 16px;
+}
+
+body.lang-en .dropdown-item {
+    text-align: left;
+}
+
+body.lang-en .nav-item.active {
+    border-right: none;
+    border-left: 3px solid var(--primary);
+}
+
 .sidebar-header {
     height: var(--header-height);
     display: flex;
@@ -327,6 +354,27 @@ body {
     z-index: 90;
     flex-wrap: wrap;
     gap: 16px;
+}
+
+body.lang-en .top-nav {
+    flex-direction: row-reverse;
+}
+
+body.lang-en .main-content {
+    direction: ltr;
+}
+
+body.lang-en .page-header,
+body.lang-en .card-header,
+body.lang-en .data-table th,
+body.lang-en .data-table td,
+body.lang-en .summary-info,
+body.lang-en .login-box {
+    text-align: left;
+}
+
+body.lang-en * {
+    font-family: 'Outfit', 'Roboto', sans-serif;
 }
 
 .search-bar {
