@@ -120,17 +120,21 @@
 
                 <!-- Login View -->
                 <div id="loginView" class="glass-form">
-                    <div class="glass-input-group">
-                        <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" class="glass-input" placeholder="Email Address" id="loginEmail">
-                    </div>
-                    <div class="glass-input-group">
-                        <ion-icon name="lock-closed-outline"></ion-icon>
-                        <input type="password" class="glass-input" placeholder="Password" id="loginPassword">
-                    </div>
-                    <button class="glass-btn-primary w-100" onclick="handleLogin()">
-                        Login
-                    </button>
+                    <form id="loginForm" onsubmit="handleLogin(event)">
+                        <div class="glass-input-group">
+                            <ion-icon name="mail-outline"></ion-icon>
+                            <input type="email" class="glass-input" placeholder="Email Address" id="loginEmail"
+                                name="email" autocomplete="username" required>
+                        </div>
+                        <div class="glass-input-group">
+                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <input type="password" class="glass-input" placeholder="Password" id="loginPassword"
+                                name="password" autocomplete="current-password" required>
+                        </div>
+                        <button type="submit" class="glass-btn-primary w-100">
+                            Login
+                        </button>
+                    </form>
                     <div class="auth-divider"><span>OR</span></div>
                     <button id="googleLoginBtn" class="glass-btn-google w-100">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
@@ -148,7 +152,8 @@
                     </div>
                     <div class="glass-input-group">
                         <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" class="glass-input" placeholder="Email Address (Optional if Phone provided)" id="regEmail">
+                        <input type="email" class="glass-input" placeholder="Email Address (Optional if Phone provided)"
+                            id="regEmail">
                     </div>
                     <div class="glass-input-group">
                         <ion-icon name="call-outline"></ion-icon>
@@ -160,7 +165,8 @@
                         <input type="password" class="glass-input" placeholder="Password" id="regPassword">
                     </div>
                     <div id="recaptcha-container"></div>
-                    <p id="auth-hint" style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 10px;">
+                    <p id="auth-hint"
+                        style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 10px;">
                         Use a registered test number for phone verification.
                     </p>
                     <button class="glass-btn-primary w-100" id="signupBtn" onclick="handleSignup()">
@@ -174,7 +180,8 @@
                     <div style="text-align: center; margin-bottom: 20px;">
                         <ion-icon name="mail-open-outline" style="font-size: 40px; color: var(--primary);"></ion-icon>
                         <h3 style="color: white; margin-top: 10px;">Verify Your Email</h3>
-                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">We've sent a verification link to your email. Please click it to continue.</p>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">We've sent a verification link to
+                            your email. Please click it to continue.</p>
                     </div>
                     <button class="glass-btn-primary w-100" onclick="location.reload()">
                         I have verified

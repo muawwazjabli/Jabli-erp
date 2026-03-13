@@ -784,7 +784,9 @@ window.cancelOTP = function () {
 }
 
 
-window.handleLogin = function () {
+window.handleLogin = function (event) {
+    if (event) event.preventDefault();
+
     const email = (document.getElementById('loginEmail') || {}).value || '';
     const pass = (document.getElementById('loginPassword') || {}).value || '';
 
