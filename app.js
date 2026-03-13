@@ -796,8 +796,13 @@ window.handleLogin = function () {
     showToast('Logging in...', 'info');
     fbSignInWithEmailAndPassword(auth, email, pass)
         .then((userCredential) => {
-            // Success handler is in fbOnAuthStateChanged
             showToast('Welcome back!', 'success');
+
+            // Requirement 1 & 3: Ensure reload/UI toggle after delay for session initialization
+            // Using reload() as it's the most reliable way to reset the app state for the new user
+            setTimeout(() => {
+                window.location.reload();
+            }, 1000);
         })
         .catch((error) => {
             console.error(error);
@@ -858,6 +863,9 @@ function setupLogin() {
     // Auth State Observer
     fbOnAuthStateChanged(auth, (user) => {
         if (user) {
+            // Requirement 2: Clear any active 'Login Modal' or 'Overlay' from the DOM when user is detected
+            document.querySelectorAll('.modal, .modal-backdrop, .overlay').forEach(el => el.remove());
+
             // Requirement: Prevent auto-login before verification
             const isOTPView = document.getElementById('otpView').style.display === 'flex';
             const isEmailFlow = pendingRegData && pendingRegData.email;
