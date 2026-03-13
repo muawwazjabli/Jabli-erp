@@ -27,6 +27,15 @@ const translations = {
         change_password: "اپنا پاسورڈ تبدیل کریں",
         admin_role: "Admin",
         language_btn: "English",
+        // Dashboard Stats Trends
+        this_month: "اس ماہ",
+        customers_pending: "کسٹمرز بقایا",
+        this_week: "اس ہفتے",
+        pana_visiting: "پینافلیکس اور وزٹنگ کارڈز",
+        // Dashboard Overview Items
+        stationery_sales: "اسٹیشنری سیلز",
+        printing_panaflex: "پرنٹنگ (پینافلیکس وغیرہ)",
+        online_services_label: "آنلائن سروسز",
         // Table Headers & Labels
         order_management: "آرڈرز کی تفصیل (Orders Management)",
         all_orders_filter: "تمام آرڈرز یہاں سے فلٹر اور تلاش کریں",
@@ -48,6 +57,12 @@ const translations = {
         th_amount_desc: "رقم کی تفصیل",
         th_profit: "منافع (Profit)",
         th_action: "ایکشن",
+        th_pname: "پروڈکٹ کا نام",
+        th_description: "تفصیل",
+        th_type: "قسم",
+        th_id: "آئی ڈی",
+        th_amount: "رقم",
+        th_payment: "پیمنٹ",
         // Products
         stock_products: "اسٹاک اور پروڈکٹس (Stock & Products)",
         inventory_para: "اپنی انوینٹری اور پروڈکٹس یہاں سے منظم کریں",
@@ -65,7 +80,6 @@ const translations = {
         qty_near: "اختتام کے قریب (≤10)",
         qty_low: "نشاندہی (≤25)",
         qty_range: "رینج (Range)",
-        th_pname: "پروڈکٹ کا نام",
         th_pprice: "قیمت خرید",
         th_sprice: "قیمت فروخت",
         th_margin: "منافع (Margin)",
@@ -104,10 +118,211 @@ const translations = {
         transaction_details: "ٹرانزیکشن تفصیلات",
         th_wallet: "بٹوہ (Wallet)",
         th_user_agent: "یوزر / منجانب",
-        th_description: "تفصیل (Description)",
-        th_type: "قسم (Type)",
-        th_id: "آئی ڈی (ID)",
-        th_amount: "رقم (Amount)"
+        // GDrive & Backup
+        gdrive_backup: "گوگل ڈرائیو بیک اپ (Cloud Backup)",
+        gdrive_para: "اپنا ڈیٹا محفوظ رکھنے کے لیے گوگل ڈرائیو سے لنک کریں",
+        link_google: "گوگل اکاؤنٹ لنک کریں",
+        linked_account: "لنک شدہ اکاؤنٹ",
+        account_connected: "آپ کا اکاؤنٹ جڑا ہوا ہے",
+        disconnect_btn: "ڈسکنیکٹ کریں",
+        manual_sync: "مینول کلاؤڈ سینک",
+        manual_sync_para: "تازہ ترین ڈیٹا ابھی گوگل ڈرائیو پر اپلوڈ کریں۔",
+        sync_now: "ابھی سینک کریں",
+        last_sync: "آخری سینک",
+        never: "کبھی نہیں",
+        auto_backup: "آٹو کلاؤڈ بیک اپ",
+        auto_backup_para: "ہر 5 منٹ بعد آٹو بیک اپ کا آپشن منتخب کریں۔",
+        enable_auto_sync: "آٹو سینک آن کریں",
+        auto_backup_history: "خودکار بیک اپ کی تاریخ (Auto Backup History)",
+        retention_30: "گزشتہ 30 دنوں کا ریکارڈ محفوظ ہے",
+        th_datetime: "تاریخ اور وقت",
+        th_filesize: "فائل کا سائز",
+        no_backup_history: "بیک اپ کی کوئی ہسٹری موجود نہیں ہے۔",
+        // User Management
+        user_mgmt: "یوزرز کی ترتیب (User Management)",
+        name_label: "نام",
+        user_name_placeholder: "یوزر کا نام",
+        role_label: "رول (Role)",
+        super_admin: "ایڈمنسٹریٹر (Super Admin)",
+        owner: "مالک (Owner)",
+        staff: "ملازم (Staff)",
+        gmail_label: "گوگل ای میل (Gmail)",
+        pin_label: "4 ہندسوں کا پن (PIN)",
+        add_user_btn: "نیا یوزر شامل کریں",
+        existing_users: "موجودہ یوزرز",
+        // Shop Settings
+        shop_settings: "دکان کی سیٹنگز (Shop Settings)",
+        shop_name_label: "دکان کا نام",
+        shop_address_label: "دکان کا پتہ (Address)",
+        address_placeholder: "دکان کا مکمل پتہ درج کریں",
+        mobile_label: "موبائل نمبر (Mobile)",
+        social_links_label: "سوشل میڈیا لنکس (Social Media)",
+        shop_logo_label: "دکان کا لوگو",
+        qr_base_url_label: "کیو آر کوڈ بیس یو آر ایل (QR Code Base URL)",
+        // Status Management
+        status_mgmt_title: "آرڈر اسٹیٹس مینجمنٹ",
+        status_name_urdu: "اسٹیٹس کا نام (Urdu)",
+        id_english: "شناختی نام (ID - English)",
+        color_style: "رنگ (Color Style)",
+        is_final_label: "کیا یہ فائل (Final/Complete) اسٹیٹس ہے؟",
+        add_status_btn: "نیا اسٹیٹس شامل کریں",
+        existing_statuses: "موجودہ اسٹیٹس کی فہرست",
+        // Invoice Design
+        invoice_design_title: "رسید ڈیزائن (Invoice Design)",
+        header_bg_type: "ہیڈر بیک گراؤنڈ ٹائپ (Header BG Type)",
+        header_color: "ہیڈر کا رنگ",
+        header_text_color: "ہیڈر ٹیکسٹ رنگ",
+        header_grad1: "رنگ 1 (Color 1)",
+        header_grad2: "رنگ 2 (Color 2)",
+        direction_label: "سمت (Direction)",
+        header_bg_image: "ہیڈر بیک گراؤنڈ تصویر",
+        header_custom_text: "ہیڈر کسٹم تحریر (Header Custom Text)",
+        header_custom_text_placeholder: "ہیڈر میں دکان کے پتے کے نیچے آنے والی تحریر...",
+        font_family_label: "فونٹ (Font Family)",
+        shop_name_font: "دکان کے نام کا فونٹ (Name Font)",
+        logo_position: "لوگو کی پوزیشن (Logo Position)",
+        left_side: "بائیں جانب (Left)",
+        right_side: "دائیں جانب (Right)",
+        strip_bg_color: "رابطہ پٹی کا رنگ (Strip BG)",
+        strip_text_color: "رابطہ پٹی ٹیکسٹ رنگ (Strip Text)",
+        main_text_size: "مین ٹیکسٹ سائز (px)",
+        footer_bg_color: "فوٹر بیک گراؤنڈ رنگ",
+        footer_text_color: "فوٹر ٹیکسٹ رنگ",
+        footer_custom_text: "فوٹر کسٹم تحریر (Footer Custom Text)",
+        footer_custom_text_placeholder: "فوٹر میں سوشل میڈیا لنکس سے اوپر آنے والی تحریر...",
+        save_design_btn: "ڈیزائن محفوظ کریں",
+        // Order Category Mgmt
+        order_cat_mgmt: "آرڈر کیٹیگری منیجمنٹ (Order Categories)",
+        cat_name_label: "کیٹیگری کا نام (Label)",
+        cat_id_label: "کیٹیگری آئی ڈی (Unique ID - English)",
+        id_rules: "صرف چھوٹے انگلش حروف اور ہائفن (-) استعمال کریں۔",
+        add_cat_btn: "نئی کیٹیگری شامل کریں",
+        existing_cats: "موجودہ کیٹیگریز کی فہرست",
+        // Order Modal
+        new_order_title: "نیا آرڈر درج کریں",
+        customer_name_label: "کسٹمر کا نام (اختیاری)",
+        customer_name_placeholder: "کسٹمر کا نام لکھیں",
+        work_category: "کام کی نوعیت (Category)",
+        select_from_stock: "اسٹاک سے منتخب کریں (Select Product)",
+        any_product_placeholder: "کوئی پروڈکٹ منتخب کریں...",
+        qty_placeholder: "تعداد",
+        or_add_custom: "یا نیا کسٹم آئٹم شامل کریں (جو اسٹاک میں نہیں):",
+        price_rs_placeholder: "قیمت (Rs.)",
+        description_label: "تفصیل",
+        description_placeholder: "کام کی مکمل تفصیل...",
+        discount_label: "ڈسکاؤنٹ (Discount Rs.)",
+        total_amount_label: "کل رقم (Total Amount)",
+        received_amount_label: "وصول شدہ رقم (Received)",
+        order_status_label: "آرڈر کا اسٹیٹس (Status)",
+        // Download Modal
+        export_data_title: "ڈیٹا ڈاؤنلوڈ کریں (Export Data)",
+        time_range_label: "وقت کا انتخاب (Range)",
+        today_data: "آج کا ڈیٹا",
+        week_data: "اس ہفتے کا ڈیٹا",
+        month_data: "اس ماہ کا ڈیٹا",
+        all_data: "تمام ڈیٹا (All Data)",
+        custom_range: "کسٹم رینج (Custom Range)",
+        status_range_label: "اسٹیٹس کا انتخاب (Status)",
+        all_statuses: "تمام اسٹیٹس (All Statuses)",
+        from_date: "تاریخ سے (From)",
+        to_date: "تاریخ تک (To)",
+        close_btn: "بند کریں",
+        customer_name_optional: "کسٹمر کا نام (اختیاری)",
+        cat_type_label: "کام کی نوعیت (Category)",
+        printing_order: "پرنٹنگ (Panaflex, Cards)",
+        select_from_stock: "اسٹاک سے منتخب کریں (Select Product)",
+        select_product_placeholder: "کوئی پروڈکٹ منتخب کریں...",
+        add_custom_item: "یا نیا کسٹم آئٹم شامل کریں (جو اسٹاک میں نہیں):",
+        custom_item_name_placeholder: "پروڈکٹ کا نام...",
+        order_details_placeholder: "کام کی مکمل تفصیل...",
+        total_amount_label: "کل رقم (Total Amount)",
+        order_status_label: "آرڈر کا اسٹیٹس (Status)",
+        download_data_title_modal: "ڈیٹا ڈاؤنلوڈ کریں (Export Data)",
+        status_selection_label: "اسٹیٹس کا انتخاب (Status)",
+        pending_status: "زیرِ تکمیل (Pending)",
+        designing_status: "ڈیزائننگ (Designing)",
+        printing_status: "پرنٹنگ (Printing)",
+        pasting_status: "پیسٹنگ (Pasting)",
+        completed_status: "مکمل (Completed)",
+        date_from: "تاریخ سے (From)",
+        date_to: "تاریخ تک (To)",
+        download_visible_only: "صرف وہی ڈیٹا ڈاؤنلوڈ کریں جو ابھی اسکرین پر نظر آ رہا ہے",
+        shop_name_default: "العباسی کمپیوٹر",
+        header_custom_text_default: "",
+        details_label: "تفصیل:",
+        type_label: "قسم:",
+        receipt_no: "رسید نمبر:",
+        th_price: "فی قیمت",
+        th_quantity: "تعداد",
+        total_amount_bill: "کل رقم:",
+        discount_bill: "ڈسکاؤنٹ:",
+        advance_payment_bill: "ایڈوانس رقم:",
+        pending_amount_bill: "بقایا رقم:",
+        qr_msg: "بل کی تصدیق کے لیے اسکین کریں",
+        shop_name_report: "العباسی کمپیوٹر",
+        orders_report_title: "آرڈرز رپورٹ",
+        report_range_default: "",
+        th_id_small: "آئی ڈی (ID)",
+        th_date_small: "تاریخ/مہینہ (Date)",
+        th_customer_desc_report: "کسٹمر / کام کی تفصیل",
+        th_status_report: "اسٹیٹس",
+        th_amount_report: "رقم",
+        th_received_report: "وصول",
+        th_pending_report: "بقایا",
+        report_date_label: "رپورٹ کی تاریخ:",
+        balance_label: "Balance:",
+        orders_details_title: "آرڈرز کی تفصیل (Orders)",
+        payments_details_title: "ادائیگیوں کی تفصیل (Payments)",
+        total_bill_label: "کل بل:",
+        total_received_label: "کل وصول:",
+        pending_amount_label: "بقایا:",
+        change_password_title: "پاسورڈ تبدیل کریں",
+        current_pass_label: "موجودہ پاسورڈ",
+        current_pass_placeholder: "موجودہ پاسورڈ درج کریں",
+        new_pass_label: "نیا پاسورڈ",
+        new_pass_placeholder: "نیا پاسورڈ درج کریں",
+        confirm_pass_label: "نیا پاسورڈ (دوبارہ لکھیں)",
+        confirm_pass_placeholder: "نیا پاسورڈ دوبارہ درج کریں",
+        list_title: "فہرست",
+        th_payment: "پیمنٹ",
+        add_income_title: "آمدن درج کریں (Add Income)",
+        search_order_label: "آرڈر سرچ کریں (Search Order)",
+        search_order_placeholder: "آرڈر آئی ڈی یا کسٹمر کا نام...",
+        customer_label: "کسٹمر:",
+        note_optional: "تفصیل / نوٹ (اختیاری)",
+        note_placeholder_finance: "کوئی تفصیل...",
+        col_amount_btn: "رقم جمع کریں",
+        add_expense_title: "خرچہ درج کریں (Add Expense)",
+        general_expense_label: "جنرل خرچہ (دکان کا)",
+        cat_expense_label: "خاص کیٹگری کا خرچہ",
+        order_expense_label: "خاص آرڈر کا خرچہ",
+        select_cat_expense: "کس کیٹیگری کا خرچہ ہے؟ (Select Category)",
+        online_marketing: "آنلائن مارکیٹنگ (Online Marketing)",
+        search_order_expense_label: "کس آرڈر کا خرچہ ہے؟ (Search Order)",
+        selected_order_label: "منتخب آرڈر:",
+        expense_title_label: "خرچے کی مد / تفصیل (Expense Title)",
+        expense_title_placeholder: "مثلاً: دکان کا کرایہ، پرنٹنگ چارجز، سامان...",
+        add_expense_btn: "خرچہ درج کریں",
+        handover_cash_title: "رقم جمع کروائیں (Handover Cash)",
+        handover_to_label: "کس کے پاس جمع کروانی ہے؟ (Handover To)",
+        transfer_btn: "منتقل کریں (Transfer)",
+        trash_title: "ڈیلیٹ شدہ آرڈرز (Recycle Bin)",
+        trash_note: "ڈیلیٹ کیے گئے آرڈرز یہاں 30 دن تک رہتے ہیں، اس کے بعد خود بخود مستقل ڈیلیٹ ہو جاتے ہیں۔",
+        th_id_date: "آئی ڈی / تاریخ",
+        th_deleted_time: "ڈیلیٹ شدہ وقت",
+        finance_export_title: "ڈاؤنلوڈ مالیات (Finance Report)",
+        date_range_label: "تاریخ (Date Range)",
+        all_time: "ہمیشہ (All Time)",
+        today_text: "آج (Today)",
+        this_week: "اس ہفتے (This Week)",
+        this_month: "اس مہینے (This Month)",
+        custom_text: "مخصوص تاریخ (Custom)",
+        from_date_label: "کب سے (From Date)",
+        to_date_label: "کب تک (To Date)",
+        select_user_label: "یوزر منتخب کریں (Select User)",
+        export_btn: "ایکسپورٹ کریں (Export)",
+        gdrive_help_title: "گوگل کلائنٹ آئی ڈی حاصل کرنے کا طریقہ",
+        gdrive_help_body: "گوگل ڈرائیو کلاؤڈ سینک استعمال کرنے کے لیے آپ کو اپنی Client ID بنانی ہوگی۔ یہ صرف ایک بار کا سیٹ اپ ہے۔"
     },
     en: {
         dir: "ltr",
@@ -137,6 +352,15 @@ const translations = {
         change_password: "Change Password",
         admin_role: "Admin",
         language_btn: "Urdu",
+        // Dashboard Stats Trends
+        this_month: "this month",
+        customers_pending: "pending customers",
+        this_week: "this week",
+        pana_visiting: "Panaflex & Visiting Cards",
+        // Dashboard Overview Items
+        stationery_sales: "Stationery Sales",
+        printing_panaflex: "Printing (Panaflex etc)",
+        online_services_label: "Online Services",
         // Table Headers & Labels
         order_management: "Orders Management",
         all_orders_filter: "Filter and search all orders here",
@@ -158,6 +382,12 @@ const translations = {
         th_amount_desc: "Amount Details",
         th_profit: "Profit",
         th_action: "Action",
+        th_pname: "Product Name",
+        th_description: "Description",
+        th_type: "Type",
+        th_id: "ID",
+        th_amount: "Amount",
+        th_payment: "Payment",
         // Products
         stock_products: "Stock & Products",
         inventory_para: "Manage your inventory and products here",
@@ -175,7 +405,6 @@ const translations = {
         qty_near: "Near End (≤10)",
         qty_low: "Notification (≤25)",
         qty_range: "Range",
-        th_pname: "Product Name",
         th_pprice: "Purchase Price",
         th_sprice: "Sale Price",
         th_margin: "Margin",
@@ -214,10 +443,211 @@ const translations = {
         transaction_details: "Transaction Details",
         th_wallet: "Wallet",
         th_user_agent: "User / From",
-        th_description: "Description",
-        th_type: "Type",
-        th_id: "ID",
-        th_amount: "Amount"
+        // GDrive & Backup
+        gdrive_backup: "Google Drive Backup (Cloud Backup)",
+        gdrive_para: "Link your Google account to keep your data safe",
+        link_google: "Link Google Account",
+        linked_account: "Linked Account",
+        account_connected: "Your account is connected",
+        disconnect_btn: "Disconnect",
+        manual_sync: "Manual Cloud Sync",
+        manual_sync_para: "Upload latest data to Google Drive now.",
+        sync_now: "Sync Now",
+        last_sync: "Last Sync",
+        never: "Never",
+        auto_backup: "Auto Cloud Backup",
+        auto_backup_para: "Select auto-backup every 5 minutes.",
+        enable_auto_sync: "Enable Auto Sync",
+        auto_backup_history: "Auto Backup History",
+        retention_30: "Records for the last 30 days are saved",
+        th_datetime: "Date & Time",
+        th_filesize: "File Size",
+        no_backup_history: "No backup history found.",
+        // User Management
+        user_mgmt: "User Management",
+        name_label: "Name",
+        user_name_placeholder: "User Name",
+        role_label: "Role",
+        super_admin: "Super Admin",
+        owner: "Owner",
+        staff: "Staff",
+        gmail_label: "Gmail",
+        pin_label: "4 Digit PIN",
+        add_user_btn: "Add New User",
+        existing_users: "Existing Users",
+        // Shop Settings
+        shop_settings: "Shop Settings",
+        shop_name_label: "Shop Name",
+        shop_address_label: "Address",
+        address_placeholder: "Enter full shop address",
+        mobile_label: "Mobile Number",
+        social_links_label: "Social Media Links",
+        shop_logo_label: "Shop Logo",
+        qr_base_url_label: "QR Code Base URL",
+        // Status Management
+        status_mgmt_title: "Order Status Management",
+        status_name_urdu: "Status Name (Urdu)",
+        id_english: "Status ID (English)",
+        color_style: "Color Style",
+        is_final_label: "Is this a Final/Complete status?",
+        add_status_btn: "Add New Status",
+        existing_statuses: "Existing Statuses",
+        // Invoice Design
+        invoice_design_title: "Invoice Design",
+        header_bg_type: "Header BG Type",
+        header_color: "Header Color",
+        header_text_color: "Header Text Color",
+        header_grad1: "Color 1",
+        header_grad2: "Color 2",
+        direction_label: "Direction",
+        header_bg_image: "Header BG Image",
+        header_custom_text: "Header Custom Text",
+        header_custom_text_placeholder: "Text appearing below shop address...",
+        font_family_label: "Font Family",
+        shop_name_font: "Shop Name Font",
+        logo_position: "Logo Position",
+        left_side: "Left",
+        right_side: "Right",
+        strip_bg_color: "Strip BG Color",
+        strip_text_color: "Strip Text Color",
+        main_text_size: "Main Text Size",
+        footer_bg_color: "Footer BG Color",
+        footer_text_color: "Footer Text Color",
+        footer_custom_text: "Footer Custom Text",
+        footer_custom_text_placeholder: "Text appearing above social links...",
+        save_design_btn: "Save Design",
+        // Order Category Mgmt
+        order_cat_mgmt: "Order Category Management",
+        cat_name_label: "Category Label",
+        cat_id_label: "Category ID (English)",
+        id_rules: "Use only lowercase English letters and hyphens (-).",
+        add_cat_btn: "Add New Category",
+        existing_cats: "Existing Categories",
+        // Order Modal
+        new_order_title: "New Order",
+        customer_name_label: "Customer Name (Optional)",
+        customer_name_placeholder: "Enter customer name",
+        work_category: "Work Category",
+        select_from_stock: "Select from Stock",
+        any_product_placeholder: "Select a product...",
+        qty_placeholder: "Qty",
+        or_add_custom: "Or add custom item (not in stock):",
+        price_rs_placeholder: "Price (Rs.)",
+        description_label: "Description",
+        description_placeholder: "Full work details...",
+        discount_label: "Discount (Rs.)",
+        total_amount_label: "Total Amount",
+        received_amount_label: "Received Amount",
+        order_status_label: "Order Status",
+        // Download Modal
+        export_data_title: "Export Data",
+        time_range_label: "Time Range",
+        today_data: "Today's Data",
+        week_data: "This Week's Data",
+        month_data: "This Month's Data",
+        all_data: "All Data",
+        custom_range: "Custom Range",
+        status_range_label: "Status Filter",
+        all_statuses: "All Statuses",
+        from_date: "From Date",
+        to_date: "To Date",
+        close_btn: "Close",
+        customer_name_optional: "Customer Name (Optional)",
+        cat_type_label: "Work Category",
+        printing_order: "Printing (Panaflex, Cards)",
+        select_from_stock: "Select from Stock",
+        select_product_placeholder: "Select a product...",
+        add_custom_item: "Or add custom item (not in stock):",
+        custom_item_name_placeholder: "Product Name...",
+        order_details_placeholder: "Full work details...",
+        total_amount_label: "Total Amount",
+        order_status_label: "Order Status",
+        download_data_title_modal: "Export Data",
+        status_selection_label: "Status Selection",
+        pending_status: "Pending",
+        designing_status: "Designing",
+        printing_status: "Printing",
+        pasting_status: "Pasting",
+        completed_status: "Completed",
+        date_from: "From",
+        date_to: "To",
+        download_visible_only: "Download only data currently visible on screen",
+        shop_name_default: "Al-Abbasi Computer",
+        header_custom_text_default: "",
+        details_label: "Details:",
+        type_label: "Type:",
+        receipt_no: "Receipt No:",
+        th_price: "Unit Price",
+        th_quantity: "Qty",
+        total_amount_bill: "Total Amount:",
+        discount_bill: "Discount:",
+        advance_payment_bill: "Advance Payment:",
+        pending_amount_bill: "Pending Amount:",
+        qr_msg: "Scan to verify bill",
+        shop_name_report: "Al-Abbasi Computer",
+        orders_report_title: "Orders Report",
+        report_range_default: "",
+        th_id_small: "ID",
+        th_date_small: "Date/Month",
+        th_customer_desc_report: "Customer / Work Details",
+        th_status_report: "Status",
+        th_amount_report: "Amount",
+        th_received_report: "Received",
+        th_pending_report: "Pending",
+        report_date_label: "Report Date:",
+        balance_label: "Balance:",
+        orders_details_title: "Orders Details",
+        payments_details_title: "Payments Details",
+        total_bill_label: "Total Bill:",
+        total_received_label: "Total Received:",
+        pending_amount_label: "Remaining:",
+        change_password_title: "Change Password",
+        current_pass_label: "Current Password",
+        current_pass_placeholder: "Enter current password",
+        new_pass_label: "New Password",
+        new_pass_placeholder: "Enter new password",
+        confirm_pass_label: "Confirm New Password",
+        confirm_pass_placeholder: "Re-enter new password",
+        list_title: "List",
+        th_payment: "Payment",
+        add_income_title: "Add Income",
+        search_order_label: "Search Order",
+        search_order_placeholder: "Order ID or Customer Name...",
+        customer_label: "Customer:",
+        note_optional: "Details / Note (Optional)",
+        note_placeholder_finance: "Enter details...",
+        col_amount_btn: "Collect Amount",
+        add_expense_title: "Add Expense",
+        general_expense_label: "General Expense",
+        cat_expense_label: "Category Expense",
+        order_expense_label: "Specific Order Expense",
+        select_cat_expense: "Select Category",
+        online_marketing: "Online Marketing",
+        search_order_expense_label: "Search Order",
+        selected_order_label: "Selected Order:",
+        expense_title_label: "Expense Title",
+        expense_title_placeholder: "e.g., Rent, Printing charges, Supplies...",
+        add_expense_btn: "Add Expense",
+        handover_cash_title: "Handover Cash",
+        handover_to_label: "Handover To",
+        transfer_btn: "Transfer",
+        trash_title: "Recycle Bin",
+        trash_note: "Deleted orders stay here for 30 days before being permanently deleted.",
+        th_id_date: "ID / Date",
+        th_deleted_time: "Deleted Time",
+        finance_export_title: "Finance Report",
+        date_range_label: "Date Range",
+        all_time: "All Time",
+        today_text: "Today",
+        this_week: "This Week",
+        this_month: "This Month",
+        custom_text: "Custom Range",
+        from_date_label: "From Date",
+        to_date_label: "To Date",
+        select_user_label: "Select User",
+        export_btn: "Export",
+        gdrive_help_title: "How to get Google Client ID",
+        gdrive_help_body: "To use Google Drive Sync, you need to create your own Client ID. This is a one-time setup."
     }
 };
 
@@ -242,32 +672,42 @@ function setLanguage(lang) {
 function updateTranslation() {
     const lang = localStorage.getItem('appLanguage') || 'ur';
     const t = translations[lang];
+    if (!t) return;
 
     document.querySelectorAll('[data-i18n]').forEach(el => {
         const key = el.getAttribute('data-i18n');
         if (t[key]) {
-            if (el.tagName === 'INPUT' && el.placeholder) {
+            // Update placeholders for inputs and textareas
+            if (el.placeholder !== undefined) {
                 el.placeholder = t[key];
-            } else if (el.tagName === 'SELECT') {
-                // We shouldn't translate select options here usually, 
-                // but if they have data-i18n on options, we can.
-            } else {
-                // Find a span or a text node to update
-                const span = el.querySelector('span:not(.badge):not(.tab-count)');
-                if (span) {
-                    // Update only text content, preserve other children
-                    span.textContent = t[key];
-                } else {
-                    // Update text nodes directly to avoid blowing away icons
-                    let foundText = false;
-                    el.childNodes.forEach(node => {
-                        if (node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== '') {
-                            node.textContent = t[key];
-                            foundText = true;
-                        }
+            }
+
+            // Update values for buttons or inputs if they are not user-editable
+            if (el.tagName === 'INPUT' && (el.type === 'button' || el.type === 'submit' || el.type === 'reset')) {
+                el.value = t[key];
+            }
+
+            if (el.tagName === 'SELECT') {
+                // Skip select itself, translation is usually on options
+            } else if (el.tagName !== 'INPUT' && el.tagName !== 'TEXTAREA') {
+                // Handle complex elements (with icons, badges, etc.)
+                // Find all text nodes that are not inside badges or tab-counts
+                const textNodes = Array.from(el.childNodes).filter(node =>
+                    node.nodeType === Node.TEXT_NODE && node.textContent.trim() !== ''
+                );
+
+                if (textNodes.length > 0) {
+                    textNodes.forEach(node => {
+                        node.textContent = t[key];
                     });
-                    if (!foundText && el.children.length === 0) {
-                        el.textContent = t[key];
+                } else {
+                    // Fallback for simple elements or spans
+                    const target = el.querySelector('span:not(.badge):not(.tab-count)') || el;
+                    if (target === el && el.children.length > 0) {
+                        // Avoid overwriting children if it's a container and no simple text node found
+                        // But if it's a simple container with no text nodes, we might need to set textContent if intentional
+                    } else {
+                        target.textContent = t[key];
                     }
                 }
             }
@@ -277,19 +717,23 @@ function updateTranslation() {
     // Handle special cases
     const langBtn = document.getElementById('languageToggleBtn');
     if (langBtn) {
-        const btnText = langBtn.querySelector('span');
-        if (btnText) btnText.textContent = t.language_btn;
+        // Find the text node or span within the button to update
+        const btnText = langBtn.querySelector('span') || langBtn;
+        btnText.textContent = t.language_btn;
     }
 }
 
-// Hook into dynamic rendering if necessary
-const originalRenderOrders = window.renderOrdersList;
-if (originalRenderOrders) {
-    window.renderOrdersList = function () {
-        originalRenderOrders.apply(this, arguments);
-        updateTranslation();
-    };
-}
+// Hook into dynamic rendering
+const hooks = ['renderOrdersList', 'renderProducts', 'renderCustomers', 'renderTransactionsTable', 'updateDashboardStats'];
+hooks.forEach(hook => {
+    if (window[hook]) {
+        const original = window[hook];
+        window[hook] = function () {
+            original.apply(this, arguments);
+            updateTranslation();
+        };
+    }
+});
 
 // Initialize language on load
 window.addEventListener('DOMContentLoaded', () => {

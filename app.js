@@ -1,5 +1,14 @@
 // Initialize Firebase
-const SHOP_ID = "default_shop"; // Can be dynamic later
+// User Isolation: All data is stored under /users/{firebase_uid}/data/{key}
+// This ensures each Google account has its own isolated data space.
+let SHOP_ID = "default_shop"; // Fallback before login
+const getPath = (key) => {
+    if (currentUser && currentUser.id) {
+        // Secure path: /users/{firebase_uid}/data/{key}
+        return `users/${currentUser.id}/data/${key}`;
+    }
+    return `${SHOP_ID}/${key}`;
+};
 
 // Data Models (Loaded from Firebase)
 let orders = [];
@@ -168,36 +177,56 @@ let currentRole = null;
 
 // Save functions refactored for Firebase Modular SDK
 window.saveUsers = function () {
-    fbSet(fbRef(db, SHOP_ID + '/users'), USERS);
+    fbSet(fbRef(db, getPath('users')), USERS);
 }
 
 window.saveTransactions = function () {
-    fbSet(fbRef(db, SHOP_ID + '/transactions'), transactions);
+    fbSet(fbRef(db, getPath('transactions')), transactions);
+    if (currentUser) syncToDriveDebounced();
 }
 
 window.saveProducts = function () {
-    fbSet(fbRef(db, SHOP_ID + '/products'), products);
+    fbSet(fbRef(db, getPath('products')), products);
+    if (currentUser) syncToDriveDebounced();
 }
 
 window.saveOrders = function () {
-    fbSet(fbRef(db, SHOP_ID + '/orders'), orders);
+    fbSet(fbRef(db, getPath('orders')), orders);
     if (typeof updateTabCounts === 'function') updateTabCounts();
+    if (currentUser) syncToDriveDebounced();
 }
 
 window.saveShopSettings = function () {
-    fbSet(fbRef(db, SHOP_ID + '/shopSettings'), shopSettings);
+    fbSet(fbRef(db, getPath('shopSettings')), shopSettings);
 }
 
 window.saveDeletedOrders = function () {
-    fbSet(fbRef(db, SHOP_ID + '/deletedOrders'), deletedOrders);
+    fbSet(fbRef(db, getPath('deletedOrders')), deletedOrders);
 }
 
 window.saveOrderStatuses = function () {
-    fbSet(fbRef(db, SHOP_ID + '/orderStatuses'), orderStatuses);
+    fbSet(fbRef(db, getPath('orderStatuses')), orderStatuses);
 }
 
 window.saveOrderCategories = function () {
-    fbSet(fbRef(db, SHOP_ID + '/orderCategories'), orderCategories);
+    fbSet(fbRef(db, getPath('orderCategories')), orderCategories);
+}
+
+// ---- Debounced Google Drive Sync ----
+// This is called automatically after every save (orders, transactions, products).
+// It waits 5 seconds after the last call to avoid uploading too frequently.
+let _driveSyncTimer = null;
+function syncToDriveDebounced() {
+    if (_driveSyncTimer) clearTimeout(_driveSyncTimer);
+    _driveSyncTimer = setTimeout(() => {
+        // Only sync if user has linked their Google Drive
+        const uid = currentUser ? currentUser.id : null;
+        const token = uid ? localStorage.getItem(`gdrive_token_${uid}`) : localStorage.getItem('gdrive_token');
+        if (token) {
+            console.log('[Drive] Auto-syncing after data change...');
+            manualGDriveSync();
+        }
+    }, 5000); // 5 second debounce
 }
 
 // Add a new transaction
@@ -629,6 +658,11 @@ function verifyUserPin() {
     // Start Realtime Sync
     startRealtimeSync();
 
+    // Load Google Drive session for this specific user (per-user isolation)
+    if (typeof loadGDriveSessionForUser === 'function') {
+        loadGDriveSessionForUser();
+    }
+
     updateDashboardStats();
     renderRecentOrders();
     switchPage('dashboardPage');
@@ -651,7 +685,7 @@ function startRealtimeSync() {
 
     // Setup listeners
     Object.keys(refs).forEach(key => {
-        fbOnValue(fbRef(db, SHOP_ID + '/' + key), (snapshot) => {
+        fbOnValue(fbRef(db, getPath(key)), (snapshot) => {
             const val = snapshot.val();
             if (val) refs[key](val);
         });
@@ -670,7 +704,7 @@ function migrateLocalToCloud() {
         orderCategories: orderCategories
     };
 
-    fbUpdate(fbRef(db, SHOP_ID), dataToMigrate).then(() => {
+    fbUpdate(fbRef(db, getPath('')), dataToMigrate).then(() => {
         showToast("ڈیٹا کلاؤڈ پر منتقل کر دیا گیا ہے۔", "success");
     }).catch(err => {
         console.error("Migration error:", err);
@@ -4577,11 +4611,34 @@ window.restoreFromAutoBackup = async function (id) {
 };
 
 // ================= GOOGLE DRIVE CLOUD SYNC SYSTEM =================
+// Uses Google Identity Services (GIS) for OAuth.
+// Tokens are stored per user: gdrive_token_{firebase_uid}
+// This ensures complete isolation between different Google accounts.
 
-let gdriveToken = localStorage.getItem('gdrive_token') || null;
-let gdriveUser = JSON.parse(localStorage.getItem('gdrive_user')) || null;
+// Get Client ID from <meta name="google-signin-client_id"> or fall back to a manual entry
+function getGDriveClientId() {
+    const meta = document.querySelector('meta[name="google-signin-client_id"]');
+    const metaId = meta ? meta.content : '';
+    const inputId = document.getElementById('gdriveClientId') ? document.getElementById('gdriveClientId').value.trim() : '';
+    return inputId || metaId || '';
+}
+
+// Per-user token storage helpers
+function getGDriveStorageKey(suffix) {
+    const uid = (currentUser && currentUser.id) ? currentUser.id : 'shared';
+    return `gdrive_${suffix}_${uid}`;
+}
+
+let gdriveToken = null;
+let gdriveUser = null;
 let autoSyncInterval = null;
-const DEFAULT_CLIENT_ID = 'your-default-client-id.apps.googleusercontent.com'; // Placeholder
+
+// Load token for the currently logged-in user (called after PIN verify)
+function loadGDriveSessionForUser() {
+    gdriveToken = localStorage.getItem(getGDriveStorageKey('token')) || null;
+    gdriveUser = JSON.parse(localStorage.getItem(getGDriveStorageKey('user'))) || null;
+    updateGDriveUI();
+}
 
 window.openGDriveHelpModal = function () {
     const modal = document.getElementById('gdriveHelpModal');
@@ -4594,24 +4651,31 @@ window.closeGDriveHelpModal = function () {
 };
 
 window.handleGDriveAuth = function () {
-    const inputId = document.getElementById('gdriveClientId')?.value.trim();
-    const clientId = inputId || DEFAULT_CLIENT_ID;
+    const clientId = getGDriveClientId();
 
-    if (clientId === 'your-default-client-id.apps.googleusercontent.com') {
-        alert('براہ کرم اپنی Google Client ID درج کریں۔');
+    if (!clientId || clientId.length < 20) {
+        showToast('Google Client ID نہیں مل سکی۔ براہ کرم پہلے درج کریں۔', 'error');
+        return;
+    }
+
+    if (typeof google === 'undefined' || !google.accounts || !google.accounts.oauth2) {
+        showToast('Google Identity Services لوڈ نہیں ہوئی، براہ کرم انٹرنیٹ کنکشن چیک کریں۔', 'error');
         return;
     }
 
     const client = google.accounts.oauth2.initTokenClient({
         client_id: clientId,
-        scope: 'https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
+        // drive.appdata = hidden App Data Folder; drive.file = files created by app
+        scope: 'https://www.googleapis.com/auth/drive.appdata https://www.googleapis.com/auth/drive.file https://www.googleapis.com/auth/userinfo.profile https://www.googleapis.com/auth/userinfo.email',
         callback: (response) => {
             if (response.error) {
                 showToast('گوگل لاگ ان میں غلطی: ' + response.error, 'error');
                 return;
             }
             gdriveToken = response.access_token;
-            localStorage.setItem('gdrive_token', gdriveToken);
+            localStorage.setItem(getGDriveStorageKey('token'), gdriveToken);
+            // Also keep the legacy key for compat with debounce check
+            if (currentUser) localStorage.setItem(`gdrive_token_${currentUser.id}`, gdriveToken);
             fetchGDriveUserInfo();
         },
     });
@@ -4624,25 +4688,31 @@ async function fetchGDriveUserInfo() {
             headers: { Authorization: `Bearer ${gdriveToken}` }
         });
         gdriveUser = await resp.json();
-        localStorage.setItem('gdrive_user', JSON.stringify(gdriveUser));
+        localStorage.setItem(getGDriveStorageKey('user'), JSON.stringify(gdriveUser));
         updateGDriveUI();
-        showToast('گوگل اکاؤنٹ کامیابی سے منسلک ہو گیا ہے۔', 'success');
+        showToast('گوگل اکاؤنٹ کامیابی سے منسلک ہو گیا ہے۔ پہلا بیک اپ بن رہا ہے...', 'success');
 
         // Initial sync after link
-        manualGDriveSync();
+        await manualGDriveSync();
     } catch (err) {
         console.error('Error fetching user info:', err);
+        showToast('یوزر انفو حاصل کرنے میں دشواری: ' + err.message, 'error');
     }
 }
 
 window.disconnectGDrive = function () {
     if (confirm('کیا آپ واقعی گوگل اکاؤنٹ ڈسکنیکٹ کرنا چاہتے ہیں؟')) {
+        // Clear per-user keys
+        localStorage.removeItem(getGDriveStorageKey('token'));
+        localStorage.removeItem(getGDriveStorageKey('user'));
+        localStorage.removeItem(getGDriveStorageKey('auto_sync'));
+        localStorage.removeItem(getGDriveStorageKey('last_sync'));
+        // Also clear legacy keys for compatibility
+        if (currentUser) localStorage.removeItem(`gdrive_token_${currentUser.id}`);
         gdriveToken = null;
         gdriveUser = null;
-        localStorage.removeItem('gdrive_token');
-        localStorage.removeItem('gdrive_user');
-        localStorage.removeItem('gdrive_auto_sync');
-        toggleAutoSync(false);
+        if (autoSyncInterval) clearInterval(autoSyncInterval);
+        autoSyncInterval = null;
         updateGDriveUI();
         showToast('گوگل اکاؤنٹ ڈسکنیکٹ کر دیا گیا ہے۔', 'info');
     }
@@ -4657,30 +4727,40 @@ function updateGDriveUI() {
         if (setupSection) setupSection.style.display = 'none';
         if (syncSection) syncSection.style.display = 'block';
         if (statusLabel) {
-            statusLabel.innerText = 'منسلک شدہ';
+            statusLabel.innerText = 'منسلک شدہ ✓';
             statusLabel.style.background = '#dcfce7';
             statusLabel.style.color = '#166534';
         }
 
-        document.getElementById('gdriveUserName').innerText = gdriveUser.name;
-        document.getElementById('gdriveUserEmail').innerText = gdriveUser.email;
+        const nameEl = document.getElementById('gdriveUserName');
+        const emailEl = document.getElementById('gdriveUserEmail');
+        if (nameEl) nameEl.innerText = gdriveUser.name || '';
+        if (emailEl) emailEl.innerText = gdriveUser.email || '';
+
         if (gdriveUser.picture) {
             const img = document.getElementById('gdriveUserImg');
-            img.src = gdriveUser.picture;
-            img.style.display = 'block';
-            document.getElementById('gdriveUserPlaceholder').style.display = 'none';
+            const ph = document.getElementById('gdriveUserPlaceholder');
+            if (img) { img.src = gdriveUser.picture; img.style.display = 'block'; }
+            if (ph) ph.style.display = 'none';
         }
 
-        const lastSync = localStorage.getItem('gdrive_last_sync');
-        if (lastSync) {
-            document.getElementById('lastSyncTime').innerText = 'آخری سینک: ' + new Date(lastSync).toLocaleString('ur-PK');
+        const lastSync = localStorage.getItem(getGDriveStorageKey('last_sync'));
+        const lastSyncEl = document.getElementById('lastSyncTime');
+        if (lastSync && lastSyncEl) {
+            lastSyncEl.innerText = 'آخری سینک: ' + new Date(lastSync).toLocaleString('ur-PK');
         }
 
-        const isAutoSync = localStorage.getItem('gdrive_auto_sync') === 'true';
+        const isAutoSync = localStorage.getItem(getGDriveStorageKey('auto_sync')) === 'true';
         const toggle = document.getElementById('autoSyncToggle');
         if (toggle) {
             toggle.checked = isAutoSync;
             if (isAutoSync && !autoSyncInterval) startAutoSyncTimer();
+        }
+
+        // Pre-fill client ID field for visibility
+        const clientIdInput = document.getElementById('gdriveClientId');
+        if (clientIdInput && !clientIdInput.value) {
+            clientIdInput.value = getGDriveClientId();
         }
     } else {
         if (setupSection) setupSection.style.display = 'block';
@@ -4689,6 +4769,12 @@ function updateGDriveUI() {
             statusLabel.innerText = 'نہیں جڑا ہوا';
             statusLabel.style.background = '#f1f5f9';
             statusLabel.style.color = '#64748b';
+        }
+        // Pre-fill Client ID from meta tag to make it easy for users
+        const clientIdInput = document.getElementById('gdriveClientId');
+        if (clientIdInput && !clientIdInput.value) {
+            const autoId = getGDriveClientId();
+            if (autoId) clientIdInput.value = autoId;
         }
     }
 }
@@ -4700,87 +4786,111 @@ window.manualGDriveSync = async function () {
     }
 
     const btn = document.getElementById('btnSyncNow');
-    const originalText = btn.innerHTML;
-    btn.disabled = true;
-    btn.innerHTML = '<ion-icon name="sync-outline" class="rotating"></ion-icon> سینک ہو رہا ہے...';
+    const originalHtml = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<ion-icon name="sync-outline" class="rotating"></ion-icon> سینک ہو رہا ہے...';
+    }
 
     try {
+        // Use LIVE in-memory data from Firebase (not stale localStorage)
+        // This guarantees the backup reflects exactly what's in the database.
+        const uid = currentUser ? currentUser.id : 'unknown';
         const backupData = {
-            alAbbasiOrders: JSON.parse(localStorage.getItem('alAbbasiOrders')) || [],
-            alAbbasiTransactions: JSON.parse(localStorage.getItem('alAbbasiTransactions')) || [],
-            alAbbasiShopSettings: JSON.parse(localStorage.getItem('alAbbasiShopSettings')) || {},
-            alAbbasiProducts: JSON.parse(localStorage.getItem('alAbbasiProducts')) || [],
-            alAbbasiOrderStatuses: JSON.parse(localStorage.getItem('alAbbasiOrderStatuses')) || [],
-            alAbbasiOrderCategories: JSON.parse(localStorage.getItem('alAbbasiOrderCategories')) || [],
-            alAbbasiDeletedOrders: JSON.parse(localStorage.getItem('alAbbasiDeletedOrders')) || [],
-            alAbbasiUsers: JSON.parse(localStorage.getItem('alAbbasiUsers')) || {},
+            uid: uid,
+            userName: currentUser ? currentUser.name : '',
+            userEmail: currentUser ? currentUser.email : '',
+            orders: orders || [],
+            transactions: transactions || [],
+            shopSettings: shopSettings || {},
+            products: products || [],
+            orderStatuses: orderStatuses || [],
+            orderCategories: orderCategories || [],
+            deletedOrders: deletedOrders || [],
+            users: USERS || {},
             syncDate: new Date().toISOString(),
-            version: '2.0'
+            version: '3.0',
+            firebasePath: getPath('')
         };
 
-        const fileName = `al-abbasi-pos-backup-${new Date().toISOString().split('T')[0]}.json`;
+        const dateStr = new Date().toISOString().split('T')[0];
+        const fileName = `jabli-erp-backup-${uid.substring(0, 8)}-${dateStr}.json`;
+        const jsonStr = JSON.stringify(backupData, null, 2);
+        const blob = new Blob([jsonStr], { type: 'application/json' });
 
-        // Search for existing file today to update instead of creating multiple
-        const searchResp = await fetch(`https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and trashed=false`, {
-            headers: { Authorization: `Bearer ${gdriveToken}` }
-        });
-        const searchResult = await searchResp.json();
-
+        // Search in appDataFolder (hidden from user's Drive) + regular Drive
+        // We search in 'appDataFolder' space first, then fall back to regular
         let fileId = null;
-        if (searchResult.files && searchResult.files.length > 0) {
-            fileId = searchResult.files[0].id;
-        }
+        try {
+            const searchResp = await fetch(
+                `https://www.googleapis.com/drive/v3/files?q=name+%3d+%27${encodeURIComponent(fileName)}%27+and+trashed%3dfalse&spaces=appDataFolder,drive`,
+                { headers: { Authorization: `Bearer ${gdriveToken}` } }
+            );
+            const searchResult = await searchResp.json();
+            if (searchResult.files && searchResult.files.length > 0) {
+                fileId = searchResult.files[0].id;
+            }
+        } catch (e) { /* search failed, will create new */ }
 
         const metadata = {
             name: fileName,
-            mimeType: 'application/json'
+            mimeType: 'application/json',
+            // Store in hidden appDataFolder so it doesn't clutter user's Drive
+            parents: fileId ? undefined : ['appDataFolder']
         };
+        if (fileId) delete metadata.parents;
 
-        const blob = new Blob([JSON.stringify(backupData)], { type: 'application/json' });
         const form = new FormData();
         form.append('metadata', new Blob([JSON.stringify(metadata)], { type: 'application/json' }));
         form.append('file', blob);
 
-        let url = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
-        let method = 'POST';
+        let uploadUrl = 'https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart';
+        let uploadMethod = 'POST';
 
         if (fileId) {
-            url = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`;
-            method = 'PATCH';
+            uploadUrl = `https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=multipart`;
+            uploadMethod = 'PATCH';
         }
 
-        const uploadResp = await fetch(url, {
-            method: method,
+        const uploadResp = await fetch(uploadUrl, {
+            method: uploadMethod,
             headers: { Authorization: `Bearer ${gdriveToken}` },
             body: form
         });
 
         if (uploadResp.ok) {
             const now = new Date().toISOString();
-            localStorage.setItem('gdrive_last_sync', now);
-            document.getElementById('lastSyncTime').innerText = 'آخری سینک: ' + new Date(now).toLocaleString('ur-PK');
-            showToast('گوگل ڈرائیو پر ڈیٹا کامیابی سے سینک ہو گیا ہے۔', 'success');
+            localStorage.setItem(getGDriveStorageKey('last_sync'), now);
+            const lastSyncEl = document.getElementById('lastSyncTime');
+            if (lastSyncEl) lastSyncEl.innerText = 'آخری سینک: ' + new Date(now).toLocaleString('ur-PK');
+            const sizeMB = (blob.size / 1024).toFixed(1);
+            showToast(`گوگل ڈرائیو پر بیک اپ مکمل ✓ (${sizeMB} KB)`, 'success');
         } else {
             const errData = await uploadResp.json();
-            if (errData.error && errData.error.code === 401) {
-                // Token expired
-                showToast('گوگل سیشن ختم ہو گیا ہے، دوبارہ لاگ ان کریں۔', 'error');
-                disconnectGDrive();
+            if (errData.error && (errData.error.code === 401 || errData.error.status === 'UNAUTHENTICATED')) {
+                showToast('گوگل سیشن ختم ہو گیا ہے، دوبارہ لنک کریں۔', 'error');
+                // Clear token but keep user info
+                gdriveToken = null;
+                localStorage.removeItem(getGDriveStorageKey('token'));
+                if (currentUser) localStorage.removeItem(`gdrive_token_${currentUser.id}`);
+                updateGDriveUI();
             } else {
-                throw new Error(errData.error ? errData.error.message : 'Unknown error');
+                throw new Error(errData.error ? errData.error.message : 'Drive upload failed');
             }
         }
     } catch (err) {
-        console.error('Sync Error:', err);
-        showToast('سینک کے دوران غلطی پیش آئی: ' + err.message, 'error');
+        console.error('[Drive Sync Error]:', err);
+        showToast('سینک کے دوران غلطی: ' + err.message, 'error');
     } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalText;
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = originalHtml || '<ion-icon name="cloud-upload-outline"></ion-icon> ابھی سینک کریں';
+        }
     }
 };
 
 window.toggleAutoSync = function (enabled) {
-    localStorage.setItem('gdrive_auto_sync', enabled);
+    localStorage.setItem(getGDriveStorageKey('auto_sync'), String(enabled));
     if (enabled) {
         startAutoSyncTimer();
         showToast('آٹو سینک فعال کر دیا گیا ہے۔', 'info');
