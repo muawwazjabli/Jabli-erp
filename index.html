@@ -148,11 +148,11 @@
                     </div>
                     <div class="glass-input-group">
                         <ion-icon name="mail-outline"></ion-icon>
-                        <input type="email" class="glass-input" placeholder="Email Address" id="regEmail">
+                        <input type="email" class="glass-input" placeholder="Email Address (Optional if Phone provided)" id="regEmail">
                     </div>
                     <div class="glass-input-group">
                         <ion-icon name="call-outline"></ion-icon>
-                        <input type="tel" class="glass-input" placeholder="Phone Number (e.g. +923001234567)"
+                        <input type="tel" class="glass-input" placeholder="Phone Number (Optional if Email provided)"
                             id="regPhone">
                     </div>
                     <div class="glass-input-group">
@@ -160,11 +160,30 @@
                         <input type="password" class="glass-input" placeholder="Password" id="regPassword">
                     </div>
                     <div id="recaptcha-container"></div>
+                    <p id="auth-hint" style="font-size: 0.8rem; color: rgba(255,255,255,0.6); text-align: center; margin-bottom: 10px;">
+                        Use a registered test number for phone verification.
+                    </p>
                     <button class="glass-btn-primary w-100" id="signupBtn" onclick="handleSignup()">
                         Sign Up
                     </button>
                     <p class="auth-footer">Already have an account? <a href="#" onclick="toggleAuthMode()">Login</a></p>
                 </div>
+
+                <!-- Email Verification Info View (Optional/Dynamic) -->
+                <div id="emailVerifyView" class="glass-form" style="display: none;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <ion-icon name="mail-open-outline" style="font-size: 40px; color: var(--primary);"></ion-icon>
+                        <h3 style="color: white; margin-top: 10px;">Verify Your Email</h3>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">We've sent a verification link to your email. Please click it to continue.</p>
+                    </div>
+                    <button class="glass-btn-primary w-100" onclick="location.reload()">
+                        I have verified
+                    </button>
+                    <button class="glass-btn-ghost w-100" style="margin-top: 10px;" onclick="toggleAuthMode()">
+                        Back to Login
+                    </button>
+                </div>
+
 
                 <!-- OTP Verification View -->
                 <div id="otpView" class="glass-form" style="display: none;">

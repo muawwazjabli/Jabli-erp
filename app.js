@@ -579,23 +579,28 @@ window.toggleAuthMode = function () {
     const loginView = document.getElementById('loginView');
     const signupView = document.getElementById('signupView');
     const otpView = document.getElementById('otpView');
+    const emailVerifyView = document.getElementById('emailVerifyView');
     const authTitle = document.getElementById('authTitle');
+
     const toggleBtn = document.getElementById('authModeToggle');
 
     if (authMode === 'login') {
         loginView.style.display = 'flex';
         signupView.style.display = 'none';
         otpView.style.display = 'none';
+        if (emailVerifyView) emailVerifyView.style.display = 'none';
         authTitle.innerText = 'LOGIN';
         toggleBtn.innerText = 'Create Account';
     } else {
         loginView.style.display = 'none';
         signupView.style.display = 'flex';
         otpView.style.display = 'none';
+        if (emailVerifyView) emailVerifyView.style.display = 'none';
         authTitle.innerText = 'CREATE ACCOUNT';
         toggleBtn.innerText = 'Login Instead';
     }
 }
+
 
 function setupRecaptcha() {
     if (window.recaptchaVerifier) return;
@@ -607,14 +612,18 @@ function setupRecaptcha() {
     });
 }
 
+// List of registered test numbers (can be expanded)
+const TEST_NUMBERS = ['+923000000000', '+923123456789', '+923333333333'];
+
 window.handleSignup = function () {
     const name = (document.getElementById('regName') || {}).value || '';
     const email = (document.getElementById('regEmail') || {}).value || '';
     const phone = (document.getElementById('regPhone') || {}).value || '';
     const pass = (document.getElementById('regPassword') || {}).value || '';
 
-    if (!name || !email || !phone || !pass) {
-        showToast('Please fill all fields', 'error');
+    // Requirement: Flexibility (Email and Phone optional, but at least one required)
+    if (!name || !pass || (!email && !phone)) {
+        showToast('Please provide Name, Password and at least one contact method (Email or Phone)', 'error');
         return;
     }
 
@@ -623,43 +632,74 @@ window.handleSignup = function () {
         return;
     }
 
+    // Requirement: Error Handling for Test Numbers
+    if (phone && !TEST_NUMBERS.includes(phone)) {
+        showToast('Please use a registered test number or wait for production build.', 'error');
+        return;
+    }
+
     // Save registration data temporarily
     pendingRegData = { name, email, phone, pass };
 
-    showToast('Creating account...', 'info');
+    showToast('Starting registration...', 'info');
     document.getElementById('signupBtn').disabled = true;
 
-    fbCreateUserWithEmailAndPassword(auth, email, pass)
-        .then((userCredential) => {
-            const user = userCredential.user;
+    if (email) {
+        // Sign up with Email/Password first
+        fbCreateUserWithEmailAndPassword(auth, email, pass)
+            .then((userCredential) => {
+                const user = userCredential.user;
+                fbUpdateProfile(user, { displayName: name });
 
-            // 1. Update Profile Name
-            fbUpdateProfile(user, { displayName: name });
+                // Requirement: Trigger Email Verification
+                fbSendEmailVerification(user).then(() => {
+                    showToast('Verification email sent to ' + email, 'success');
+                });
 
-            // 2. Send Email Verification
-            fbSendEmailVerification(user).then(() => {
-                showToast('Verification email sent to ' + email, 'success');
+                if (phone) {
+                    // If phone also provided, proceed to OTP
+                    return triggerPhoneOTP(phone);
+                } else {
+                    // Only Email: Wait for verification
+                    document.getElementById('signupView').style.display = 'none';
+                    if (document.getElementById('emailVerifyView')) {
+                        document.getElementById('emailVerifyView').style.display = 'flex';
+                    }
+                    document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
+                    showToast('Please check your email to verify your account.', 'info');
+                }
+
+            })
+            .catch((error) => {
+                console.error(error);
+                showToast('Registration Error: ' + error.message, 'error');
+                document.getElementById('signupBtn').disabled = false;
             });
+    } else if (phone) {
+        // Phone Only Flow
+        triggerPhoneOTP(phone);
+    }
+}
 
-            // 3. Trigger Phone OTP
-            setupRecaptcha();
-            return fbSignInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
-        })
+function triggerPhoneOTP(phone) {
+    setupRecaptcha();
+    return fbSignInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
         .then((result) => {
             confirmationResult = result;
             showToast('6-digit OTP sent to ' + phone, 'success');
 
-            // Show OTP View
+            // Requirement: Show OTP View
             document.getElementById('signupView').style.display = 'none';
             document.getElementById('otpView').style.display = 'flex';
             document.getElementById('authTitle').innerText = 'VERIFY PHONE';
         })
         .catch((error) => {
             console.error(error);
-            showToast('Registration Error: ' + error.message, 'error');
+            showToast('Phone Error: ' + error.message, 'error');
             document.getElementById('signupBtn').disabled = false;
         });
 }
+
 
 window.verifyOTP = function () {
     const code = (document.getElementById('otpInput') || {}).value || '';
@@ -677,9 +717,9 @@ window.verifyOTP = function () {
             // Finalize registration: Save profile to database
             const user = auth.currentUser;
             const profileData = {
-                name: pendingRegData.name,
-                email: pendingRegData.email,
-                phone: pendingRegData.phone,
+                name: pendingRegData ? pendingRegData.name : (user.displayName || 'User'),
+                email: pendingRegData ? pendingRegData.email : (user.email || ''),
+                phone: pendingRegData ? pendingRegData.phone : (user.phoneNumber || ''),
                 uid: user.uid,
                 createdAt: new Date().toISOString()
             };
@@ -697,13 +737,18 @@ window.verifyOTP = function () {
         });
 }
 
+
 window.cancelOTP = function () {
     document.getElementById('otpView').style.display = 'none';
+    if (document.getElementById('emailVerifyView')) {
+        document.getElementById('emailVerifyView').style.display = 'none';
+    }
     document.getElementById('signupView').style.display = 'flex';
     document.getElementById('authTitle').innerText = 'CREATE ACCOUNT';
     document.getElementById('signupBtn').disabled = false;
     confirmationResult = null;
 }
+
 
 window.handleLogin = function () {
     const email = (document.getElementById('loginEmail') || {}).value || '';
@@ -779,10 +824,24 @@ function setupLogin() {
     // Auth State Observer
     fbOnAuthStateChanged(auth, (user) => {
         if (user) {
-            // Check if we are in the middle of OTP (don't auto-redirect if so)
-            if (document.getElementById('otpView').style.display !== 'flex') {
+            // Requirement: Prevent auto-login before verification
+            const isOTPView = document.getElementById('otpView').style.display === 'flex';
+            const isEmailFlow = pendingRegData && pendingRegData.email;
+            const isVerified = (user.email ? user.emailVerified : true) && !isOTPView;
+
+            if (isVerified) {
                 enterApp();
+            } else if (user.email && !user.emailVerified && !isOTPView) {
+                // If logged in via email but not verified, stay on signup/info view
+                document.getElementById('loginScreen').style.display = 'flex';
+                document.getElementById('signupView').style.display = 'none';
+                if (document.getElementById('emailVerifyView')) {
+                    document.getElementById('emailVerifyView').style.display = 'flex';
+                }
+                document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
+                showToast('Please verify your email address before logging in.', 'info');
             }
+
         } else {
             document.getElementById('loginScreen').style.display = 'flex';
             document.querySelector('.app-container').style.display = 'none';
@@ -792,6 +851,7 @@ function setupLogin() {
             document.getElementById('otpView').style.display = 'none';
         }
     });
+
 }
 
 
