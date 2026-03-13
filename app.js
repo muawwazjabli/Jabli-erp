@@ -602,24 +602,58 @@ window.toggleAuthMode = function () {
 }
 
 
-function setupRecaptcha() {
-    if (window.recaptchaVerifier) return;
+// Helper to normalize phone number to E.164 format (e.g., +923001234567)
+function normalizePhoneNumber(phone) {
+    if (!phone) return '';
+    let clean = phone.replace(/\D/g, ''); // keep only digits
+    if (clean.startsWith('0')) clean = '92' + clean.slice(1);
+    // If it's 10 digits and starts with 3, assume it's a PK number without 92 or 0
+    if (clean.length === 10 && clean.startsWith('3')) clean = '92' + clean;
+    return '+' + clean;
+}
+
+async function setupRecaptcha() {
+    // Ensure "Simulation" mode is off so real test numbers (from console) work
+    if (auth && auth.settings) {
+        auth.settings.appVerificationDisabledForTesting = false;
+    }
+
+    if (window.recaptchaVerifier) {
+        try {
+            window.recaptchaVerifier.clear();
+        } catch (e) { }
+    }
+
     window.recaptchaVerifier = new fbRecaptchaVerifier(auth, 'recaptcha-container', {
         'size': 'invisible',
         'callback': (response) => {
             console.log('reCAPTCHA solved');
+        },
+        'expired-callback': () => {
+            console.log('reCAPTCHA expired');
+            if (window.recaptchaVerifier) window.recaptchaVerifier.clear();
+            window.recaptchaVerifier = null;
         }
     });
+
+    try {
+        await window.recaptchaVerifier.render();
+        console.log('reCAPTCHA rendered successfully');
+    } catch (err) {
+        console.error('reCAPTCHA render error:', err);
+        throw err;
+    }
 }
 
-// List of registered test numbers (can be expanded)
-const TEST_NUMBERS = ['+923000000000', '+923123456789', '+923333333333'];
 
 window.handleSignup = function () {
     const name = (document.getElementById('regName') || {}).value || '';
     const email = (document.getElementById('regEmail') || {}).value || '';
-    const phone = (document.getElementById('regPhone') || {}).value || '';
+    const phoneRaw = (document.getElementById('regPhone') || {}).value || '';
     const pass = (document.getElementById('regPassword') || {}).value || '';
+
+    // Normalize phone number to include country code
+    const phone = phoneRaw ? normalizePhoneNumber(phoneRaw) : '';
 
     // Requirement: Flexibility (Email and Phone optional, but at least one required)
     if (!name || !pass || (!email && !phone)) {
@@ -629,12 +663,6 @@ window.handleSignup = function () {
 
     if (pass.length < 6) {
         showToast('Password must be at least 6 characters', 'error');
-        return;
-    }
-
-    // Requirement: Error Handling for Test Numbers
-    if (phone && !TEST_NUMBERS.includes(phone)) {
-        showToast('Please use a registered test number or wait for production build.', 'error');
         return;
     }
 
@@ -681,24 +709,30 @@ window.handleSignup = function () {
     }
 }
 
-function triggerPhoneOTP(phone) {
-    setupRecaptcha();
-    return fbSignInWithPhoneNumber(auth, phone, window.recaptchaVerifier)
-        .then((result) => {
-            confirmationResult = result;
-            showToast('6-digit OTP sent to ' + phone, 'success');
 
-            // Requirement: Show OTP View
-            document.getElementById('signupView').style.display = 'none';
-            document.getElementById('otpView').style.display = 'flex';
-            document.getElementById('authTitle').innerText = 'VERIFY PHONE';
-        })
-        .catch((error) => {
-            console.error(error);
-            showToast('Phone Error: ' + error.message, 'error');
-            document.getElementById('signupBtn').disabled = false;
-        });
+async function triggerPhoneOTP(phone) {
+    showToast('Preparing verification...', 'info');
+    try {
+        await setupRecaptcha();
+        const result = await fbSignInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+        confirmationResult = result;
+        showToast('6-digit OTP sent to ' + phone, 'success');
+
+        // Requirement: Show OTP View
+        document.getElementById('signupView').style.display = 'none';
+        document.getElementById('otpView').style.display = 'flex';
+        document.getElementById('authTitle').innerText = 'VERIFY PHONE';
+    } catch (error) {
+        console.error('Phone Auth Error:', error);
+        showToast('Phone Error: ' + error.message, 'error');
+        document.getElementById('signupBtn').disabled = false;
+        // If it's a test number error, we point it out
+        if (error.code === 'auth/invalid-phone-number') {
+            showToast('Invalid phone number format. Please include country code.', 'error');
+        }
+    }
 }
+
 
 
 window.verifyOTP = function () {
