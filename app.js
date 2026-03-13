@@ -849,10 +849,6 @@ function enterApp() {
         updateDashboardStats();
         renderRecentOrders();
         switchPage('dashboardPage');
-
-        // Hide splash screen after view is toggled
-        const splash = document.getElementById('splash-screen');
-        if (splash) splash.classList.add('fade-out');
     });
 }
 
@@ -868,6 +864,10 @@ function setupLogin() {
 
     // Auth State Observer
     fbOnAuthStateChanged(auth, (user) => {
+        // Robust Splash Removal: disappear regardless of following logic
+        const splash = document.getElementById('splash-screen');
+        if (splash) splash.classList.add('fade-out');
+
         if (user) {
             // Requirement 2: Clear any active 'Login Modal' or 'Overlay' from the DOM when user is detected
             document.querySelectorAll('.modal, .modal-backdrop, .overlay').forEach(el => el.remove());
@@ -888,10 +888,6 @@ function setupLogin() {
                 }
                 document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
                 showToast('Please verify your email address before logging in.', 'info');
-
-                // Hide splash screen even if not fully verified (view is determined)
-                const splash = document.getElementById('splash-screen');
-                if (splash) splash.classList.add('fade-out');
             }
 
         } else {
@@ -915,10 +911,6 @@ function setupLogin() {
             document.getElementById('loginView').style.display = 'flex';
             document.getElementById('signupView').style.display = 'none';
             document.getElementById('otpView').style.display = 'none';
-
-            // Hide splash screen after login view is toggled
-            const splash = document.getElementById('splash-screen');
-            if (splash) splash.classList.add('fade-out');
 
             // Clear dashboard-related UI variables and values
             const amountElements = document.querySelectorAll('.amount');
@@ -3869,12 +3861,17 @@ function syncStatusUI() {
 
 // Settings UI initialization
 window.initSettingsUI = function () {
-    console.log('Initializing Settings UI Components...');
-    renderStatusesManager();
-    syncStatusUI();
-    syncCategoryUI();
-    setupCategoryManagement();
-    setupStatusManagement();
+    try {
+        console.log('Initializing Settings UI Components...');
+        renderStatusesManager();
+        syncStatusUI();
+        syncCategoryUI();
+        setupCategoryManagement();
+        setupStatusManagement();
+    } catch (err) {
+        console.error('Settings UI Initialization failed (likely icon load error):', err);
+        // We continue anyway so the dashboard remains visible
+    }
 };
 
 // mass delete logic
