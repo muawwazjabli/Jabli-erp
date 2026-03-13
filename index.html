@@ -368,8 +368,8 @@
                 <div class="page-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div>
-                            <h1>آرڈرز کی تفصیل (Orders Management)</h1>
-                            <p>تمام آرڈرز یہاں سے فلٹر اور تلاش کریں</p>
+                            <h1 data-i18n="order_management">آرڈرز کی تفصیل (Orders Management)</h1>
+                            <p data-i18n="all_orders_filter">تمام آرڈرز یہاں سے فلٹر اور تلاش کریں</p>
                         </div>
                         <button class="btn btn-primary" onclick="document.getElementById('newOrderBtn').click()">
                             <ion-icon name="add-circle-outline"></ion-icon>
@@ -385,31 +385,31 @@
                             <!-- Tabs / Status Filter -->
                             <div class="tabs" id="orderStatusTabs" style="display: flex; gap: 8px;">
                                 <button class="btn btn-sm btn-outline-primary active"
-                                    onclick="filterOrdersByStatus('all', this)">سب (All) <span class="tab-count"
-                                        id="count-all">0</span></button>
+                                    onclick="filterOrdersByStatus('all', this)" data-i18n="all_tab">سب (All) <span
+                                        class="tab-count" id="count-all">0</span></button>
                                 <button class="btn btn-sm btn-outline-primary"
-                                    onclick="filterOrdersByStatus('zair-e-takmeel', this)">زیرِ تکمیل <span
-                                        class="tab-count" id="count-pending">0</span></button>
+                                    onclick="filterOrdersByStatus('zair-e-takmeel', this)" data-i18n="pending_tab">زیرِ
+                                    تکمیل <span class="tab-count" id="count-pending">0</span></button>
                             </div>
 
                             <!-- Search and Category Filter -->
                             <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end;">
                                 <button class="btn btn-sm btn-secondary" onclick="openDownloadModal()"
-                                    title="ڈیٹیل ڈاؤنلوڈ کریں">
+                                    title="ڈیٹیل ڈاؤنلوڈ کریں" data-i18n="download_btn">
                                     <ion-icon name="download-outline"></ion-icon>
                                     ڈاؤنلوڈ
                                 </button>
                                 <button class="btn btn-sm btn-secondary" onclick="openRecycleBinModal()"
-                                    title="ڈیلیٹ شدہ آرڈرز (Recycle Bin)">
+                                    title="ڈیلیٹ شدہ آرڈرز (Recycle Bin)" data-i18n="recycle_bin">
                                     <ion-icon name="trash-outline"></ion-icon>
                                     ریفرش بن
                                 </button>
                                 <select id="orderCategoryFilter" class="form-control" style="width: 150px;"
                                     onchange="renderOrdersList()">
-                                    <option value="all">تمام کیٹیگری</option>
-                                    <option value="stationery">اسٹیشنری</option>
-                                    <option value="printing">پرنٹنگ</option>
-                                    <option value="online">آنلائن سروسز</option>
+                                    <option value="all" data-i18n="all_categories">تمام کیٹیگری</option>
+                                    <option value="stationery" data-i18n="stationery">اسٹیشنری</option>
+                                    <option value="printing" data-i18n="printing">پرنٹنگ</option>
+                                    <option value="online" data-i18n="online_services">آنلائن سروسز</option>
                                 </select>
                                 <div class="search-bar" style="margin: 0; width: 250px;">
                                     <ion-icon name="search-outline"></ion-icon>
@@ -426,14 +426,16 @@
                     <div class="card-body"
                         style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <span id="selectedCountText" style="font-weight: bold; color: var(--primary);">0 آرڈر منتخب
+                            <span id="selectedCountText" style="font-weight: bold; color: var(--primary);"
+                                data-i18n="selected_count">0 آرڈر منتخب
                                 کیے گئے</span>
-                            <button class="btn btn-sm btn-outline-primary" onclick="clearOrderSelection()">سلیکشن ختم
+                            <button class="btn btn-sm btn-outline-primary" onclick="clearOrderSelection()"
+                                data-i18n="clear_selection">سلیکشن ختم
                                 کریں</button>
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <button class="btn btn-sm btn-primary" onclick="deleteSelectedOrders()"
-                                id="deleteSelectedBtn" style="background: var(--danger);">
+                                id="deleteSelectedBtn" style="background: var(--danger);" data-i18n="delete_selected">
                                 <ion-icon name="trash-outline"></ion-icon>
                                 منتخب شدہ ڈیلیٹ کریں
                             </button>
@@ -450,13 +452,13 @@
                                         <input type="checkbox" id="selectAllOrders"
                                             onclick="toggleSelectAllOrders(this.checked)">
                                     </th>
-                                    <th>تاریخ / آئی ڈی</th>
-                                    <th>کسٹمر کا نام / تفصیل</th>
-                                    <th>کیٹیگری</th>
-                                    <th>اسٹیٹس</th>
-                                    <th>رقم کی تفصیل</th>
-                                    <th>منافع (Profit)</th>
-                                    <th style="text-align: center;">ایکشن</th>
+                                    <th data-i18n="th_date_id">تاریخ / آئی ڈی</th>
+                                    <th data-i18n="th_customer_desc">کسٹمر کا نام / تفصیل</th>
+                                    <th data-i18n="th_category">کیٹیگری</th>
+                                    <th data-i18n="th_status">اسٹیٹس</th>
+                                    <th data-i18n="th_amount_desc">رقم کی تفصیل</th>
+                                    <th data-i18n="th_profit">منافع (Profit)</th>
+                                    <th style="text-align: center;" data-i18n="th_action">ایکشن</th>
                                 </tr>
                             </thead>
                             <tbody id="ordersListBody">
@@ -473,17 +475,17 @@
                 <div class="page-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div>
-                            <h1>اسٹاک اور پروڈکٹس (Stock & Products)</h1>
-                            <p>اپنی انوینٹری اور پروڈکٹس یہاں سے منظم کریں</p>
+                            <h1 data-i18n="stock_products">اسٹاک اور پروڈکٹس (Stock & Products)</h1>
+                            <p data-i18n="inventory_para">اپنی انوینٹری اور پروڈکٹس یہاں سے منظم کریں</p>
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <button class="btn btn-secondary" onclick="exportProductsToExcel()"
-                                style="background: #ecfdf5; color: #059669;">
+                                style="background: #ecfdf5; color: #059669;" data-i18n="excel_download">
                                 <ion-icon name="download-outline"></ion-icon> ایکسل ڈاؤنلوڈ
                             </button>
                             <button class="btn btn-secondary"
                                 onclick="document.getElementById('importStockExcel').click()"
-                                style="background: #fff7ed; color: #d97706;">
+                                style="background: #fff7ed; color: #d97706;" data-i18n="excel_upload">
                                 <ion-icon name="upload-outline"></ion-icon> ایکسل اپلوڈ
                             </button>
                             <input type="file" id="importStockExcel" hidden accept=".xlsx, .xls"
@@ -501,30 +503,31 @@
                 <div id="productBulkActionsBar" class="bulk-actions-bar" style="display: none; margin-bottom: 16px;">
                     <div
                         style="display: flex; justify-content: space-between; align-items: center; background: #fee2e2; padding: 12px 20px; border-radius: 12px; border: 1px solid #fecaca;">
-                        <span id="productSelectedCountText" style="font-weight: 600; color: #991b1b;">0 پروڈکٹس منتخب
+                        <span id="productSelectedCountText" style="font-weight: 600; color: #991b1b;"
+                            data-i18n="selected_count">0 پروڈکٹس منتخب
                             کیے گئے</span>
                         <div style="display: flex; gap: 12px;">
                             <button onclick="clearProductSelection()" class="btn btn-secondary btn-sm"
-                                style="background: white;">کینسل</button>
+                                style="background: white;" data-i18n="clear_selection">کینسل</button>
                             <button onclick="deleteSelectedProducts()" class="btn btn-primary btn-sm"
-                                style="background: #dc2626;">ڈیلیٹ منتخب کردہ</button>
+                                style="background: #dc2626;" data-i18n="delete_selected">ڈیلیٹ منتخب کردہ</button>
                         </div>
                     </div>
                 </div>
 
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h2>نئی پروڈکٹ شامل کریں</h2>
+                        <h2 data-i18n="add_product">نئی پروڈکٹ شامل کریں</h2>
                     </div>
                     <div class="card-body" style="padding: 20px;">
                         <form id="newProductForm">
                             <div class="responsive-flex-row" style="gap: 16px; margin-bottom: 16px;">
                                 <div class="form-group" style="flex: 2; margin-bottom: 0;">
-                                    <label>پروڈکٹ کا نام</label>
+                                    <label data-i18n="product_name">پروڈکٹ کا نام</label>
                                     <input type="text" id="newProductName" required placeholder="مثلاً: A4 Paper Rim">
                                 </div>
                                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                    <label>کیٹیگری</label>
+                                    <label data-i18n="th_category">کیٹیگری</label>
                                     <select id="newProductCategory" required>
                                         <!-- Populated via JS -->
                                     </select>
@@ -532,20 +535,21 @@
                             </div>
                             <div class="responsive-flex-row" style="gap: 16px; align-items: flex-end;">
                                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                    <label>قیمت خرید (Purchase)</label>
+                                    <label data-i18n="purchase_price">قیمت خرید (Purchase)</label>
                                     <input type="number" id="newProductPurchasePrice" required placeholder="Rs."
                                         min="0">
                                 </div>
                                 <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                    <label>قیمت فروخت (Sale)</label>
+                                    <label data-i18n="sale_price">قیمت فروخت (Sale)</label>
                                     <input type="number" id="newProductSalePrice" required placeholder="Rs." min="0">
                                 </div>
                                 <div class="form-group" style="width: 120px; margin-bottom: 0;">
-                                    <label>اسٹاک (Quantity)</label>
+                                    <label data-i18n="stock_qty">اسٹاک (Quantity)</label>
                                     <input type="number" id="newProductQty" required placeholder="تعداد" min="0">
                                 </div>
                                 <button type="submit" class="btn btn-primary"
-                                    style="height: 44px; margin-bottom: 0; white-space: nowrap;">محفوظ کریں</button>
+                                    style="height: 44px; margin-bottom: 0; white-space: nowrap;"
+                                    data-i18n="save_btn">محفوظ کریں</button>
                             </div>
                         </form>
                     </div>
@@ -554,7 +558,7 @@
                 <div class="card table-card">
                     <div class="card-header"
                         style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px;">
-                        <h2>موجودہ پروڈکٹس</h2>
+                        <h2 data-i18n="existing_products">موجودہ پروڈکٹس</h2>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <div class="search-bar" style="width: 200px;">
                                 <ion-icon name="search-outline"></ion-icon>
@@ -566,11 +570,11 @@
                             <div class="search-bar" style="width: 150px; padding: 0 8px;">
                                 <select id="productQtyPreset" onchange="handlePresetChange()"
                                     style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px; cursor: pointer;">
-                                    <option value="all">تمام مقدار</option>
-                                    <option value="out">ختم (0)</option>
-                                    <option value="near">اختتام کے قریب (≤10)</option>
-                                    <option value="low">نشاندہی (≤25)</option>
-                                    <option value="range">رینج (Range)</option>
+                                    <option value="all" data-i18n="all_qty">تمام مقدار</option>
+                                    <option value="out" data-i18n="qty_out">ختم (0)</option>
+                                    <option value="near" data-i18n="qty_near">اختتام کے قریب (≤10)</option>
+                                    <option value="low" data-i18n="qty_low">نشاندہی (≤25)</option>
+                                    <option value="range" data-i18n="qty_range">رینج (Range)</option>
                                 </select>
                             </div>
                             <!-- Range Inputs (Hidden by default) -->
@@ -597,15 +601,15 @@
                                         <input type="checkbox" id="selectAllProducts"
                                             onclick="toggleSelectAllProducts(this.checked)">
                                     </th>
-                                    <th style="text-align: right;">پروڈکٹ کا نام</th>
-                                    <th style="text-align: right;">کیٹیگری</th>
-                                    <th style="text-align: right;">قیمت خرید</th>
-                                    <th style="text-align: right;">قیمت فروخت</th>
-                                    <th style="text-align: right;">منافع (Margin)</th>
-                                    <th style="text-align: right;">کل مقدار</th>
-                                    <th style="text-align: right;">فروخت شدہ</th>
-                                    <th style="text-align: right;">موجودہ اسٹاک</th>
-                                    <th style="text-align: center;">ایکشن</th>
+                                    <th style="text-align: right;" data-i18n="th_pname">پروڈکٹ کا نام</th>
+                                    <th style="text-align: right;" data-i18n="th_category">کیٹیگری</th>
+                                    <th style="text-align: right;" data-i18n="th_pprice">قیمت خرید</th>
+                                    <th style="text-align: right;" data-i18n="th_sprice">قیمت فروخت</th>
+                                    <th style="text-align: right;" data-i18n="th_margin">منافع (Margin)</th>
+                                    <th style="text-align: right;" data-i18n="th_total_qty">کل مقدار</th>
+                                    <th style="text-align: right;" data-i18n="th_sold_qty">فروخت شدہ</th>
+                                    <th style="text-align: right;" data-i18n="th_current_stock">موجودہ اسٹاک</th>
+                                    <th style="text-align: center;" data-i18n="th_action">ایکشن</th>
                                 </tr>
                             </thead>
                             <tbody id="productsTableBody">
@@ -619,8 +623,8 @@
             <!-- Customers Management Page -->
             <div id="customersPage" class="page-content" style="display: none;">
                 <div class="page-header">
-                    <h1>کسٹمرز کی فہرست (Customer Management)</h1>
-                    <p>تمام کسٹمرز کا ریکارڈ اور ادائیگیوں کی تفصیل</p>
+                    <h1 data-i18n="customer_list">کسٹمرز کی فہرست (Customer Management)</h1>
+                    <p data-i18n="customer_record_para">تمام کسٹمرز کا ریکارڈ اور ادائیگیوں کی تفصیل</p>
                 </div>
 
                 <!-- Customer Summary Dashboard -->
@@ -631,7 +635,8 @@
                             <ion-icon name="people-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">کل کسٹمرز</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="total_customers">کل کسٹمرز
+                            </h3>
                             <h2 style="font-size: 18px;" id="totalCustomersCount">0</h2>
                         </div>
                     </div>
@@ -641,7 +646,8 @@
                             <ion-icon name="alert-circle-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">بقایا بیلنس</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="outstanding_balance">بقایا
+                                بیلنس</h3>
                             <h2 style="font-size: 18px;" id="totalOutstandingBalance">Rs. 0</h2>
                         </div>
                     </div>
@@ -651,7 +657,8 @@
                             <ion-icon name="time-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">زیرِ تکمیل کام</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="pending_work">زیرِ تکمیل
+                                کام</h3>
                             <h2 style="font-size: 18px;" id="pendingWorkCount">0</h2>
                         </div>
                     </div>
@@ -667,15 +674,15 @@
                             </div>
                             <select id="customerPaymentFilter" class="form-control" style="width: 180px;"
                                 onchange="renderCustomers()">
-                                <option value="all">تمام ادائیگیاں</option>
-                                <option value="pending">صرف بقایا والے</option>
-                                <option value="paid">مکمل شدہ</option>
+                                <option value="all" data-i18n="all_payments">تمام ادائیگیاں</option>
+                                <option value="pending" data-i18n="only_pending">صرف بقایا والے</option>
+                                <option value="paid" data-i18n="only_paid">مکمل شدہ</option>
                             </select>
                             <select id="customerWorkFilter" class="form-control" style="width: 180px;"
                                 onchange="renderCustomers()">
-                                <option value="all">تمام کام (All Work)</option>
-                                <option value="pending">صرف زیرِ تکمیل</option>
-                                <option value="completed">صرف مکمل شدہ</option>
+                                <option value="all" data-i18n="all_work">تمام کام (All Work)</option>
+                                <option value="pending" data-i18n="only_pending_work">صرف زیرِ تکمیل</option>
+                                <option value="completed" data-i18n="only_completed_work">صرف مکمل شدہ</option>
                             </select>
                         </div>
                     </div>
@@ -686,12 +693,13 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
-                                    <th style="text-align: right;">کسٹمر کا نام</th>
-                                    <th style="text-align: center;">کل آرڈرز</th>
-                                    <th style="text-align: center;">کام کی نوعیت</th>
-                                    <th style="text-align: center;">ادائیگی کی صورتحال</th>
-                                    <th style="text-align: right;">بقایا بیلنس</th>
-                                    <th style="text-align: center;">ایکشن</th>
+                                    <th style="text-align: right;" data-i18n="th_cname">کسٹمر کا نام</th>
+                                    <th style="text-align: center;" data-i18n="th_total_orders">کل آرڈرز</th>
+                                    <th style="text-align: center;" data-i18n="th_work_type">کام کی نوعیت</th>
+                                    <th style="text-align: center;" data-i18n="th_payment_status">ادائیگی کی صورتحال
+                                    </th>
+                                    <th style="text-align: right;" data-i18n="outstanding_balance">بقایا بیلنس</th>
+                                    <th style="text-align: center;" data-i18n="th_action">ایکشن</th>
                                 </tr>
                             </thead>
                             <tbody id="customersTableBody">
@@ -707,8 +715,8 @@
                 <div class="page-header">
                     <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
                         <div>
-                            <h1>مالیات اور اخراجات (Finance & Expenses)</h1>
-                            <p>دکان کی آمدنی، اخراجات اور کیش فلو کی تفصیلات</p>
+                            <h1 data-i18n="finance_expenses">مالیات اور اخراجات (Finance & Expenses)</h1>
+                            <p data-i18n="finance_para">دکان کی آمدنی، اخراجات اور کیش فلو کی تفصیلات</p>
                         </div>
                         <div class="nav-actions" style="margin: 0;">
                             <button class="btn btn-secondary" onclick="openFinanceDownloadModal()"
@@ -742,7 +750,8 @@
                             <ion-icon name="cart-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">کل سیلز (موصول + بقایا)</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="total_sales">کل سیلز
+                                (موصول + بقایا)</h3>
                             <h2 style="font-size: 18px; color: var(--success);" id="financeTotalSales">Rs. 0</h2>
                         </div>
                     </div>
@@ -752,7 +761,8 @@
                             <ion-icon name="cube-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">پروڈکٹ کی قیمتِ خرید (COGS)</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="cogs">پروڈکٹ کی قیمتِ خرید
+                                (COGS)</h3>
                             <h2 style="font-size: 18px; color: var(--warning);" id="financeTotalCogs">Rs. 0</h2>
                         </div>
                     </div>
@@ -762,7 +772,8 @@
                             <ion-icon name="trending-down-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">دیگر اخراجات</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="other_expenses">دیگر
+                                اخراجات</h3>
                             <h2 style="font-size: 18px; color: var(--danger);" id="financeTotalExpense">Rs. 0</h2>
                         </div>
                     </div>
@@ -772,7 +783,8 @@
                             <ion-icon name="wallet-outline"></ion-icon>
                         </div>
                         <div class="stat-details">
-                            <h3 style="font-size: 11px; color: var(--text-muted);">خالص منافع (Net Profit)</h3>
+                            <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="net_profit">خالص منافع
+                                (Net Profit)</h3>
                             <h2 style="font-size: 18px; color: var(--primary);" id="financeNetProfit">Rs. 0</h2>
                         </div>
                     </div>
@@ -781,7 +793,7 @@
                 <!-- Cash in Hand (Specific to Finance Page) -->
                 <div class="card mb-4">
                     <div class="card-header">
-                        <h2>موجودہ کیش (بٹوہ جات)</h2>
+                        <h2 data-i18n="cash_in_hand">موجودہ کیش (بٹوہ جات)</h2>
                     </div>
                     <div class="stats-grid" id="financeCashInHandGrid"
                         style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; padding: 0 20px 20px 20px;">
@@ -796,19 +808,23 @@
                             style="display: flex; gap: 15px; flex-wrap: wrap; align-items: center; justify-content: space-between;">
                             <div class="settings-tabs" id="financeTypeTabs" style="display: flex; gap: 8px;">
                                 <button class="btn btn-sm btn-outline-primary active"
-                                    onclick="filterTransactionsByCategory('all', this)">سب فلٹرز</button>
+                                    onclick="filterTransactionsByCategory('all', this)" data-i18n="all_filters">سب
+                                    فلٹرز</button>
                                 <button class="btn btn-sm btn-outline-success"
-                                    onclick="filterTransactionsByCategory('income', this)">صرف آمدنی</button>
+                                    onclick="filterTransactionsByCategory('income', this)" data-i18n="only_income">صرف
+                                    آمدنی</button>
                                 <button class="btn btn-sm btn-outline-danger"
-                                    onclick="filterTransactionsByCategory('expense', this)">صرف اخراجات</button>
+                                    onclick="filterTransactionsByCategory('expense', this)" data-i18n="only_expense">صرف
+                                    اخراجات</button>
                                 <button class="btn btn-sm btn-outline-secondary"
-                                    onclick="filterTransactionsByCategory('handover', this)">ہینڈ اوور</button>
+                                    onclick="filterTransactionsByCategory('handover', this)" data-i18n="handover">ہینڈ
+                                    اوور</button>
                             </div>
 
                             <div style="display: flex; gap: 10px; flex: 1; justify-content: flex-end;">
                                 <select id="financeUserFilter" class="form-control" style="width: 180px;"
                                     onchange="renderTransactionsTable()">
-                                    <option value="all">تمام یوزرز (All Users)</option>
+                                    <option value="all" data-i18n="all_users">تمام یوزرز (All Users)</option>
                                     <!-- Options populated remotely -->
                                 </select>
                                 <div class="search-bar" style="margin: 0; min-width: 250px;">
@@ -827,15 +843,18 @@
                     <div class="card-body"
                         style="padding: 12px 20px; display: flex; justify-content: space-between; align-items: center;">
                         <div style="display: flex; gap: 10px; align-items: center;">
-                            <span id="financeSelectedCountText" style="font-weight: bold; color: var(--primary);">0
+                            <span id="financeSelectedCountText" style="font-weight: bold; color: var(--primary);"
+                                data-i18n="selected_count">0
                                 ٹرانزیکشن منتخب
                                 کی گئیں</span>
-                            <button class="btn btn-sm btn-outline-primary" onclick="clearFinanceSelection()">سلیکشن ختم
+                            <button class="btn btn-sm btn-outline-primary" onclick="clearFinanceSelection()"
+                                data-i18n="clear_selection">سلیکشن ختم
                                 کریں</button>
                         </div>
                         <div style="display: flex; gap: 10px;">
                             <button class="btn btn-sm btn-primary" onclick="deleteSelectedTransactions()"
-                                id="deleteSelectedFinanceBtn" style="background: var(--danger);">
+                                id="deleteSelectedFinanceBtn" style="background: var(--danger);"
+                                data-i18n="delete_selected">
                                 <ion-icon name="trash-outline"></ion-icon>
                                 منتخب شدہ ڈیلیٹ کریں
                             </button>
@@ -846,7 +865,7 @@
                 <!-- Transactions Table -->
                 <div class="card table-card">
                     <div class="card-header">
-                        <h2>ٹرانزیکشن تفصیلات</h2>
+                        <h2 data-i18n="transaction_details">ٹرانزیکشن تفصیلات</h2>
                     </div>
                     <div class="table-responsive">
                         <table class="data-table">
