@@ -885,12 +885,40 @@ function setupLogin() {
             }
 
         } else {
+            // User is null: Ensure fully cleared session and redirect
+            localStorage.clear();
+            sessionStorage.clear();
+
+            // Reset UI state variables
+            currentUser = null;
+            currentRole = null;
+
+            // Redirect to login page to prevent back-button access to dashboard
+            if (!window.location.pathname.endsWith('index.html') && window.location.pathname !== '/') {
+                window.location.replace('index.html');
+            }
+
             document.getElementById('loginScreen').style.display = 'flex';
             document.querySelector('.app-container').style.display = 'none';
-            // Reset views
+
+            // Reset views back to login
             document.getElementById('loginView').style.display = 'flex';
             document.getElementById('signupView').style.display = 'none';
             document.getElementById('otpView').style.display = 'none';
+
+            // Clear dashboard-related UI variables and values
+            const amountElements = document.querySelectorAll('.amount');
+            amountElements.forEach(el => el.innerText = 'Rs. 0');
+
+            const pcCount = document.getElementById('pendingCustomersCount');
+            if (pcCount) pcCount.innerText = '0';
+            const aoCount = document.getElementById('activeOrdersCount');
+            if (aoCount) aoCount.innerText = '0';
+            const coCount = document.getElementById('completedOrdersCount');
+            if (coCount) coCount.innerText = '0';
+
+            const recentOrdersBody = document.getElementById('recentOrdersBody');
+            if (recentOrdersBody) recentOrdersBody.innerHTML = '';
         }
     });
 
@@ -2839,8 +2867,26 @@ window.switchUser = function (userId) {
 
 // Logout User
 window.logoutUser = function () {
-    localStorage.removeItem('alAbbasiSession');
-    location.reload();
+    // Clear all persistent and session data
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // Clear in-memory state
+    currentUser = null;
+    currentRole = null;
+
+    // Use the Firebase auth sign-out that handles session clearing on server-side
+    if (typeof fbSignOut === 'function' && window.auth) {
+        fbSignOut(window.auth).then(() => {
+            // Redirect using replace to remove dashboard from browser history
+            window.location.replace('index.html');
+        }).catch(err => {
+            console.error("Logout error:", err);
+            window.location.replace('index.html');
+        });
+    } else {
+        window.location.replace('index.html');
+    }
 }
 
 // --- Customer Management Logic ---
@@ -4175,13 +4221,7 @@ function setupActivityTracking() {
     }, 60000);
 }
 
-window.logoutUser = function () {
-    currentUser = null;
-    localStorage.removeItem('currentUser');
-    localStorage.removeItem('lastActivityTime');
-    document.getElementById('loginScreen').style.display = 'flex';
-    document.querySelector('.app-container').style.display = 'none';
-};
+// window.logoutUser is defined above around line 2841
 
 // ====== Finance Modals Implementation ======
 window.openIncomeModal = function () {
