@@ -569,130 +569,231 @@ window.logoutFromGoogle = function () {
 }
 
 // Glassmorphism login page — "Continue" button (just triggers Google sign-in)
-window.handleLoginContinue = function () {
-    const email = (document.getElementById('loginEmailInput') || {}).value || '';
-    const pass = (document.getElementById('loginPasswordInput') || {}).value || '';
-    if (!email && !pass) {
-        // If fields empty, also trigger Google login
-        document.getElementById('googleLoginBtn').click();
-        return;
+// --- Authentication UI & Logic (Upgraded) ---
+let authMode = 'login'; // 'login' or 'signup'
+let confirmationResult = null;
+let pendingRegData = null;
+
+window.toggleAuthMode = function () {
+    authMode = authMode === 'login' ? 'signup' : 'login';
+    const loginView = document.getElementById('loginView');
+    const signupView = document.getElementById('signupView');
+    const otpView = document.getElementById('otpView');
+    const authTitle = document.getElementById('authTitle');
+    const toggleBtn = document.getElementById('authModeToggle');
+
+    if (authMode === 'login') {
+        loginView.style.display = 'flex';
+        signupView.style.display = 'none';
+        otpView.style.display = 'none';
+        authTitle.innerText = 'LOGIN';
+        toggleBtn.innerText = 'Create Account';
+    } else {
+        loginView.style.display = 'none';
+        signupView.style.display = 'flex';
+        otpView.style.display = 'none';
+        authTitle.innerText = 'CREATE ACCOUNT';
+        toggleBtn.innerText = 'Login Instead';
     }
-    // For now show info and also trigger Google login flow
-    showToast('براہ کرم Google سے لاگ ان کریں', 'info');
-    document.getElementById('googleLoginBtn').click();
 }
 
-// Glassmorphism register page — "Register" button
-window.handleRegister = function () {
-    const firstName = (document.getElementById('regFirstName') || {}).value || '';
-    const lastName = (document.getElementById('regLastName') || {}).value || '';
-    const username = (document.getElementById('regUsername') || {}).value || '';
-    const company = (document.getElementById('regCompany') || {}).value || '';
-    const phone = (document.getElementById('regPhone') || {}).value || '';
+function setupRecaptcha() {
+    if (window.recaptchaVerifier) return;
+    window.recaptchaVerifier = new fbRecaptchaVerifier(auth, 'recaptcha-container', {
+        'size': 'invisible',
+        'callback': (response) => {
+            console.log('reCAPTCHA solved');
+        }
+    });
+}
+
+window.handleSignup = function () {
+    const name = (document.getElementById('regName') || {}).value || '';
     const email = (document.getElementById('regEmail') || {}).value || '';
-    if (!firstName || !email) {
-        showToast('براہ کرم تمام ضروری معلومات درج کریں', 'error');
+    const phone = (document.getElementById('regPhone') || {}).value || '';
+    const pass = (document.getElementById('regPassword') || {}).value || '';
+
+    if (!name || !email || !phone || !pass) {
+        showToast('Please fill all fields', 'error');
         return;
     }
-    showToast(`خوش آمدید، ${firstName}! Google سے لاگ ان کریں۔`, 'success');
-    document.getElementById('googleLoginBtn').click();
+
+    if (pass.length < 6) {
+        showToast('Password must be at least 6 characters', 'error');
+        return;
+    }
+
+    // Save registration data temporarily
+    pendingRegData = { name, email, phone, pass };
+
+    showToast('Creating account...', 'info');
+    document.getElementById('signupBtn').disabled = true;
+
+    fbCreateUserWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+            const user = userCredential.user;
+
+            // 1. Update Profile Name
+            fbUpdateProfile(user, { displayName: name });
+
+            // 2. Send Email Verification
+            fbSendEmailVerification(user).then(() => {
+                showToast('Verification email sent to ' + email, 'success');
+            });
+
+            // 3. Trigger Phone OTP
+            setupRecaptcha();
+            return fbSignInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+        })
+        .then((result) => {
+            confirmationResult = result;
+            showToast('6-digit OTP sent to ' + phone, 'success');
+
+            // Show OTP View
+            document.getElementById('signupView').style.display = 'none';
+            document.getElementById('otpView').style.display = 'flex';
+            document.getElementById('authTitle').innerText = 'VERIFY PHONE';
+        })
+        .catch((error) => {
+            console.error(error);
+            showToast('Registration Error: ' + error.message, 'error');
+            document.getElementById('signupBtn').disabled = false;
+        });
+}
+
+window.verifyOTP = function () {
+    const code = (document.getElementById('otpInput') || {}).value || '';
+    if (code.length !== 6) {
+        showToast('Please enter a 6-digit code', 'error');
+        return;
+    }
+
+    document.getElementById('verifyOtpBtn').disabled = true;
+
+    confirmationResult.confirm(code)
+        .then((result) => {
+            showToast('Phone verified successfully!', 'success');
+
+            // Finalize registration: Save profile to database
+            const user = auth.currentUser;
+            const profileData = {
+                name: pendingRegData.name,
+                email: pendingRegData.email,
+                phone: pendingRegData.phone,
+                uid: user.uid,
+                createdAt: new Date().toISOString()
+            };
+
+            return fbSet(fbRef(db, `users/${user.uid}/profile`), profileData);
+        })
+        .then(() => {
+            // Success: Clean up and enter app
+            enterApp();
+        })
+        .catch((error) => {
+            console.error(error);
+            showToast('Verification failed: ' + error.message, 'error');
+            document.getElementById('verifyOtpBtn').disabled = false;
+        });
+}
+
+window.cancelOTP = function () {
+    document.getElementById('otpView').style.display = 'none';
+    document.getElementById('signupView').style.display = 'flex';
+    document.getElementById('authTitle').innerText = 'CREATE ACCOUNT';
+    document.getElementById('signupBtn').disabled = false;
+    confirmationResult = null;
+}
+
+window.handleLogin = function () {
+    const email = (document.getElementById('loginEmail') || {}).value || '';
+    const pass = (document.getElementById('loginPassword') || {}).value || '';
+
+    if (!email || !pass) {
+        showToast('Please enter your email and password', 'error');
+        return;
+    }
+
+    showToast('Logging in...', 'info');
+    fbSignInWithEmailAndPassword(auth, email, pass)
+        .then((userCredential) => {
+            // Success handler is in fbOnAuthStateChanged
+            showToast('Welcome back!', 'success');
+        })
+        .catch((error) => {
+            console.error(error);
+            showToast('Login Failed: ' + error.message, 'error');
+        });
+}
+
+function enterApp() {
+    const user = auth.currentUser;
+    if (!user) return;
+
+    // Fetch profile data from DB
+    fbGet(fbRef(db, `users/${user.uid}/profile`)).then((snapshot) => {
+        const profile = snapshot.val() || {};
+
+        currentUser = {
+            id: user.uid,
+            name: profile.name || user.displayName || 'User',
+            email: user.email,
+            phone: profile.phone || '',
+            photoURL: user.photoURL,
+            role: 'admin',
+            avatar: (profile.name || user.displayName || 'U').charAt(0)
+        };
+
+        currentRole = 'admin';
+        document.getElementById('loginScreen').style.display = 'none';
+        document.querySelector('.app-container').style.display = 'flex';
+
+        // Set UI
+        document.getElementById('currentUserName').innerText = currentUser.name;
+        document.getElementById('currentUserRole').innerText = 'Admin';
+        const avatarEl = document.getElementById('currentUserAvatar');
+        if (currentUser.photoURL) {
+            avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
+        } else {
+            avatarEl.innerText = currentUser.avatar;
+        }
+
+        startRealtimeSync();
+        if (typeof loadGDriveSessionForUser === 'function') loadGDriveSessionForUser();
+        updateDashboardStats();
+        renderRecentOrders();
+        switchPage('dashboardPage');
+    });
 }
 
 function setupLogin() {
     const googleLoginBtn = document.getElementById('googleLoginBtn');
-    const verifyPinBtn = document.getElementById('verifyPinBtn');
-
     if (googleLoginBtn) {
         googleLoginBtn.addEventListener('click', () => {
-            const auth = window.auth;
-            const provider = window.provider;
             fbSignInWithPopup(auth, provider).catch(error => {
-                showToast("Google لاگ ان میں مسئلہ: " + error.message, "error");
+                showToast("Google Login Error: " + error.message, "error");
             });
-        });
-    }
-
-    if (verifyPinBtn) {
-        verifyPinBtn.addEventListener('click', () => {
-            verifyUserPin();
         });
     }
 
     // Auth State Observer
     fbOnAuthStateChanged(auth, (user) => {
         if (user) {
-            document.getElementById('googleSignInContainer').style.display = 'none';
-            document.getElementById('pinPadContainer').style.display = 'block';
-            document.getElementById('loggedInEmail').innerText = user.email;
-            enteredPin = "";
-            updatePinDisplay();
+            // Check if we are in the middle of OTP (don't auto-redirect if so)
+            if (document.getElementById('otpView').style.display !== 'flex') {
+                enterApp();
+            }
         } else {
-            document.getElementById('googleSignInContainer').style.display = 'block';
-            document.getElementById('pinPadContainer').style.display = 'none';
             document.getElementById('loginScreen').style.display = 'flex';
             document.querySelector('.app-container').style.display = 'none';
+            // Reset views
+            document.getElementById('loginView').style.display = 'flex';
+            document.getElementById('signupView').style.display = 'none';
+            document.getElementById('otpView').style.display = 'none';
         }
     });
 }
 
-function verifyUserPin() {
-    const user = auth.currentUser;
-    if (!user) return;
-
-    if (enteredPin === '1122') {
-        currentUser = {
-            id: user.uid,
-            name: user.displayName || 'Admin',
-            email: user.email,
-            photoURL: user.photoURL,
-            role: 'admin',
-            avatar: (user.displayName || 'A').charAt(0)
-        };
-        currentRole = 'admin';
-    } else if (enteredPin === '0000') {
-        currentUser = {
-            id: user.uid,
-            name: user.displayName || 'Staff',
-            email: user.email,
-            photoURL: user.photoURL,
-            role: 'staff',
-            avatar: (user.displayName || 'S').charAt(0)
-        };
-        currentRole = 'staff';
-    } else {
-        showToast("غلط پن! براہ کرم دوبارہ کوشش کریں۔", "error");
-        clearPin();
-        return;
-    }
-
-    document.getElementById('loginScreen').style.display = 'none';
-    document.querySelector('.app-container').style.display = 'flex';
-
-    // Set UI for current user
-    document.getElementById('currentUserName').innerText = currentUser.name;
-    document.getElementById('currentUserRole').innerText = currentUser.role.charAt(0).toUpperCase() + currentUser.role.slice(1);
-
-    const avatarEl = document.getElementById('currentUserAvatar');
-    if (currentUser.photoURL) {
-        avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
-    } else {
-        avatarEl.innerText = currentUser.avatar;
-    }
-
-    // Start Realtime Sync
-    startRealtimeSync();
-
-    // Load Google Drive session for this specific user (per-user isolation)
-    if (typeof loadGDriveSessionForUser === 'function') {
-        loadGDriveSessionForUser();
-    }
-
-    updateDashboardStats();
-    renderRecentOrders();
-    switchPage('dashboardPage');
-
-    showToast("خوش آمدید، " + currentUser.name, "success");
-}
 
 // Realtime Sync Logic (Modular SDK)
 function startRealtimeSync() {

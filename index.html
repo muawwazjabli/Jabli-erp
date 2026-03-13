@@ -32,8 +32,20 @@
 
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getDatabase, ref, set, onValue, push, remove, update } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
-        import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getDatabase, ref, set, onValue, push, remove, update, get } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-database.js";
+        import {
+            getAuth,
+            GoogleAuthProvider,
+            signInWithPopup,
+            signOut,
+            onAuthStateChanged,
+            createUserWithEmailAndPassword,
+            signInWithEmailAndPassword,
+            sendEmailVerification,
+            RecaptchaVerifier,
+            signInWithPhoneNumber,
+            updateProfile
+        } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
         const firebaseConfig = {
             apiKey: 'AIzaSyCWdTHhsyhe5tsI0HcstbvmqGnVRRue1ls',
@@ -55,6 +67,7 @@
         window.provider = provider;
         window.fbRef = ref;
         window.fbSet = set;
+        window.fbGet = get;
         window.fbOnValue = onValue;
         window.fbPush = push;
         window.fbRemove = remove;
@@ -63,6 +76,12 @@
         window.fbUpdate = update;
         window.fbGoogleAuthProvider = GoogleAuthProvider;
         window.fbSignInWithPopup = signInWithPopup;
+        window.fbCreateUserWithEmailAndPassword = createUserWithEmailAndPassword;
+        window.fbSignInWithEmailAndPassword = signInWithEmailAndPassword;
+        window.fbSendEmailVerification = sendEmailVerification;
+        window.fbRecaptchaVerifier = RecaptchaVerifier;
+        window.fbSignInWithPhoneNumber = signInWithPhoneNumber;
+        window.fbUpdateProfile = updateProfile;
     </script>
 
     <link rel="stylesheet" href="style.css?v=3">
@@ -88,43 +107,87 @@
             </div>
             <div class="front-navbar-links">
                 <a href="#" class="front-nav-link">Home</a>
-                <a href="#" class="front-nav-link">Features</a>
-                <a href="#" class="front-nav-link">Pricing</a>
-                <a href="#" class="front-nav-link">About</a>
+                <a href="#" class="front-nav-link" id="authModeToggle" onclick="toggleAuthMode()">Create Account</a>
             </div>
         </nav>
 
         <!-- Main Cards Container -->
         <div class="front-cards-container">
 
-            <!-- LOGIN CARD -->
-            <div class="glass-card login-card" id="googleLoginBox">
-                <!-- Card top expand icon -->
-                <div class="card-menu-icon">
-                    <ion-icon name="menu-outline"></ion-icon>
-                </div>
+            <!-- AUTH CARD -->
+            <div class="glass-card auth-card" id="authCard">
+                <h2 class="glass-card-title" id="authTitle">LOGIN</h2>
 
-                <h2 class="glass-card-title">JABLI ERP: LOGIN</h2>
-
-                <!-- Google Sign-In Section -->
-                <div id="googleSignInContainer" class="glass-form">
+                <!-- Login View -->
+                <div id="loginView" class="glass-form">
                     <div class="glass-input-group">
-                        <input type="text" class="glass-input" placeholder="Username/Email" id="loginEmailInput">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" class="glass-input" placeholder="Email Address" id="loginEmail">
                     </div>
                     <div class="glass-input-group">
-                        <input type="password" class="glass-input" placeholder="Password" id="loginPasswordInput">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" class="glass-input" placeholder="Password" id="loginPassword">
                     </div>
-                    <button class="glass-btn-primary w-100" id="loginContinueBtn" onclick="handleLoginContinue()">
-                        Continue
+                    <button class="glass-btn-primary w-100" onclick="handleLogin()">
+                        Login
                     </button>
+                    <div class="auth-divider"><span>OR</span></div>
                     <button id="googleLoginBtn" class="glass-btn-google w-100">
                         <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
                             height="20" alt="Google">
                         Login with Google
                     </button>
+                    <p class="auth-footer">Don't have an account? <a href="#" onclick="toggleAuthMode()">Sign Up</a></p>
                 </div>
 
-                <!-- PIN Pad Section -->
+                <!-- Signup View -->
+                <div id="signupView" class="glass-form" style="display: none;">
+                    <div class="glass-input-group">
+                        <ion-icon name="person-outline"></ion-icon>
+                        <input type="text" class="glass-input" placeholder="Full Name" id="regName">
+                    </div>
+                    <div class="glass-input-group">
+                        <ion-icon name="mail-outline"></ion-icon>
+                        <input type="email" class="glass-input" placeholder="Email Address" id="regEmail">
+                    </div>
+                    <div class="glass-input-group">
+                        <ion-icon name="call-outline"></ion-icon>
+                        <input type="tel" class="glass-input" placeholder="Phone Number (e.g. +923001234567)"
+                            id="regPhone">
+                    </div>
+                    <div class="glass-input-group">
+                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <input type="password" class="glass-input" placeholder="Password" id="regPassword">
+                    </div>
+                    <div id="recaptcha-container"></div>
+                    <button class="glass-btn-primary w-100" id="signupBtn" onclick="handleSignup()">
+                        Sign Up
+                    </button>
+                    <p class="auth-footer">Already have an account? <a href="#" onclick="toggleAuthMode()">Login</a></p>
+                </div>
+
+                <!-- OTP Verification View -->
+                <div id="otpView" class="glass-form" style="display: none;">
+                    <div style="text-align: center; margin-bottom: 20px;">
+                        <ion-icon name="shield-checkmark-outline"
+                            style="font-size: 40px; color: var(--primary);"></ion-icon>
+                        <h3 style="color: white; margin-top: 10px;">Verify Phone</h3>
+                        <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Enter the 6-digit code sent to your
+                            phone</p>
+                    </div>
+                    <div class="glass-input-group">
+                        <input type="text" class="glass-input" placeholder="6-digit code" id="otpInput" maxlength="6"
+                            style="text-align: center; letter-spacing: 5px; font-size: 1.2rem;">
+                    </div>
+                    <button class="glass-btn-primary w-100" id="verifyOtpBtn" onclick="verifyOTP()">
+                        Verify & Complete
+                    </button>
+                    <button class="glass-btn-ghost w-100" style="margin-top: 10px;" onclick="cancelOTP()">
+                        Cancel
+                    </button>
+                </div>
+
+                <!-- PIN Pad Section (Legacy support/Alternative) -->
                 <div id="pinPadContainer" style="display: none;" class="glass-form">
                     <div style="text-align: center; margin-bottom: 16px;">
                         <p id="loggedInEmail"
@@ -154,62 +217,9 @@
                     </div>
                     <button id="verifyPinBtn" class="glass-btn-primary w-100" style="margin-top: 16px;" disabled>تصدیق
                         کریں</button>
-                    <button onclick="logoutFromGoogle()" class="glass-btn-ghost w-100"
+                    <button onclick="logoutUser()" class="glass-btn-ghost w-100"
                         style="margin-top: 8px; font-size: 12px;">کسی دوسرے اکاؤنٹ سے لاگ ان کریں</button>
                 </div>
-
-                <!-- Left arrow decorator -->
-                <div class="card-side-arrow left-arrow">&#8249;</div>
-            </div>
-
-            <!-- Connector line -->
-            <div class="cards-connector">
-                <div class="connector-dot top"></div>
-                <div class="connector-line"></div>
-                <div class="connector-dot bottom"></div>
-            </div>
-
-            <!-- REGISTER CARD -->
-            <div class="glass-card register-card">
-                <!-- Expand icon top-right -->
-                <div class="card-expand-icon">
-                    <ion-icon name="arrow-up-right-outline"></ion-icon>
-                </div>
-
-                <h2 class="glass-card-title">CREATE NEW ACCOUNT</h2>
-
-                <div class="glass-form">
-                    <div class="glass-form-row">
-                        <div class="glass-input-group">
-                            <input type="text" class="glass-input" placeholder="First Name" id="regFirstName">
-                        </div>
-                        <div class="glass-input-group">
-                            <input type="text" class="glass-input" placeholder="Last Name" id="regLastName">
-                        </div>
-                    </div>
-                    <div class="glass-form-row">
-                        <div class="glass-input-group">
-                            <input type="text" class="glass-input" placeholder="Username" id="regUsername">
-                        </div>
-                        <div class="glass-input-group">
-                            <input type="text" class="glass-input" placeholder="Company Name" id="regCompany">
-                        </div>
-                    </div>
-                    <div class="glass-form-row">
-                        <div class="glass-input-group">
-                            <input type="tel" class="glass-input" placeholder="Phone Number" id="regPhone">
-                        </div>
-                        <div class="glass-input-group">
-                            <input type="email" class="glass-input" placeholder="Gmail" id="regEmail">
-                        </div>
-                    </div>
-                    <button class="glass-btn-primary w-100" onclick="handleRegister()">
-                        Register
-                    </button>
-                </div>
-
-                <!-- Right arrow decorator -->
-                <div class="card-side-arrow right-arrow">&#8250;</div>
             </div>
         </div>
 

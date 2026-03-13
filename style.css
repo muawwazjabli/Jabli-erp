@@ -125,9 +125,19 @@ body {
 }
 
 @keyframes blobFloat {
-    0%, 100% { transform: translateY(0px) scale(1); }
-    33% { transform: translateY(-20px) scale(1.05); }
-    66% { transform: translateY(10px) scale(0.97); }
+
+    0%,
+    100% {
+        transform: translateY(0px) scale(1);
+    }
+
+    33% {
+        transform: translateY(-20px) scale(1.05);
+    }
+
+    66% {
+        transform: translateY(10px) scale(0.97);
+    }
 }
 
 /* ============================================
@@ -460,8 +470,17 @@ body {
 }
 
 @keyframes sparklePulse {
-    0%, 100% { opacity: 0.6; transform: scale(1) rotate(0deg); }
-    50% { opacity: 1; transform: scale(1.15) rotate(20deg); }
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: scale(1) rotate(0deg);
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.15) rotate(20deg);
+    }
 }
 
 /* ============================================
@@ -517,6 +536,68 @@ body {
 .pin-btn:active {
     transform: scale(0.97);
 }
+
+/* Auth Divider */
+.auth-divider {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 15px 0;
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 11px;
+    font-weight: 600;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.auth-divider span {
+    padding: 0 10px;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 20px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.auth-footer a {
+    color: #50d8d7;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.auth-footer a:hover {
+    text-decoration: underline;
+}
+
+.glass-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.glass-input-group ion-icon {
+    position: absolute;
+    left: 12px;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.glass-input-group .glass-input {
+    padding-left: 40px;
+}
+
+#recaptcha-container {
+    margin: 10px 0;
+}
+
 
 /* ============================================
    OLD .login-box kept for app inner use
