@@ -338,7 +338,8 @@ startInactivityCheck();
 
 function applyShopSettings() {
     // Top-left sidebar
-    document.getElementById('sidebarShopNameText').innerText = shopSettings.name;
+    const sidebarText = document.getElementById('sidebarShopNameText');
+    if (sidebarText) sidebarText.innerText = shopSettings.name;
     const sLogo = document.getElementById('sidebarShopLogoImg');
     if (sLogo) {
         if (shopSettings.logo) {
@@ -347,15 +348,7 @@ function applyShopSettings() {
             sLogo.outerHTML = `<ion-icon name="print" id="sidebarShopLogoImg"></ion-icon>`;
         }
     }
-
-    // Login screen
-    document.getElementById('loginShopNameText').innerText = shopSettings.name;
-    const lLogo = document.getElementById('loginLogoImg');
-    if (shopSettings.logo) {
-        lLogo.outerHTML = `<img src="${shopSettings.logo}" id="loginLogoImg" alt="Logo">`;
-    } else {
-        lLogo.outerHTML = `<ion-icon name="print" id="loginLogoImg"></ion-icon>`;
-    }
+    // Note: login screen elements (loginShopNameText, loginLogoImg) have been removed in the new glassmorphism design
 }
 
 // Page Switching Logic
@@ -566,12 +559,43 @@ function updatePinDisplay() {
 }
 
 window.logoutFromGoogle = function () {
-    auth.signOut().then(() => {
+    const a = window.auth;
+    if (a) a.signOut().then(() => {
         enteredPin = "";
         updatePinDisplay();
         document.getElementById('pinPadContainer').style.display = 'none';
         document.getElementById('googleSignInContainer').style.display = 'block';
     });
+}
+
+// Glassmorphism login page — "Continue" button (just triggers Google sign-in)
+window.handleLoginContinue = function () {
+    const email = (document.getElementById('loginEmailInput') || {}).value || '';
+    const pass = (document.getElementById('loginPasswordInput') || {}).value || '';
+    if (!email && !pass) {
+        // If fields empty, also trigger Google login
+        document.getElementById('googleLoginBtn').click();
+        return;
+    }
+    // For now show info and also trigger Google login flow
+    showToast('براہ کرم Google سے لاگ ان کریں', 'info');
+    document.getElementById('googleLoginBtn').click();
+}
+
+// Glassmorphism register page — "Register" button
+window.handleRegister = function () {
+    const firstName = (document.getElementById('regFirstName') || {}).value || '';
+    const lastName = (document.getElementById('regLastName') || {}).value || '';
+    const username = (document.getElementById('regUsername') || {}).value || '';
+    const company = (document.getElementById('regCompany') || {}).value || '';
+    const phone = (document.getElementById('regPhone') || {}).value || '';
+    const email = (document.getElementById('regEmail') || {}).value || '';
+    if (!firstName || !email) {
+        showToast('براہ کرم تمام ضروری معلومات درج کریں', 'error');
+        return;
+    }
+    showToast(`خوش آمدید، ${firstName}! Google سے لاگ ان کریں۔`, 'success');
+    document.getElementById('googleLoginBtn').click();
 }
 
 function setupLogin() {

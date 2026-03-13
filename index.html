@@ -70,57 +70,151 @@
 </head>
 
 <body>
-    <!-- Login Screen -->
+    <!-- Login Screen (Glassmorphism Design) -->
     <div id="loginScreen" class="login-screen">
-        <div class="login-box" id="googleLoginBox">
-            <div class="logo" style="margin: 0 auto 20px auto; width: 60px; height: 60px; font-size: 32px;">
-                <ion-icon name="laptop-outline" id="loginLogoImg"></ion-icon>
-            </div>
-            <h2 id="loginShopNameText" style="text-align: center; margin-bottom: 8px;">Jabli ERP</h2>
-            <p style="text-align: center; color: var(--text-muted); margin-bottom: 24px;">Your Smart Business Partner
-            </p>
+        <!-- Animated gradient blobs -->
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+        <div class="blob blob-4"></div>
 
-            <div id="googleSignInContainer">
-                <button id="googleLoginBtn" class="btn btn-primary w-100"
-                    style="display: flex; align-items: center; justify-content: center; gap: 10px; background: white; color: #444; border: 1px solid #ddd; margin-bottom: 20px;">
-                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
-                        height="20">
-                    Google کے ساتھ لاگ ان کریں
-                </button>
+        <!-- Top Navigation Bar -->
+        <nav class="front-navbar">
+            <div class="front-navbar-brand">
+                <div class="front-logo-icon">
+                    <ion-icon name="laptop-outline"></ion-icon>
+                </div>
+                <span class="front-brand-name"><strong>JABLI</strong> ERP</span>
+            </div>
+            <div class="front-navbar-links">
+                <a href="#" class="front-nav-link">Home</a>
+                <a href="#" class="front-nav-link">Features</a>
+                <a href="#" class="front-nav-link">Pricing</a>
+                <a href="#" class="front-nav-link">About</a>
+            </div>
+        </nav>
+
+        <!-- Main Cards Container -->
+        <div class="front-cards-container">
+
+            <!-- LOGIN CARD -->
+            <div class="glass-card login-card" id="googleLoginBox">
+                <!-- Card top expand icon -->
+                <div class="card-menu-icon">
+                    <ion-icon name="menu-outline"></ion-icon>
+                </div>
+
+                <h2 class="glass-card-title">JABLI ERP: LOGIN</h2>
+
+                <!-- Google Sign-In Section -->
+                <div id="googleSignInContainer" class="glass-form">
+                    <div class="glass-input-group">
+                        <input type="text" class="glass-input" placeholder="Username/Email" id="loginEmailInput">
+                    </div>
+                    <div class="glass-input-group">
+                        <input type="password" class="glass-input" placeholder="Password" id="loginPasswordInput">
+                    </div>
+                    <button class="glass-btn-primary w-100" id="loginContinueBtn" onclick="handleLoginContinue()">
+                        Continue
+                    </button>
+                    <button id="googleLoginBtn" class="glass-btn-google w-100">
+                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" width="20"
+                            height="20" alt="Google">
+                        Login with Google
+                    </button>
+                </div>
+
+                <!-- PIN Pad Section -->
+                <div id="pinPadContainer" style="display: none;" class="glass-form">
+                    <div style="text-align: center; margin-bottom: 16px;">
+                        <p id="loggedInEmail"
+                            style="font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 6px;"></p>
+                        <h3 style="font-size: 1rem; color: white;">اپنا 4 ہندسوں کا پن درج کریں</h3>
+                    </div>
+                    <div class="pin-display" id="pinDisplay">
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                        <div class="pin-dot"></div>
+                    </div>
+                    <div class="pin-pad">
+                        <button class="pin-btn" onclick="appendPin(1)">1</button>
+                        <button class="pin-btn" onclick="appendPin(2)">2</button>
+                        <button class="pin-btn" onclick="appendPin(3)">3</button>
+                        <button class="pin-btn" onclick="appendPin(4)">4</button>
+                        <button class="pin-btn" onclick="appendPin(5)">5</button>
+                        <button class="pin-btn" onclick="appendPin(6)">6</button>
+                        <button class="pin-btn" onclick="appendPin(7)">7</button>
+                        <button class="pin-btn" onclick="appendPin(8)">8</button>
+                        <button class="pin-btn" onclick="appendPin(9)">9</button>
+                        <button class="pin-btn" onclick="clearPin()">C</button>
+                        <button class="pin-btn" onclick="appendPin(0)">0</button>
+                        <button class="pin-btn" onclick="backspacePin()"><ion-icon
+                                name="backspace-outline"></ion-icon></button>
+                    </div>
+                    <button id="verifyPinBtn" class="glass-btn-primary w-100" style="margin-top: 16px;" disabled>تصدیق
+                        کریں</button>
+                    <button onclick="logoutFromGoogle()" class="glass-btn-ghost w-100"
+                        style="margin-top: 8px; font-size: 12px;">کسی دوسرے اکاؤنٹ سے لاگ ان کریں</button>
+                </div>
+
+                <!-- Left arrow decorator -->
+                <div class="card-side-arrow left-arrow">&#8249;</div>
             </div>
 
-            <div id="pinPadContainer" style="display: none;">
-                <div style="text-align: center; margin-bottom: 20px;">
-                    <p id="loggedInEmail" style="font-size: 14px; color: var(--text-muted); margin-bottom: 8px;"></p>
-                    <h3 style="font-size: 1.1rem;">اپنا 4 ہندسوں کا پن درج کریں</h3>
+            <!-- Connector line -->
+            <div class="cards-connector">
+                <div class="connector-dot top"></div>
+                <div class="connector-line"></div>
+                <div class="connector-dot bottom"></div>
+            </div>
+
+            <!-- REGISTER CARD -->
+            <div class="glass-card register-card">
+                <!-- Expand icon top-right -->
+                <div class="card-expand-icon">
+                    <ion-icon name="arrow-up-right-outline"></ion-icon>
                 </div>
-                <div class="pin-display" id="pinDisplay">
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
-                    <div class="pin-dot"></div>
+
+                <h2 class="glass-card-title">CREATE NEW ACCOUNT</h2>
+
+                <div class="glass-form">
+                    <div class="glass-form-row">
+                        <div class="glass-input-group">
+                            <input type="text" class="glass-input" placeholder="First Name" id="regFirstName">
+                        </div>
+                        <div class="glass-input-group">
+                            <input type="text" class="glass-input" placeholder="Last Name" id="regLastName">
+                        </div>
+                    </div>
+                    <div class="glass-form-row">
+                        <div class="glass-input-group">
+                            <input type="text" class="glass-input" placeholder="Username" id="regUsername">
+                        </div>
+                        <div class="glass-input-group">
+                            <input type="text" class="glass-input" placeholder="Company Name" id="regCompany">
+                        </div>
+                    </div>
+                    <div class="glass-form-row">
+                        <div class="glass-input-group">
+                            <input type="tel" class="glass-input" placeholder="Phone Number" id="regPhone">
+                        </div>
+                        <div class="glass-input-group">
+                            <input type="email" class="glass-input" placeholder="Gmail" id="regEmail">
+                        </div>
+                    </div>
+                    <button class="glass-btn-primary w-100" onclick="handleRegister()">
+                        Register
+                    </button>
                 </div>
-                <div class="pin-pad">
-                    <button class="pin-btn" onclick="appendPin(1)">1</button>
-                    <button class="pin-btn" onclick="appendPin(2)">2</button>
-                    <button class="pin-btn" onclick="appendPin(3)">3</button>
-                    <button class="pin-btn" onclick="appendPin(4)">4</button>
-                    <button class="pin-btn" onclick="appendPin(5)">5</button>
-                    <button class="pin-btn" onclick="appendPin(6)">6</button>
-                    <button class="pin-btn" onclick="appendPin(7)">7</button>
-                    <button class="pin-btn" onclick="appendPin(8)">8</button>
-                    <button class="pin-btn" onclick="appendPin(9)">9</button>
-                    <button class="pin-btn" onclick="clearPin()">C</button>
-                    <button class="pin-btn" onclick="appendPin(0)">0</button>
-                    <button class="pin-btn" onclick="backspacePin()"><ion-icon
-                            name="backspace-outline"></ion-icon></button>
-                </div>
-                <button id="verifyPinBtn" class="btn btn-primary w-100" style="margin-top: 20px;" disabled>تصدیق
-                    کریں</button>
-                <button onclick="logoutFromGoogle()" class="btn btn-secondary w-100"
-                    style="margin-top: 10px; border: none; font-size: 12px;">کسی دوسرے اکاؤنٹ سے لاگ ان کریں</button>
+
+                <!-- Right arrow decorator -->
+                <div class="card-side-arrow right-arrow">&#8250;</div>
             </div>
         </div>
+
+        <!-- Bottom sparkle decoration -->
+        <div class="sparkle-icon">✦</div>
     </div>
 
     <div class="app-container" style="display: none;">
