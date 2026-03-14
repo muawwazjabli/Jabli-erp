@@ -265,7 +265,7 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <div class="logo">
-                    <ion-icon name="laptop-outline" id="sidebarShopLogoImg"></ion-icon>
+                    <i class="fa-solid fa-laptop" id="sidebarShopLogoImg"></i>
                 </div>
                 <h2 id="sidebarShopNameText">Jabli ERP</h2>
                 <p style="font-size: 10px; color: var(--text-muted); margin-top: -8px;">Your Smart Business Partner</p>
@@ -1078,20 +1078,20 @@
                                 <div class="responsive-flex-row" style="gap: 20px;">
                                     <div
                                         style="flex: 1; padding: 20px; border: 1px dashed var(--border); border-radius: var(--radius-md); text-align: center;">
-                                        <ion-icon name="cloud-download-outline"
-                                            style="font-size: 48px; color: var(--primary); margin-bottom: 12px;"></ion-icon>
+                                        <i class="fa-solid fa-cloud-arrow-down"
+                                            style="font-size: 48px; color: var(--primary); margin-bottom: 12px;"></i>
                                         <h3>دستی بیک اپ (Manual Backup)</h3>
                                         <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">تمام
                                             ڈیٹا (آرڈرز، ٹرانزیکشنز، پروڈکٹس) کو ایک فائل میں محفوظ کریں تاکہ ضرورت پڑنے
                                             پر استعمال کیا جا سکے۔</p>
                                         <button class="btn btn-primary w-100" onclick="downloadManualBackup()">
-                                            <ion-icon name="download-outline"></ion-icon> بیک اپ ڈاؤنلوڈ کریں
+                                            <i class="fa-solid fa-download"></i> بیک اپ ڈاؤنلوڈ کریں
                                         </button>
                                     </div>
                                     <div
                                         style="flex: 1; padding: 20px; border: 1px dashed var(--border); border-radius: var(--radius-md); text-align: center;">
-                                        <ion-icon name="cloud-upload-outline"
-                                            style="font-size: 48px; color: var(--warning); margin-bottom: 12px;"></ion-icon>
+                                        <i class="fa-solid fa-cloud-arrow-up"
+                                            style="font-size: 48px; color: var(--warning); margin-bottom: 12px;"></i>
                                         <h3>ڈیٹا بحال کریں (Restore Data)</h3>
                                         <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 20px;">پہلے
                                             سے موجود بیک اپ فائل اپلوڈ کر کے اپنا تمام ڈیٹا واپس لائیں۔ <br><strong
@@ -1099,7 +1099,7 @@
                                         </p>
                                         <button class="btn btn-outline-primary w-100"
                                             onclick="document.getElementById('importBackupFile').click()">
-                                            <ion-icon name="upload-outline"></ion-icon> بیک اپ اپلوڈ کریں
+                                            <i class="fa-solid fa-upload"></i> بیک اپ اپلوڈ کریں
                                         </button>
                                         <input type="file" id="importBackupFile" hidden accept=".json"
                                             onchange="restoreBackupFromFile(this)">
@@ -1118,8 +1118,8 @@
                             <div class="card-body" style="padding: 20px;">
                                 <div id="gdriveSetupSection" style="text-align: center; padding: 20px;">
                                     <div style="margin-bottom: 20px;">
-                                        <ion-icon name="cloud-upload-outline"
-                                            style="font-size: 64px; color: var(--primary); opacity: 0.5;"></ion-icon>
+                                        <i class="fa-solid fa-cloud-arrow-up"
+                                            style="font-size: 64px; color: var(--primary); opacity: 0.5;"></i>
                                         <h3 style="margin-top: 10px;">کلاؤڈ سینک سیٹ اپ</h3>
                                         <p style="color: var(--text-muted); font-size: 14px; margin-bottom: 20px;">گوگل
                                             ڈرائیو استعمال کرنے کے لیے آپ کو اپنی **Google Client ID** دینی ہوگی۔</p>
@@ -1143,8 +1143,8 @@
                                     </div>
                                     <button class="btn btn-primary" id="btnLinkGDrive" onclick="handleGDriveAuth()"
                                         style="padding: 12px 24px; font-size: 16px;" data-i18n="link_google">
-                                        <ion-icon name="logo-google"
-                                            style="margin-left: 8px; font-size: 20px;"></ion-icon> گوگل اکاؤنٹ لنک کریں
+                                        <i class="fa-brands fa-google" style="margin-left: 8px; font-size: 20px;"></i>
+                                        گوگل اکاؤنٹ لنک کریں
                                     </button>
                                 </div>
 
@@ -1584,7 +1584,7 @@
                     <img id="billShopLogo" src="" alt="Logo"
                         style="max-width: 120px; max-height: 120px; display: none; margin: 0 auto; border-radius: 12px; border: 3px solid white; background: white;">
                     <div id="billDefaultLogo" style="display: none;">
-                        <ion-icon name="print" style="font-size: 80px; color: white;"></ion-icon>
+                        <i class="fa-solid fa-print" style="font-size: 80px; color: white;"></i>
                     </div>
                 </div>
             </div>

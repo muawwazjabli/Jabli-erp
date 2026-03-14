@@ -89,28 +89,28 @@ window.showToast = function (message, type = 'info') {
     const toast = document.createElement('div');
     toast.className = `toast ${type}`;
 
-    let icon = 'information-circle-outline';
-    if (type === 'success') icon = 'checkmark-circle-outline';
-    if (type === 'error') icon = 'alert-circle-outline';
+    let icon = 'fa-circle-info';
+    if (type === 'success') icon = 'fa-circle-check';
+    if (type === 'error') icon = 'fa-circle-exclamation';
 
     // Auto-detect type based on keywords if type is info
     if (type === 'info') {
         if (message.includes('کامیابی') || message.includes('شامل') || message.includes('تیار') || message.includes('محفوظ') || message.includes('مکمل')) {
             type = 'success';
             toast.className = `toast success`;
-            icon = 'checkmark-circle-outline';
+            icon = 'fa-circle-check';
         } else if (message.includes('غلط') || message.includes('مسئلہ') || message.includes('براہ کرم') || message.includes('صرف') || message.includes('نہیں')) {
             type = 'error';
             toast.className = `toast error`;
-            icon = 'close-circle-outline';
+            icon = 'fa-xmark';
         }
     }
 
     toast.innerHTML = `
-        <ion-icon name="${icon}"></ion-icon>
+        <i class="fa-solid ${icon}"></i>
         <span style="flex: 1; font-family: inherit;">${message}</span>
         <button onclick="this.parentElement.remove()" style="background:none; border:none; color:var(--text-muted); cursor:pointer; font-size:20px; display:flex; align-items:center;">
-            <ion-icon name="close-outline"></ion-icon>
+            <i class="fa-solid fa-xmark"></i>
         </button>
     `;
 
@@ -345,7 +345,7 @@ function applyShopSettings() {
         if (shopSettings.logo) {
             sLogo.outerHTML = `<img src="${shopSettings.logo}" id="sidebarShopLogoImg" alt="Logo">`;
         } else {
-            sLogo.outerHTML = `<ion-icon name="print" id="sidebarShopLogoImg"></ion-icon>`;
+            sLogo.outerHTML = `<i class="fa-solid fa-print" id="sidebarShopLogoImg"></i>`;
         }
     }
     // Note: login screen elements (loginShopNameText, loginLogoImg) have been removed in the new glassmorphism design
@@ -519,7 +519,11 @@ function initUserGrids() {
 function initDynamicUI() {
     initUserGrids();
     if (typeof initSettingsUI === 'function') {
-        initSettingsUI();
+        try {
+            initSettingsUI();
+        } catch (e) {
+            console.error('Settings UI initialization failed:', e);
+        }
     }
 }
 
@@ -864,9 +868,10 @@ function setupLogin() {
 
     // Auth State Observer
     fbOnAuthStateChanged(auth, (user) => {
-        // Robust Splash Removal: disappear regardless of following logic
         const splash = document.getElementById('splash-screen');
         if (splash) splash.classList.add('fade-out');
+
+        // Robust Splash Removal: disappear regardless of following logic
 
         if (user) {
             // Requirement 2: Clear any active 'Login Modal' or 'Overlay' from the DOM when user is detected
@@ -3973,10 +3978,10 @@ window.renderRecycleBin = function () {
             <td style="text-align: center;">
                 <div style="display: flex; gap: 8px; justify-content: center;">
                     <button onclick="restoreOrder('${order.id}')" class="btn btn-sm btn-outline-primary" title="بحال کریں">
-                        <ion-icon name="refresh-outline"></ion-icon> بحال کریں
+                        <i class="fa-solid fa-rotate-left"></i> بحال کریں
                     </button>
                     <button onclick="permanentlyDeleteOrder('${order.id}')" class="btn btn-sm" style="color: var(--danger); background: #fee2e2;" title="مستقل ڈیلیٹ">
-                        <ion-icon name="trash-outline"></ion-icon>
+                        <i class="fa-solid fa-trash"></i>
                     </button>
                 </div>
             </td>
@@ -4178,7 +4183,11 @@ window.initDynamicUI = function () {
     }
 
     if (typeof window.initSettingsUI === 'function') {
-        window.initSettingsUI();
+        try {
+            window.initSettingsUI();
+        } catch (e) {
+            console.error('Window Settings UI initialization failed:', e);
+        }
     }
 };
 
@@ -5071,7 +5080,7 @@ window.manualGDriveSync = async function () {
     const originalHtml = btn ? btn.innerHTML : '';
     if (btn) {
         btn.disabled = true;
-        btn.innerHTML = '<ion-icon name="sync-outline" class="rotating"></ion-icon> سینک ہو رہا ہے...';
+        btn.innerHTML = '<i class="fa-solid fa-sync-alt rotating"></i> سینک ہو رہا ہے...';
     }
 
     try {
@@ -5166,7 +5175,7 @@ window.manualGDriveSync = async function () {
     } finally {
         if (btn) {
             btn.disabled = false;
-            btn.innerHTML = originalHtml || '<ion-icon name="cloud-upload-outline"></ion-icon> ابھی سینک کریں';
+            btn.innerHTML = originalHtml || '<i class="fa-solid fa-cloud-arrow-up"></i> ابھی سینک کریں';
         }
     }
 };

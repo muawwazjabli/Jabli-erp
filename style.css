@@ -59,30 +59,52 @@ body {
 }
 
 /* Splash Screen */
-#splash-screen { 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: #0f0f1a; 
-    display: flex; 
-    flex-direction: column; 
-    justify-content: center; 
-    align-items: center; 
-    z-index: 99999; 
-    transition: opacity 0.5s ease; 
+#splash-screen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #0f0f1a;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 99999;
+    transition: opacity 0.5s ease;
 }
-.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
-#splash-screen h2 { color: white; letter-spacing: 5px; animation: pulse 2s infinite; font-family: 'Outfit', sans-serif; }
-@keyframes pulse { 
-    0% { opacity: 0.5; } 
-    50% { opacity: 1; transform: scale(1.05); } 
-    100% { opacity: 0.5; } 
+
+.fade-out {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+#splash-screen h2 {
+    color: white;
+    letter-spacing: 5px;
+    animation: pulse 2s infinite;
+    font-family: 'Outfit', sans-serif;
+}
+
+@keyframes pulse {
+    0% {
+        opacity: 0.5;
+    }
+
+    50% {
+        opacity: 1;
+        transform: scale(1.05);
+    }
+
+    100% {
+        opacity: 0.5;
+    }
 }
 
 /* Default hidden views to prevent flash */
-#login-view, #dashboard-view {
+#login-view,
+#dashboard-view {
     display: none !important;
 }
 
@@ -610,7 +632,7 @@ body {
     align-items: center;
 }
 
-.glass-input-group ion-icon {
+.glass-input-group i {
     position: absolute;
     left: 12px;
     color: rgba(255, 255, 255, 0.5);
@@ -719,7 +741,7 @@ body.lang-en .nav-item.active {
     color: var(--primary);
 }
 
-.logo ion-icon {
+.logo i {
     font-size: 28px;
 }
 
@@ -762,7 +784,7 @@ body.lang-en .nav-item.active {
     font-weight: 500;
 }
 
-.nav-item ion-icon {
+.nav-item i {
     font-size: 20px;
 }
 
@@ -1537,20 +1559,20 @@ body.lang-en * {
     border-right-color: var(--info);
 }
 
-.toast ion-icon {
+.toast i {
     font-size: 24px;
     flex-shrink: 0;
 }
 
-.toast.success ion-icon {
+.toast.success i {
     color: var(--success);
 }
 
-.toast.error ion-icon {
+.toast.error i {
     color: var(--danger);
 }
 
-.toast.info ion-icon {
+.toast.info i {
     color: var(--info);
 }
 
@@ -1779,7 +1801,7 @@ body.lang-en * {
     transform: scale(0.95);
 }
 
-.pin-btn ion-icon {
+.pin-btn i {
     font-size: 24px;
 }
 
