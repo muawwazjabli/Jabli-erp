@@ -104,8 +104,12 @@ body {
 
 /* Default hidden views to prevent flash */
 #login-view,
-#dashboard-view {
-    display: none !important;
+#dashboard-view,
+#loginView,
+#signupView,
+#emailVerifyView,
+#otpView {
+    display: none;
 }
 
 /* ============================================
@@ -285,6 +289,13 @@ body {
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(255, 255, 255, 0.2);
     position: relative;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-card {
+    width: 380px;
+    max-width: 90vw;
+    margin: 0 auto;
+    min-height: auto;
 }
 
 .glass-card:hover {

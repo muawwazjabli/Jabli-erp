@@ -589,7 +589,7 @@ window.toggleAuthMode = function () {
     const toggleBtn = document.getElementById('authModeToggle');
 
     if (authMode === 'login') {
-        loginView.style.display = 'flex';
+        loginView.style.display = 'block';
         signupView.style.display = 'none';
         otpView.style.display = 'none';
         if (emailVerifyView) emailVerifyView.style.display = 'none';
@@ -597,7 +597,7 @@ window.toggleAuthMode = function () {
         toggleBtn.innerText = 'Create Account';
     } else {
         loginView.style.display = 'none';
-        signupView.style.display = 'flex';
+        signupView.style.display = 'block';
         otpView.style.display = 'none';
         if (emailVerifyView) emailVerifyView.style.display = 'none';
         authTitle.innerText = 'CREATE ACCOUNT';
@@ -695,7 +695,7 @@ window.handleSignup = function () {
                     // Only Email: Wait for verification
                     document.getElementById('signupView').style.display = 'none';
                     if (document.getElementById('emailVerifyView')) {
-                        document.getElementById('emailVerifyView').style.display = 'flex';
+                        document.getElementById('emailVerifyView').style.display = 'block';
                     }
                     document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
                     showToast('Please check your email to verify your account.', 'info');
@@ -724,7 +724,7 @@ async function triggerPhoneOTP(phone) {
 
         // Requirement: Show OTP View
         document.getElementById('signupView').style.display = 'none';
-        document.getElementById('otpView').style.display = 'flex';
+        document.getElementById('otpView').style.display = 'block';
         document.getElementById('authTitle').innerText = 'VERIFY PHONE';
     } catch (error) {
         console.error('Phone Auth Error:', error);
@@ -781,7 +781,7 @@ window.cancelOTP = function () {
     if (document.getElementById('emailVerifyView')) {
         document.getElementById('emailVerifyView').style.display = 'none';
     }
-    document.getElementById('signupView').style.display = 'flex';
+    document.getElementById('signupView').style.display = 'block';
     document.getElementById('authTitle').innerText = 'CREATE ACCOUNT';
     document.getElementById('signupBtn').disabled = false;
     confirmationResult = null;
@@ -836,7 +836,7 @@ function enterApp() {
 
         currentRole = 'admin';
         document.getElementById('login-view').style.display = 'none';
-        document.getElementById('dashboard-view').style.display = 'flex';
+        document.getElementById('dashboard-view').style.display = 'block';
 
         // Set UI
         document.getElementById('currentUserName').innerText = currentUser.name;
@@ -878,7 +878,7 @@ function setupLogin() {
             document.querySelectorAll('.modal, .modal-backdrop, .overlay').forEach(el => el.remove());
 
             // Requirement: Prevent auto-login before verification
-            const isOTPView = document.getElementById('otpView').style.display === 'flex';
+            const isOTPView = document.getElementById('otpView').style.display === 'block';
             const isEmailFlow = pendingRegData && pendingRegData.email;
             const isVerified = (user.email ? user.emailVerified : true) && !isOTPView;
 
@@ -889,7 +889,7 @@ function setupLogin() {
                 document.getElementById('login-view').style.display = 'flex';
                 document.getElementById('signupView').style.display = 'none';
                 if (document.getElementById('emailVerifyView')) {
-                    document.getElementById('emailVerifyView').style.display = 'flex';
+                    document.getElementById('emailVerifyView').style.display = 'block';
                 }
                 document.getElementById('authTitle').innerText = 'VERIFY EMAIL';
                 showToast('Please verify your email address before logging in.', 'info');
@@ -913,7 +913,7 @@ function setupLogin() {
             document.getElementById('dashboard-view').style.display = 'none';
 
             // Reset views back to login
-            document.getElementById('loginView').style.display = 'flex';
+            document.getElementById('loginView').style.display = 'block';
             document.getElementById('signupView').style.display = 'none';
             document.getElementById('otpView').style.display = 'none';
 
@@ -938,14 +938,14 @@ function setupLogin() {
 
         if (user) {
             const dashView = document.getElementById('dashboard-view');
-            if (dashView) dashView.style.setProperty('display', 'block', 'important');
+            if (dashView) dashView.style.display = 'block';
             const loginView = document.getElementById('login-view');
-            if (loginView) loginView.style.setProperty('display', 'none', 'important');
+            if (loginView) loginView.style.display = 'none';
         } else {
             const loginView = document.getElementById('login-view');
-            if (loginView) loginView.style.setProperty('display', 'block', 'important');
+            if (loginView) loginView.style.display = 'flex';
             const dashView = document.getElementById('dashboard-view');
-            if (dashView) dashView.style.setProperty('display', 'none', 'important');
+            if (dashView) dashView.style.display = 'none';
         }
     });
 
