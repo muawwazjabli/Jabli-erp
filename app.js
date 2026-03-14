@@ -931,6 +931,22 @@ function setupLogin() {
             const recentOrdersBody = document.getElementById('recentOrdersBody');
             if (recentOrdersBody) recentOrdersBody.innerHTML = '';
         }
+
+        // Force-hide splash screen and ensure main UI is visible
+        const splashEl = document.getElementById('splash-screen');
+        if (splashEl) splashEl.style.display = 'none';
+
+        if (user) {
+            const dashView = document.getElementById('dashboard-view');
+            if (dashView) dashView.style.setProperty('display', 'block', 'important');
+            const loginView = document.getElementById('login-view');
+            if (loginView) loginView.style.setProperty('display', 'none', 'important');
+        } else {
+            const loginView = document.getElementById('login-view');
+            if (loginView) loginView.style.setProperty('display', 'block', 'important');
+            const dashView = document.getElementById('dashboard-view');
+            if (dashView) dashView.style.setProperty('display', 'none', 'important');
+        }
     });
 
 }
