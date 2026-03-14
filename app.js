@@ -343,9 +343,9 @@ function applyShopSettings() {
     const sLogo = document.getElementById('sidebarShopLogoImg');
     if (sLogo) {
         if (shopSettings.logo) {
-            sLogo.outerHTML = `<img src="${shopSettings.logo}" id="sidebarShopLogoImg" alt="Logo">`;
+            sLogo.src = shopSettings.logo;
         } else {
-            sLogo.outerHTML = `<i class="fa-solid fa-print" id="sidebarShopLogoImg"></i>`;
+            sLogo.src = 'logo.png';
         }
     }
     // Note: login screen elements (loginShopNameText, loginLogoImg) have been removed in the new glassmorphism design

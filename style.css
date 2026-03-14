@@ -752,6 +752,20 @@ body.lang-en .nav-item.active {
     border-radius: 4px;
 }
 
+/* Custom Logo Styling */
+.login-logo-img {
+    max-width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.sidebar-logo-img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    border-radius: var(--radius-sm);
+}
+
 .logo h2,
 .logo h1 {
     font-size: 20px;
