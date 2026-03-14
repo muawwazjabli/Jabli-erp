@@ -12,9 +12,8 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;700&family=Outfit:wght@300;400;500;600;700&family=Amiri:wght@400;700&family=Lateef:wght@400&family=Scheherazade+New:wght@400;700&family=Roboto:wght@400;700&display=swap"
         rel="stylesheet">
-    <!-- Ionicons -->
-    <script type="module" src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-    <script nomodule src="https://cdn.jsdelivr.net/npm/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <!-- FontAwesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
 
     <!-- Html2Canvas for generating bill images -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -92,7 +91,7 @@
     <!-- Splash Screen -->
     <div id="splash-screen">
         <div class="front-logo-icon" style="width: 80px; height: 80px; font-size: 40px; margin-bottom: 20px;">
-            <ion-icon name="laptop-outline"></ion-icon>
+            <i class="fa-solid fa-laptop"></i>
         </div>
         <h2 style="font-family: 'Outfit', sans-serif; letter-spacing: 5px; color: white; text-align: center;">JABLI ERP
         </h2>
@@ -111,7 +110,7 @@
         <nav class="front-navbar">
             <div class="front-navbar-brand">
                 <div class="front-logo-icon">
-                    <ion-icon name="laptop-outline"></ion-icon>
+                    <i class="fa-solid fa-laptop"></i>
                 </div>
                 <span class="front-brand-name"><strong>JABLI</strong> ERP</span>
             </div>
@@ -132,12 +131,12 @@
                 <div id="loginView" class="glass-form">
                     <form id="login-form" onsubmit="handleLogin(event)">
                         <div class="glass-input-group">
-                            <ion-icon name="mail-outline"></ion-icon>
+                            <i class="fa-solid fa-envelope"></i>
                             <input type="email" class="glass-input" placeholder="Email Address" id="loginEmail"
                                 name="email" autocomplete="username" required>
                         </div>
                         <div class="glass-input-group">
-                            <ion-icon name="lock-closed-outline"></ion-icon>
+                            <i class="fa-solid fa-lock"></i>
                             <input type="password" class="glass-input" placeholder="Password" id="loginPassword"
                                 name="password" autocomplete="current-password" required>
                         </div>
@@ -157,21 +156,21 @@
                 <!-- Signup View -->
                 <div id="signupView" class="glass-form" style="display: none;">
                     <div class="glass-input-group">
-                        <ion-icon name="person-outline"></ion-icon>
+                        <i class="fa-solid fa-user"></i>
                         <input type="text" class="glass-input" placeholder="Full Name" id="regName">
                     </div>
                     <div class="glass-input-group">
-                        <ion-icon name="mail-outline"></ion-icon>
+                        <i class="fa-solid fa-envelope"></i>
                         <input type="email" class="glass-input" placeholder="Email Address (Optional if Phone provided)"
                             id="regEmail">
                     </div>
                     <div class="glass-input-group">
-                        <ion-icon name="call-outline"></ion-icon>
+                        <i class="fa-solid fa-phone"></i>
                         <input type="tel" class="glass-input" placeholder="Phone Number (Optional if Email provided)"
                             id="regPhone">
                     </div>
                     <div class="glass-input-group">
-                        <ion-icon name="lock-closed-outline"></ion-icon>
+                        <i class="fa-solid fa-lock"></i>
                         <input type="password" class="glass-input" placeholder="Password" id="regPassword">
                     </div>
                     <div id="recaptcha-container"></div>
@@ -188,7 +187,7 @@
                 <!-- Email Verification Info View (Optional/Dynamic) -->
                 <div id="emailVerifyView" class="glass-form" style="display: none;">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <ion-icon name="mail-open-outline" style="font-size: 40px; color: var(--primary);"></ion-icon>
+                        <i class="fa-solid fa-envelope-open" style="font-size: 40px; color: var(--primary);"></i>
                         <h3 style="color: white; margin-top: 10px;">Verify Your Email</h3>
                         <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">We've sent a verification link to
                             your email. Please click it to continue.</p>
@@ -205,8 +204,7 @@
                 <!-- OTP Verification View -->
                 <div id="otpView" class="glass-form" style="display: none;">
                     <div style="text-align: center; margin-bottom: 20px;">
-                        <ion-icon name="shield-checkmark-outline"
-                            style="font-size: 40px; color: var(--primary);"></ion-icon>
+                        <i class="fa-solid fa-shield-halved" style="font-size: 40px; color: var(--primary);"></i>
                         <h3 style="color: white; margin-top: 10px;">Verify Phone</h3>
                         <p style="font-size: 0.9rem; color: rgba(255,255,255,0.7);">Enter the 6-digit code sent to your
                             phone</p>
@@ -248,8 +246,7 @@
                         <button class="pin-btn" onclick="appendPin(9)">9</button>
                         <button class="pin-btn" onclick="clearPin()">C</button>
                         <button class="pin-btn" onclick="appendPin(0)">0</button>
-                        <button class="pin-btn" onclick="backspacePin()"><ion-icon
-                                name="backspace-outline"></ion-icon></button>
+                        <button class="pin-btn" onclick="backspacePin()"><i class="fa-solid fa-backspace"></i></button>
                     </div>
                     <button id="verifyPinBtn" class="glass-btn-primary w-100" style="margin-top: 16px;" disabled>تصدیق
                         کریں</button>
@@ -276,27 +273,27 @@
 
             <nav class="sidebar-nav">
                 <a href="#" class="nav-active nav-item" id="navDashboard" data-i18n="dashboard">
-                    <ion-icon name="grid-outline"></ion-icon>
+                    <i class="fa-solid fa-house"></i>
                     <span>ڈیش بورڈ</span>
                 </a>
                 <a href="#" class="nav-item" id="navOrders" data-i18n="orders">
-                    <ion-icon name="cart-outline"></ion-icon>
+                    <i class="fa-solid fa-cart-shopping"></i>
                     <span>آرڈرز (Orders)</span>
                 </a>
                 <a href="#" class="nav-item" id="navFinance" data-i18n="finance">
-                    <ion-icon name="wallet-outline"></ion-icon>
+                    <i class="fa-solid fa-wallet"></i>
                     <span>مالیات (Finance)</span>
                 </a>
                 <a href="#" class="nav-item" id="navCustomers" data-i18n="customers">
-                    <ion-icon name="people-outline"></ion-icon>
+                    <i class="fa-solid fa-users"></i>
                     <span>کسٹمرز</span>
                 </a>
                 <a href="#" class="nav-item" id="navProducts" data-i18n="products">
-                    <ion-icon name="cube-outline"></ion-icon>
+                    <i class="fa-solid fa-cube"></i>
                     <span>اسٹاک / پروڈکٹس</span>
                 </a>
                 <a href="#" class="nav-item" id="navSettings" data-i18n="settings">
-                    <ion-icon name="settings-outline"></ion-icon>
+                    <i class="fa-solid fa-gear"></i>
                     <span>سیٹنگز</span>
                 </a>
             </nav>
@@ -308,13 +305,13 @@
                         <span class="name" id="currentUserName">محمد معوذ جبلی</span>
                         <span class="role" id="currentUserRole">Admin</span>
                     </div>
-                    <ion-icon name="chevron-up-outline" style="margin-right: auto;"></ion-icon>
+                    <i class="fa-solid fa-chevron-up" style="margin-right: auto;"></i>
                 </div>
                 <div class="user-dropdown" id="userDropdown" style="display: none;">
                     <button class="dropdown-item" onclick="openChangePasswordModal()"
                         style="font-weight: bold; border-bottom: 2px solid var(--border); margin-bottom: 4px;"
                         data-i18n="change_password">
-                        <ion-icon name="key-outline" style="vertical-align: middle; margin-left: 8px;"></ion-icon> اپنا
+                        <i class="fa-solid fa-key" style="vertical-align: middle; margin-left: 8px;"></i> اپنا
                         پاسورڈ تبدیل کریں
                     </button>
                     <div id="dynamicUserSwitcherList" style="display: none;">
@@ -323,7 +320,7 @@
                     <button class="dropdown-item text-danger" onclick="logoutUser()"
                         style="font-weight: bold; border-top: 2px solid var(--border); margin-top: 4px;"
                         data-i18n="logout">
-                        <ion-icon name="log-out-outline" style="vertical-align: middle; margin-left: 8px;"></ion-icon>
+                        <i class="fa-solid fa-right-from-bracket" style="vertical-align: middle; margin-left: 8px;"></i>
                         لاگ آؤٹ (Logout)
                     </button>
                 </div>
@@ -335,16 +332,16 @@
             <!-- Top Navbar -->
             <header class="top-nav">
                 <div style="display: flex; align-items: center; gap: 15px;">
-                    <ion-icon name="menu-outline" id="mobileMenuToggle" onclick="toggleSidebar()"></ion-icon>
+                    <i class="fa-solid fa-bars" id="mobileMenuToggle" onclick="toggleSidebar()"></i>
                     <div class="search-bar">
-                        <ion-icon name="search-outline"></ion-icon>
+                        <i class="fa-solid fa-magnifying-glass"></i>
                         <input type="text" data-i18n="search_placeholder" placeholder="آرڈر یا کسٹمر تلاش کریں...">
                     </div>
                 </div>
 
                 <div class="nav-actions">
                     <button class="btn btn-secondary" onclick="toggleLanguage()" id="languageToggleBtn">
-                        <ion-icon name="language-outline"></ion-icon>
+                        <i class="fa-solid fa-language"></i>
                         <span>English</span>
                     </button>
                     <button class="btn btn-secondary" onclick="openIncomeModal()"
@@ -354,7 +351,7 @@
                         آمدن درج کریں
                     </button>
                     <button class="btn btn-secondary" onclick="openExpenseModal()" data-i18n="expense_btn">
-                        <ion-icon name="wallet-outline"></ion-icon>
+                        <i class="fa-solid fa-wallet"></i>
                         خرچہ کریں
                     </button>
                     <button class="btn btn-secondary" onclick="openHandoverModal()" id="handoverNavBtn"
@@ -363,11 +360,11 @@
                         رقم جمع کروائیں
                     </button>
                     <button class="btn btn-icon">
-                        <ion-icon name="notifications-outline"></ion-icon>
+                        <i class="fa-solid fa-bell"></i>
                         <span class="badge">3</span>
                     </button>
                     <button class="btn btn-primary" id="newOrderBtn" data-i18n="new_order">
-                        <ion-icon name="add-circle-outline"></ion-icon>
+                        <i class="fa-solid fa-circle-plus"></i>
                         نیا آرڈر بنائیں
                     </button>
                 </div>
@@ -384,7 +381,7 @@
                 <div class="stats-grid">
                     <div class="stat-card" id="dashboardTotalIncomeCard">
                         <div class="stat-icon income">
-                            <ion-icon name="cash-outline"></ion-icon>
+                            <i class="fa-solid fa-money-bill"></i>
                         </div>
                         <div class="stat-details">
                             <h3 data-i18n="total_income">کل آمدنی</h3>
@@ -396,20 +393,21 @@
 
                     <div class="stat-card clickable-card" onclick="openFilteredOrdersModal('pending')">
                         <div class="stat-icon pending">
-                            <ion-icon name="receipt-outline"></ion-icon>
+                            <i class="fa-solid fa-receipt"></i>
                         </div>
                         <div class="stat-details">
                             <h3 data-i18n="pending_balance">بقایا جات (Pending)</h3>
                             <h2 class="amount">Rs. 45,500</h2>
-                            <span class="trend warning" data-i18n="customers_pending"><ion-icon
-                                    name="alert-circle-outline"></ion-icon> <span id="pendingCustomersCount">5</span>
+                            <span class="trend warning" data-i18n="customers_pending"><i
+                                    class="fa-solid fa-circle-exclamation"></i> <span
+                                    id="pendingCustomersCount">5</span>
                                 کسٹمرز بقایا</span>
                         </div>
                     </div>
 
                     <div class="stat-card clickable-card" onclick="openFilteredOrdersModal('active')">
                         <div class="stat-icon orders-active">
-                            <ion-icon name="color-palette-outline"></ion-icon>
+                            <i class="fa-solid fa-palette"></i>
                         </div>
                         <div class="stat-details">
                             <h3 data-i18n="active_orders">زیر تکمیل آرڈرز</h3>
@@ -420,7 +418,7 @@
 
                     <div class="stat-card">
                         <div class="stat-icon orders-done">
-                            <ion-icon name="checkmark-done-outline"></ion-icon>
+                            <i class="fa-solid fa-check-double"></i>
                         </div>
                         <div class="stat-details">
                             <h3 data-i18n="completed_orders">مکمل شدہ آرڈرز</h3>
@@ -479,7 +477,7 @@
                             </div>
                             <div class="summary-item">
                                 <div class="icon-circle bg-purple-light text-purple">
-                                    <ion-icon name="color-fill-outline"></ion-icon>
+                                    <i class="fa-solid fa-fill-drip"></i>
                                 </div>
                                 <div class="summary-info">
                                     <h4 data-i18n="printing_panaflex">پرنٹنگ (پینافلیکس وغیرہ)</h4>
@@ -488,7 +486,7 @@
                             </div>
                             <div class="summary-item">
                                 <div class="icon-circle bg-green-light text-green">
-                                    <ion-icon name="globe-outline"></ion-icon>
+                                    <i class="fa-solid fa-globe"></i>
                                 </div>
                                 <div class="summary-info">
                                     <h4 data-i18n="online_services_label">آنلائن سروسز</h4>
@@ -501,7 +499,7 @@
 
                         <button class="btn btn-outline-primary w-100 mt-3" onclick="downloadDailyReport()"
                             data-i18n="download_report">
-                            <ion-icon name="document-text-outline"></ion-icon>
+                            <i class="fa-solid fa-file-lines"></i>
                             روزانہ رپورٹ ڈاؤنلوڈ کریں
                         </button>
                     </div>
@@ -517,7 +515,7 @@
                             <p data-i18n="all_orders_filter">تمام آرڈرز یہاں سے فلٹر اور تلاش کریں</p>
                         </div>
                         <button class="btn btn-primary" onclick="document.getElementById('newOrderBtn').click()">
-                            <ion-icon name="add-circle-outline"></ion-icon>
+                            <i class="fa-solid fa-circle-plus"></i>
                             نیا آرڈر بنائیں
                         </button>
                     </div>
@@ -546,7 +544,7 @@
                                 </button>
                                 <button class="btn btn-sm btn-secondary" onclick="openRecycleBinModal()"
                                     title="ڈیلیٹ شدہ آرڈرز (Recycle Bin)" data-i18n="recycle_bin">
-                                    <ion-icon name="trash-outline"></ion-icon>
+                                    <i class="fa-solid fa-trash"></i>
                                     ریفرش بن
                                 </button>
                                 <select id="orderCategoryFilter" class="form-control" style="width: 150px;"
@@ -557,7 +555,7 @@
                                     <option value="online" data-i18n="online_services">آنلائن سروسز</option>
                                 </select>
                                 <div class="search-bar" style="margin: 0; width: 250px;">
-                                    <ion-icon name="search-outline"></ion-icon>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
                                     <input type="text" id="orderSearchInput" placeholder="کسٹمر یا تفصیل تلاش کریں..."
                                         onkeyup="renderOrdersList()">
                                 </div>
@@ -581,7 +579,7 @@
                         <div style="display: flex; gap: 10px;">
                             <button class="btn btn-sm btn-primary" onclick="deleteSelectedOrders()"
                                 id="deleteSelectedBtn" style="background: var(--danger);" data-i18n="delete_selected">
-                                <ion-icon name="trash-outline"></ion-icon>
+                                <i class="fa-solid fa-trash"></i>
                                 منتخب شدہ ڈیلیٹ کریں
                             </button>
                         </div>
@@ -706,7 +704,7 @@
                         <h2 data-i18n="existing_products">موجودہ پروڈکٹس</h2>
                         <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
                             <div class="search-bar" style="width: 200px;">
-                                <ion-icon name="search-outline"></ion-icon>
+                                <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text" id="productSearchInput" onkeyup="renderProducts()"
                                     placeholder="پروڈکٹ تلاش کریں..."
                                     style="width: 100%; border: none; background: transparent; outline: none; font-size: 13px;">
@@ -777,7 +775,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--info-light); color: var(--info); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="people-outline"></ion-icon>
+                            <i class="fa-solid fa-users"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="total_customers">کل کسٹمرز
@@ -788,7 +786,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--danger-light); color: var(--danger); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="alert-circle-outline"></ion-icon>
+                            <i class="fa-solid fa-circle-exclamation"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="outstanding_balance">بقایا
@@ -799,7 +797,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--warning-light); color: var(--warning); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="time-outline"></ion-icon>
+                            <i class="fa-solid fa-clock"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="pending_work">زیرِ تکمیل
@@ -813,7 +811,7 @@
                     <div class="card-body" style="padding: 20px;">
                         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                             <div class="search-bar" style="margin: 0; flex: 1; min-width: 250px;">
-                                <ion-icon name="search-outline"></ion-icon>
+                                <i class="fa-solid fa-magnifying-glass"></i>
                                 <input type="text" id="customerSearchInput" placeholder="کسٹمر کا نام تلاش کریں..."
                                     onkeyup="renderCustomers()">
                             </div>
@@ -876,7 +874,7 @@
                             </button>
                             <button class="btn btn-secondary" onclick="openExpenseModal()"
                                 style="background-color: var(--danger-light); color: var(--danger); border-color: var(--danger);">
-                                <ion-icon name="wallet-outline"></ion-icon>
+                                <i class="fa-solid fa-wallet"></i>
                                 خرچہ کریں
                             </button>
                             <button class="btn btn-secondary" onclick="openHandoverModal()">
@@ -892,7 +890,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--success-light); color: var(--success); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="cart-outline"></ion-icon>
+                            <i class="fa-solid fa-cart-shopping"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="total_sales">کل سیلز
@@ -903,7 +901,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--warning-light); color: var(--warning); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="cube-outline"></ion-icon>
+                            <i class="fa-solid fa-cube"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="cogs">پروڈکٹ کی قیمتِ خرید
@@ -914,7 +912,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--danger-light); color: var(--danger); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="trending-down-outline"></ion-icon>
+                            <i class="fa-solid fa-circle-chevron-down"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="other_expenses">دیگر
@@ -925,7 +923,7 @@
                     <div class="stat-card" style="flex: 1; min-width: 150px; padding: 15px;">
                         <div class="stat-icon"
                             style="background: var(--primary-light); color: var(--primary); width: 32px; height: 32px; font-size: 16px;">
-                            <ion-icon name="wallet-outline"></ion-icon>
+                            <i class="fa-solid fa-wallet"></i>
                         </div>
                         <div class="stat-details">
                             <h3 style="font-size: 11px; color: var(--text-muted);" data-i18n="net_profit">خالص منافع
@@ -973,7 +971,7 @@
                                     <!-- Options populated remotely -->
                                 </select>
                                 <div class="search-bar" style="margin: 0; min-width: 250px;">
-                                    <ion-icon name="search-outline"></ion-icon>
+                                    <i class="fa-solid fa-magnifying-glass"></i>
                                     <input type="text" id="financeSearchInput" placeholder="تفصیل تلاش کریں..."
                                         onkeyup="renderTransactionsTable()">
                                 </div>
@@ -1000,7 +998,7 @@
                             <button class="btn btn-sm btn-primary" onclick="deleteSelectedTransactions()"
                                 id="deleteSelectedFinanceBtn" style="background: var(--danger);"
                                 data-i18n="delete_selected">
-                                <ion-icon name="trash-outline"></ion-icon>
+                                <i class="fa-solid fa-trash"></i>
                                 منتخب شدہ ڈیلیٹ کریں
                             </button>
                         </div>
@@ -1049,22 +1047,22 @@
                     <div class="settings-tabs" style="display: flex; gap: 8px; padding-bottom: 8px;">
                         <button class="btn btn-secondary active" onclick="switchSettingsTab('sett-shop', this)"
                             id="btn-tab-shop">
-                            <ion-icon name="information-circle-outline"></ion-icon> تعارف (Shop)
+                            <i class="fa-solid fa-circle-info"></i> تعارف (Shop)
                         </button>
                         <button class="btn btn-secondary" onclick="switchSettingsTab('sett-users', this)">
-                            <ion-icon name="people-outline"></ion-icon> یوزرز (Users)
+                            <i class="fa-solid fa-users"></i> یوزرز (Users)
                         </button>
                         <button class="btn btn-secondary" onclick="switchSettingsTab('sett-status', this)">
-                            <ion-icon name="list-outline"></ion-icon> آرڈر اسٹیٹس
+                            <i class="fa-solid fa-list"></i> آرڈر اسٹیٹس
                         </button>
                         <button class="btn btn-secondary" onclick="switchSettingsTab('sett-categories', this)">
-                            <ion-icon name="grid-outline"></ion-icon> کیٹیگریز
+                            <i class="fa-solid fa-house"></i> کیٹیگریز
                         </button>
                         <button class="btn btn-secondary" onclick="switchSettingsTab('sett-invoice', this)">
-                            <ion-icon name="receipt-outline"></ion-icon> رسید ڈیزائن
+                            <i class="fa-solid fa-receipt"></i> رسید ڈیزائن
                         </button>
                         <button class="btn btn-secondary" onclick="switchSettingsTab('sett-backup', this)">
-                            <ion-icon name="cloud-download-outline"></ion-icon> بیک اپ اور بحالی
+                            <i class="fa-solid fa-cloud-arrow-down"></i> بیک اپ اور بحالی
                         </button>
                     </div>
                 </div>
@@ -1189,7 +1187,7 @@
                                                 تازہ ترین ڈیٹا ابھی گوگل ڈرائیو پر اپلوڈ کریں۔</p>
                                             <button class="btn btn-primary w-100" id="btnSyncNow"
                                                 onclick="manualGDriveSync()" data-i18n="sync_now">
-                                                <ion-icon name="cloud-upload-outline"></ion-icon> ابھی سینک کریں
+                                                <i class="fa-solid fa-cloud-arrow-up"></i> ابھی سینک کریں
                                             </button>
                                             <div id="lastSyncTime"
                                                 style="font-size: 11px; color: var(--text-muted); margin-top: 10px;"
@@ -1889,7 +1887,7 @@
                                 </div>
                                 <button type="button" class="btn btn-secondary" onclick="addProductToOrder()"
                                     style="height: 44px; margin-bottom: 0; background-color: #e2e8f0; padding: 0 16px;">
-                                    <ion-icon name="add-outline"></ion-icon>
+                                    <i class="fa-solid fa-plus"></i>
                                 </button>
                             </div>
                         </div>
@@ -1920,7 +1918,7 @@
                                 </div>
                                 <button type="button" class="btn btn-secondary" onclick="addCustomProductToOrder()"
                                     style="height: 44px; margin-bottom: 0; background-color: #e2e8f0; padding: 0 16px;">
-                                    <ion-icon name="add-outline"></ion-icon>
+                                    <i class="fa-solid fa-plus"></i>
                                 </button>
                             </div>
                         </div>
