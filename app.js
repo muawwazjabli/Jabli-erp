@@ -23,27 +23,13 @@ let shopSettings = JSON.parse(localStorage.getItem('alAbbasiShopSettings')) || {
     billFooterBg: '#1e40af', billFooterTextColor: '#ffffff',
     billNameFont: "'Noto Nastaliq Urdu', serif",
     qrBaseUrl: '',
-    users: [
-        { username: 'admin', pin: 'admin123', role: 'admin' },
-        { username: 'staff1', pin: '1234', role: 'staff' },
-        { username: 'staff2', pin: '4321', role: 'staff' }
-    ]
+    users: []
 };
 
-// Safety check for older settings
-if (!shopSettings.users || !Array.isArray(shopSettings.users)) {
-    shopSettings.users = [
-        { username: 'admin', pin: 'admin123', role: 'admin' },
-        { username: 'staff1', pin: '1234', role: 'staff' }
-    ];
-}
+// Initial state should be empty
 let products = [];
 let deletedOrders = [];
-let orderCategories = [
-    { id: 'stationery', label: 'اسٹیشنری' },
-    { id: 'printing', label: 'پرنٹنگ' },
-    { id: 'online', label: 'آنلائن سروسز' }
-];
+let orderCategories = [];
 let orderStatuses = JSON.parse(localStorage.getItem('alAbbasiOrderStatuses')) || [
     { id: 'progress', label: 'زیر تکمیل', color: 'status-progress', isFinal: false },
     { id: 'designing', label: 'ڈیزائننگ', color: 'status-designing', isFinal: false },
@@ -69,12 +55,7 @@ function cleanupOldDeletedOrders() {
 }
 cleanupOldDeletedOrders();
 
-const defaultUsers = {
-    owner1: { id: 'owner1', name: 'محمد معوذ جبلی', role: 'superadmin', avatar: 'م', color: '#f3e8ff', textColor: '#9333ea', pass: '1234' },
-    owner2: { id: 'owner2', name: 'عمر فاروق لدھیانوی', role: 'admin', avatar: 'ع', color: 'var(--primary)', textColor: 'white', pass: '1234' },
-    staff1: { id: 'staff1', name: 'حاشر', role: 'staff', avatar: 'ح', color: 'var(--warning-light)', textColor: 'var(--warning)', pass: '0000' },
-    staff2: { id: 'staff2', name: 'حسن', role: 'staff', avatar: 'ح', color: 'var(--info-light)', textColor: 'var(--info)', pass: '0000' }
-};
+const defaultUsers = {};
 
 // Custom Toast Notification System
 window.showToast = function (message, type = 'info') {
@@ -139,38 +120,11 @@ window.alert = function (message) {
 
 let USERS = {};
 
-// If localStorage is completely empty, invalid, or an array, reset to defaults
-if (!USERS || typeof USERS !== 'object' || Array.isArray(USERS) || Object.keys(USERS).length === 0) {
-    USERS = JSON.parse(JSON.stringify(defaultUsers));
-}
-
-// Ensure 'admin' from shopSettings is migrated if missing
-if (shopSettings.users && Array.isArray(shopSettings.users)) {
-    shopSettings.users.forEach(u => {
-        const existing = Object.values(USERS).find(user => user.name === u.username);
-        if (!existing) {
-            const id = 'user_' + Date.now() + Math.floor(Math.random() * 1000);
-            USERS[id] = {
-                id,
-                name: u.username,
-                role: u.role || 'staff',
-                pass: u.pin,
-                avatar: u.username.charAt(0).toUpperCase(),
-                color: 'var(--primary)',
-                textColor: 'white'
-            };
-        }
-    });
-    // Optional: cleanup legacy array to prevent confusion
-    // delete shopSettings.users; 
-}
-
-localStorage.setItem('alAbbasiUsers', JSON.stringify(USERS));
-
-// Force owner1 to always be super admin
-if (USERS.owner1) {
-    USERS.owner1.role = 'superadmin';
-}
+// Force owner1 fallback removal
+localStorage.removeItem('alAbbasiUsers');
+localStorage.removeItem('alAbbasiOrders');
+localStorage.removeItem('alAbbasiTransactions');
+localStorage.removeItem('alAbbasiProducts');
 
 let currentUser = null; // Default to none, needs login
 let currentRole = null;
@@ -246,37 +200,9 @@ function addTransaction(type, amount, userId, description, relatedId = null, han
     saveTransactions();
 }
 
-// Initial Dummy Data if empty
-if (orders.length === 0) {
-    orders = [
-        {
-            id: 'ORD-1001',
-            customerName: 'علی رضا',
-            category: 'printing',
-            details: 'سکول یونیفارم پینافلیکس',
-            status: 'designing',
-            totalAmount: 2500,
-            advance: 1250,
-            date: new Date().toISOString()
-        },
-        {
-            id: 'ORD-1002',
-            customerName: 'اسامہ کالج',
-            category: 'stationery',
-            details: '100 نوٹس کاپیاں',
-            status: 'completed',
-            totalAmount: 10000,
-            advance: 8000,
-            date: new Date(Date.now() - 86400000).toISOString()
-        }
-    ];
-    saveOrders();
-}
-
 // Save to Firebase
 function saveOrders() {
     window.saveOrders();
-    localStorage.setItem('alAbbasiOrders', JSON.stringify(orders));
 }
 
 // Generate New Order ID
@@ -749,20 +675,44 @@ window.verifyOTP = function () {
     document.getElementById('verifyOtpBtn').disabled = true;
 
     confirmationResult.confirm(code)
-        .then((result) => {
+        .then(async (result) => {
             showToast('Phone verified successfully!', 'success');
 
             // Finalize registration: Save profile to database
             const user = auth.currentUser;
+
+            // Check if this is the first user in the entire database
+            // Note: In user-isolated mode, we check 'users' global node
+            const usersSnap = await fbGet(fbRef(db, 'users'));
+            const usersCount = usersSnap.exists() ? Object.keys(usersSnap.val()).length : 0;
+            const assignedRole = usersCount === 0 ? 'superadmin' : 'staff';
+
             const profileData = {
                 name: pendingRegData ? pendingRegData.name : (user.displayName || 'User'),
                 email: pendingRegData ? pendingRegData.email : (user.email || ''),
                 phone: pendingRegData ? pendingRegData.phone : (user.phoneNumber || ''),
                 uid: user.uid,
+                role: assignedRole,
                 createdAt: new Date().toISOString()
             };
 
-            return fbSet(fbRef(db, `users/${user.uid}/profile`), profileData);
+            // Also save to global USERS list for easy management
+            const newUserObj = {
+                id: user.uid,
+                name: profileData.name,
+                role: assignedRole,
+                email: profileData.email,
+                phone: profileData.phone,
+                pass: pendingRegData ? pendingRegData.pass : '1234',
+                avatar: profileData.name.charAt(0).toUpperCase(),
+                color: 'var(--primary)',
+                textColor: 'white'
+            };
+
+            await fbUpdate(fbRef(db, 'users/' + user.uid + '/profile'), profileData);
+            await fbUpdate(fbRef(db, 'users_list/' + user.uid), newUserObj);
+
+            return result;
         })
         .then(() => {
             // Success: Clean up and enter app
@@ -821,8 +771,21 @@ function enterApp() {
     if (!user) return;
 
     // Fetch profile data from DB
-    fbGet(fbRef(db, `users/${user.uid}/profile`)).then((snapshot) => {
-        const profile = snapshot.val() || {};
+    fbGet(fbRef(db, `users/${user.uid}/profile`)).then(async (snapshot) => {
+        let profile = snapshot.val() || {};
+
+        // Requirement: If first user (no users in database), assign superadmin
+        if (!profile.role) {
+            const usersSnap = await fbGet(fbRef(db, 'users'));
+            const usersCount = usersSnap.exists() ? Object.keys(usersSnap.val()).length : 0;
+            if (usersCount === 0 || (usersCount === 1 && usersSnap.val()[user.uid])) {
+                profile.role = 'superadmin';
+                // Save this role to DB if it's new
+                await fbUpdate(fbRef(db, `users/${user.uid}/profile`), { role: 'superadmin' });
+            } else {
+                profile.role = 'staff';
+            }
+        }
 
         currentUser = {
             id: user.uid,
@@ -830,17 +793,17 @@ function enterApp() {
             email: user.email,
             phone: profile.phone || '',
             photoURL: user.photoURL,
-            role: 'admin',
+            role: profile.role,
             avatar: (profile.name || user.displayName || 'U').charAt(0)
         };
 
-        currentRole = 'admin';
+        currentRole = profile.role;
         document.getElementById('login-view').style.display = 'none';
         document.getElementById('dashboard-view').style.display = 'block';
 
         // Set UI
         document.getElementById('currentUserName').innerText = currentUser.name;
-        document.getElementById('currentUserRole').innerText = 'Admin';
+        document.getElementById('currentUserRole').innerText = currentRole;
         const avatarEl = document.getElementById('currentUserAvatar');
         if (currentUser.photoURL) {
             avatarEl.innerHTML = `<img src="${currentUser.photoURL}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">`;
